@@ -39,7 +39,9 @@ export class LoginComponent implements OnInit {
 
     this.userService.login(this.loginForm.value)
     .subscribe(res => {
+      console.log('[login component]')
       console.log(res);
+      console.log('[end login component]')
     }, (err) => {
       console.log(err);
     })

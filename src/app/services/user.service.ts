@@ -13,13 +13,13 @@ export class UserService {
   constructor(private htttClient: HttpClient) { }
 
   login(formData: UserLoginDto) {
-    console.log('createUser ()')
+
     let headers = {'Content-Type':'application/json'};
     // 'Access-Control-Allow-Origin:': '*'
 
-    return this.htttClient.post('http://localhost:5000/login', formData, {
-      headers: headers
-    })
+    return this.htttClient.post('http://localhost:5000/login', formData)
+
+    //return this.htttClient.get('http://localhost:5000/api/family/')
 
     
   }
