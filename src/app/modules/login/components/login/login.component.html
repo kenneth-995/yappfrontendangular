@@ -5,23 +5,26 @@
             <div class="login d-flex align-items-center py-5">
 
                 <div class="container text-center">
-                    <img src="../assets/images/logo_polos.png" class="img-fluid mb-5" alt="Logo Yaap">
+                    <img src="../assets/images/logo_yapp.png" class="img-fluid mb-5" alt="Logo Yaap">
 
                     <div class="row">
 
                         <div class="col-lg-10 col-xl-7 mx-auto">
                             <!-- <h3 class="display-4">Login</h3> -->
                             <!-- <p class="text-muted mb-4">Sign in</p> -->
-
-                            <form id="loginForm" autocomplete="off">
-                                <!-- [formGroup]="loginForm" -->
+                            <form [formGroup]="loginForm" (ngSubmit)="login()">
                                 <div class="form-group mb-3">
-                                    <input formControlName="username" type="text" placeholder="username" autofocus=""
-                                        class="form-control rounded-pill border-0 shadow-sm px-4">
+                                    <input class="form-control rounded-pill border-0 shadow-sm px-4" 
+                                           type="text" 
+                                           placeholder="username" 
+                                           formControlName="username">
                                 </div>
+
                                 <div class="form-group mb-3">
-                                    <input type="password" placeholder="Password" formControlName="password"
-                                        class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                                    <input class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"
+                                           type="password" 
+                                           placeholder="password"
+                                           formControlName="password">
                                 </div>
 
                                 <button type="submit"
@@ -29,6 +32,10 @@
                                     Sign in
                                 </button>
                             </form>
+
+                           <!--  <form>
+                                
+                            </form> -->
 
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { LoginService } from '../../../../services/login.service';
+import { UserService } from '../../../../services/user.service';
 
 
 @Component({
@@ -12,19 +12,37 @@ import { LoginService } from '../../../../services/login.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public form_submited = false;
+  public formSubmited = false;
   public destroy$ = new Subject();
+
+  public loginForm = this.formBuilder.group({
+    username: ['kenneth', Validators.required],
+    password: ['kenneth', Validators.required]
+  })
 
 
 
   constructor(
+    private formBuilder: FormBuilder,
     private router: Router,
-    private loginService: LoginService,) { }
+    private userService: UserService,) { }
 
   ngOnInit(): void { }
 
+  createUser() {
+
+  }
+
   login() {
-    console.log('login()')
+
+    console.log(this.loginForm.value)
+
+    this.userService.login(this.loginForm.value)
+    .subscribe(res => {
+      console.log(res);
+    }, (err) => {
+      console.log(err);
+    })
   }
 
 }
