@@ -1,12 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+/* 
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import '~ngx-toastr/toastr'; */
 
 html, body{
     display: flex;
     flex-direction: column;
     height:100%;
     margin: 0;
+    font-size: 0.8rem;
   }
 
   .cursorMouseHover {
     cursor: pointer;
+}
+
+.cursor{
+  cursor: pointer;
+}
+
+/*colores*/
+
+.primary-charcoal{
+
+  color: #264653;
+}
+.info-persion{
+  color: #2A9D8F;
+}
+.warning-crayola{
+  color: #E9C46A;
+}
+.high-sandy {
+  color: #F4A261;
+}
+.danger-silenna{
+  color: #E76F51;
 }
