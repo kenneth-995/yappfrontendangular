@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 import { Subject } from 'rxjs';
 
@@ -11,38 +12,16 @@ import { UserLoginDto } from '../models/dto/UserLoginDto';
 })
 export class UserService {
 
+  public base_url = environment.BASE_URL;
+
   constructor(private htttClient: HttpClient) { }
 
   login(formData: UserLoginDto) {
+    return this.htttClient.post(this.base_url+'/auth/login', formData);
+  }
 
-    //let headers = {'Content-Type':'application/json'};
-    // 'Access-Control-Allow-Origin:': '*'
-
-    let headers = new Headers();
-    headers.append('Accept', 'application/json')
-    // creating base64 encoded String from user name and password
-    var base64Credential: string = btoa( formData.username+ ':' + formData.password);
-    headers.append("Authorization", "Basic " + base64Credential);
-
-
-    const headerDict = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Authorization': "Basic " + base64Credential,
-    }
-    
-
-    
-    const requestOptions = {                                                                                                                                                                                 
-      headers: new HttpHeaders(headerDict), 
-    };
-
-    return this.htttClient.get('http://localhost:5000/login', requestOptions);
-
-    //return this.htttClient.get('http://localhost:5000/api/family/')
-
-    
+  getUserById(userId: number) {
+    return this.htttClient.get(this.base_url+'/user/'+userId );
   }
 
 

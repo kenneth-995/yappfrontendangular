@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+
 import { UserService } from '../../../../services/user.service';
 
 
@@ -15,9 +16,12 @@ export class LoginComponent implements OnInit {
   public formSubmited = false;
   public destroy$ = new Subject();
 
+  public userId:number;
+
+
   public loginForm = this.formBuilder.group({
-    username: ['kenneth', Validators.required],
-    password: ['kenneth', Validators.required]
+    username: ['superadmin', Validators.required],
+    password: ['password', Validators.required]
   })
 
 
@@ -27,24 +31,40 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private userService: UserService,) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
-  createUser() {
-
-  }
 
   login() {
-
     console.log(this.loginForm.value)
+    if (true) {
+      /* this.userService.login(this.loginForm.value).subscribe(
+        res => {
+          localStorage.setItem('accessToken', res["accessToken"]);
+          localStorage.setItem('id', res["id"]);
+        }
+      ) */
 
-    this.userService.login(this.loginForm.value)
-    .subscribe(res => {
-      console.log('[login component]')
-      console.log(res);
-      console.log('[end login component]')
-    }, (err) => {
-      console.log(err);
-    })
+      this.userService.login(this.loginForm.value).pipe(
+        takeUntil(this.destroy$),
+        map((resLogin) => {
+          localStorage.setItem('accessToken', resLogin["accessToken"]);
+          localStorage.setItem('id', resLogin["id"]);
+          this.userId = resLogin["id"];
+        }),
+        concatMap(() => this.userService.getUserById(this.userId))
+      ).subscribe(ress => {
+        //let user = ress as User;
+        //this.userService.userLogged.next(user);
+        console.log(ress)
+        this.router.navigateByUrl('/home');
+
+        },
+        (error) => {
+          //this.toastr.error(JSON.stringify(error.error.detail));
+        }
+      );
+      
+    }
   }
 
 }
