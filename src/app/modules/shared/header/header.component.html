@@ -1,1 +1,68 @@
-<p>header works!</p>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-1">
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto components">
+          <li class="nav-item">
+            <img width="70" height="32" src="./../../../../assets//images//logo_yapp.png"/>
+          </li>
+          <li class="nav-item ml-5">
+            <a class="nav-link orange" [routerLink]="[ 'home' ]" routerLinkActive="active">
+                Inicio
+            </a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="[ 'request-dayoff' ]" routerLinkActive="active">
+                  Patients
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link orange" [routerLink]="[ 'members' ]" routerLinkActive="active">
+                  Mts
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link orange" [routerLink]="[ 'workschedule' ]" routerLinkActive="active">
+                  Treatments
+              </a>
+            </li>
+            <li class="nav-item dropdown" ><!-- *ngIf="userIsAdminOrResponsable" -->
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Reports
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" [routerLink]="['admin']">Días libres</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'workscheduler', 'stats']">Turnos de trabajo</a>
+              
+              </div>
+            </li>
+            <li class="nav-item dropdown"><!-- *ngIf="userIsAdminOrResponsable -->
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Administración
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" [routerLink]="['admin', 'daysOffYear']">Configurar días libres anuales</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'departments', 'daysoff']">Configurar días libres del departamento</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'workscheduler', 'types']">Configurar turnos de trabajo</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'departments']">Departamentos</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'members']">Miembros</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'daysoff', 'types']">Tipos días libres</a>
+              </div>
+            </li>
+
+
+
+        </ul>
+        <div class="collapse navbar-collapse w-20 order-2 dual-collapse2" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle orange" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-user mr-1"></i>{{username}}
+                </a>
+                <div class="dropdown-menu ">
+                  <a class="dropdown-item" routerLink="/login" (click)='logout()'><i class="fas fa-sign-out-alt mr-1"></i> Salir</a>            
+                </div>
+              </li>
+            </ul>
+        
+          </div>
+    </div>
+</nav>
