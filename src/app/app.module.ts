@@ -6,9 +6,12 @@ import { AppComponent } from './app.component';
 import { UserService } from './services/user.service';
 import { AuthService } from './interceptors/auth.service';
 
+import { HeaderComponent } from './modules/shared/header/header.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
