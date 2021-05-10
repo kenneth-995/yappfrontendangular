@@ -49,6 +49,8 @@ export class LoginComponent implements OnInit {
         map((resLogin) => {
           localStorage.setItem('accessToken', resLogin["accessToken"]);
           localStorage.setItem('id', resLogin["id"]);
+          localStorage.setItem('username', resLogin["username"]);
+          localStorage.setItem('photo', resLogin["photo"]);
           this.userId = resLogin["id"];
         }),
         concatMap(() => this.userService.getUserById(this.userId))
