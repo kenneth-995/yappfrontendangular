@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../../../../services/user.service';
 
@@ -29,7 +30,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private userService: UserService,) { }
+    private userService: UserService,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {}
 
@@ -37,12 +39,6 @@ export class LoginComponent implements OnInit {
   login() {
     console.log(this.loginForm.value)
     if (true) {
-      /* this.userService.login(this.loginForm.value).subscribe(
-        res => {
-          localStorage.setItem('accessToken', res["accessToken"]);
-          localStorage.setItem('id', res["id"]);
-        }
-      ) */
 
       this.userService.login(this.loginForm.value).pipe(
         takeUntil(this.destroy$),
@@ -62,7 +58,9 @@ export class LoginComponent implements OnInit {
 
         },
         (error) => {
-          //this.toastr.error(JSON.stringify(error.error.detail));
+          console.log('error')
+          console.log(error.error)
+          this.toastr.error(JSON.stringify(error.error['error']));
         }
       );
       
