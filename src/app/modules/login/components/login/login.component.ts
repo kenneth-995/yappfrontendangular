@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../../../../services/user.service';
@@ -14,6 +14,7 @@ import { UserService } from '../../../../services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
   public formSubmited = false;
   public destroy$ = new Subject();
 
@@ -37,8 +38,8 @@ export class LoginComponent implements OnInit {
 
 
   login() {
-    console.log(this.loginForm.value)
-    if (true) {
+    console.log()
+    if (this.loginForm.valid) {
 
       this.userService.login(this.loginForm.value).pipe(
         takeUntil(this.destroy$),
@@ -46,7 +47,6 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('accessToken', resLogin["accessToken"]);
           localStorage.setItem('id', resLogin["id"]);
           localStorage.setItem('username', resLogin["username"]);
-          localStorage.setItem('photo', resLogin["photo"]);
           this.userId = resLogin["id"];
         }),
         concatMap(() => this.userService.getUserById(this.userId))
@@ -64,6 +64,8 @@ export class LoginComponent implements OnInit {
         }
       );
       
+    } else {
+      this.toastr.error(JSON.stringify({"error":"username or password cannot be empty"}));
     }
   }
 
