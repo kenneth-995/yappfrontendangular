@@ -5,26 +5,19 @@ import { environment } from 'src/environments/environment';
 
 import { Subject } from 'rxjs';
 
-import { User } from '../models/entities/user-model';
-import { UserLoginDto } from '../models/dto/UserLoginDto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-
+export class PatientService {
   public base_url = environment.BASE_URL;
-  public user: User;
 
   constructor(private htttClient: HttpClient) { }
 
-  login(formData: UserLoginDto) {
-    return this.htttClient.post(this.base_url+'/auth/login', formData);
+  getPatients() {
+
   }
-
-  getUserById(userId: number) {
-    return this.htttClient.get(this.base_url+'/user/'+userId );
+  getPatientsByClinic(id:number) {
+    return this.htttClient.get(this.base_url+'/patient/clinic/'+id);
   }
-
-
 }

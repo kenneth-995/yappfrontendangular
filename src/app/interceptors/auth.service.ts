@@ -30,7 +30,7 @@ export class AuthService implements HttpInterceptor {
 
     return next.handle(request).pipe(catchError((error: HttpErrorResponse) => {
       console.log(error);
-      if (error.status == 401) {
+      if (error.status == 401) { //403
         if (request.url.includes('info') == false) {
           //this.ngxLoader.stop();
           localStorage.removeItem('accessToken');

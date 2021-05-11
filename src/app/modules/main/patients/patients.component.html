@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="row">
+        <div class="custom-control p-2">
+            <input class="form-control" type="text" placeholder="buscar">
+            <button type="button" class="btn btn-info"> Buscar </button>
+
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr class="text-center">
+                <!-- <th scope="col-1">#</th> -->
+                <th class="col-2">Fullname</th>
+                <!-- <th class="col-2">Surname</th> -->
+                <!-- <th class="col-2">Reason</th> -->
+                <th class="col-2">Telephone</th>
+                <th class="col-2">email</th>
+
+                <!-- <th scope="col-2">urlPhoto</th> -->
+                <th class="col-2">Age</th>
+                <!-- <th class="col-2">Address</th> -->
+                <!-- <th class="col-2">School</th> -->
+                <th class="col-2">Course</th>
+                <!-- <th class="col-2">Payment Type</th> -->
+                <th class="col-2">Active</th>
+                <!-- <th class="col-2">Clinic</th> -->
+                <th class="col-2">Actions</th>
+                <th class="col-2">Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let p of patients' class="text-center">
+                <!--<th scope="col-1">{{p.id}}</th> -->
+                <td class="col-2">{{p.name + ' ' + p.surname}}</td>
+                <!-- <td class="col-2">{{p.reason}}</td> -->
+                <td class="col-2">{{p.phoneNumber}}</td>
+                <td class="col-2">{{p.email}}</td>
+                <!-- <td class="col-3">{{p.urlPhoto}}</td> -->
+                <td class="col-2">{{p.age}}</td>
+                <!-- <td class="col-2">{{p.homeAddress}}</td> -->
+                <!-- <td class="col-2">{{p.schoolName}}</td> -->
+                <td class="col-2">{{p.course}}</td>
+                <!-- <td class="col-2">{{p.paymentType}}</td> -->
+                <td class="col-2">{{p.active}}</td>
+                <!-- <td class="col-2">{{p.clinicName}}</td> -->
+
+                <td class="col-2">
+                    <button class="btn btn-primary mb-2">Detail/Edit</button>
+                </td>
+                <td class="col-2">
+
+
+                    <button class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>
