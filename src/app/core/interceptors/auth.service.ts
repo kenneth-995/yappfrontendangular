@@ -3,15 +3,21 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders, Http
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService implements HttpInterceptor {
+  count: number = 0;
 
-  constructor(private route: Router,) {}
+  constructor(private route: Router, private spinner : NgxSpinnerService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.spinner.show();
+    
+    this.count++;
+
     const token = 'Bearer ' + localStorage.getItem('accessToken') || '';
 
     const headers = new HttpHeaders({
@@ -45,9 +51,14 @@ export class AuthService implements HttpInterceptor {
         console.log('Desde el interceptor! -> token = ' + token)
         console.log('Desde el interceptor! -> request = ')
         console.log(request)
-        /* this.count--;
-        
-        if (this.count == 0 ) {
+        this.count--;
+        //this.ngxLoader.stop(); 
+
+        setTimeout(() => {
+          this.spinner.hide();
+        }, 200);
+
+        /* if (this.count == 0 ) {
           this.spinner.hide(); 
         } */
 
