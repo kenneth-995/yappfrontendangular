@@ -14,10 +14,12 @@ export class PatientService {
 
   constructor(private htttClient: HttpClient) { }
 
-  getPatients() {
-
+  getAllPatients() {
+    return this.htttClient.get(this.base_url+'/patient/');
   }
+
   getPatientsByClinic(id:number) {
     return this.htttClient.get(this.base_url+'/patient/clinic/'+id);
   }
+
 }

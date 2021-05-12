@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
+import { User } from '../../../../models/entities/user-model';
 import { UserService } from '../../../../services/user.service';
 
 
@@ -19,7 +20,6 @@ export class LoginComponent implements OnInit {
   public destroy$ = new Subject();
 
   public userId:number;
-
 
   public loginForm = this.formBuilder.group({
     username: ['superadmin', Validators.required],
@@ -50,8 +50,8 @@ export class LoginComponent implements OnInit {
           this.userId = resLogin["id"];
         }),
         concatMap(() => this.userService.getUserById(this.userId))
-      ).subscribe(ress => {
-        //let user = ress as User;
+      ).subscribe((ress: User) => {
+        this.userService.setUserLogged(ress)
         //this.userService.userLogged.next(user);
         console.log(ress)
         this.router.navigateByUrl('/home');

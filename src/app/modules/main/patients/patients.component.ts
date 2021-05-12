@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
+import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
 import { PatientDto } from '../../../models/dto/PatientDto';
+import { of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-patients',
@@ -9,12 +12,14 @@ import { PatientDto } from '../../../models/dto/PatientDto';
   styleUrls: ['./patients.component.css']
 })
 export class PatientsComponent implements OnInit {
-  
+  private destroy$ = new Subject();
+
   public patients: PatientDto[];
 
-  constructor(private patientService: PatientService) { }
+  constructor(private userService: UserService,
+     private patientService: PatientService) { }
 
-  ngOnInit(): void {
+  /* ngOnInit(): void {
     this.patientService.getPatientsByClinic(5).subscribe(
       (res: PatientDto[])=> {
         console.log(res)
@@ -22,6 +27,10 @@ export class PatientsComponent implements OnInit {
         this.patients.forEach(p=> console.log(p));
       }
     )
+  } */
+
+  ngOnInit(): void {
+    console.log(this.userService.getUserLogged)
   }
 
 }

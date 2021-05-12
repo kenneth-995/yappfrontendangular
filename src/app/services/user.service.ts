@@ -13,7 +13,8 @@ import { UserLoginDto } from '../models/dto/UserLoginDto';
   providedIn: 'root'
 })
 export class UserService {
-  public userLogged: BehaviorSubject<User>
+  //public userLogged: BehaviorSubject<User>
+  public userLogged: User;
   public base_url = environment.BASE_URL;
 
   
@@ -44,11 +45,13 @@ export class UserService {
   }
 
   get getUserLogged() {
-    return this.userLogged.value;
+    return this.userLogged;
   }
 
-  set setUserLogged(user: User) {
-      this.userLogged.next(user);
+  public setUserLogged(user: User) {
+      this.userLogged = user;
   }
+
+
 
 }
