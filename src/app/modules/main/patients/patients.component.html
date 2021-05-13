@@ -67,8 +67,36 @@
             (click)="modal.close('Cerrado desde la ventana')">
             <span aria-hidden="true">&times;</span>
           </button>
-          <img [src]= 'patientToUpdate.urlPhoto'/> asd
+          
       </div>
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      
+
+
+      
+      <div class="form-group">
+        <form [formGroup]="uploadForm" (ngSubmit)="submitForm()">
+          <!-- Select File -->
+          <input type="file" accept="image/*" formControlName="file" (change)="onFileChange($event)"/><!-- (change)="showPreview($event)" -->
+        
+                  
+          <button type="submit">Save Image</button>
+        </form>
+
+        <!-- Image Preview -->
+        <div class="imagePreview" >
+          <!-- <img [src]= 'patientToUpdate.urlPhoto' class="imgUserTable cursorMouseHover" [alt]="patientToUpdate.name"/> -->
+          <img [src]="imageSrc" *ngIf="imageSrc" class="imgUserTable cursorMouseHover">
+        </div>
+<!--         <label for="file">Choose File</label>
+        <input type="file"
+        class="form-control rounded-sm border-0 shadow-sm px-4" 
+               id="file"
+               (change)="updatePhoto($event.target.files)"> -->
+    </div>
+
+
+    </div>
       <div class="modal-body"
            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="name" class="col-2">Name:</label>
@@ -106,13 +134,13 @@
             class="form-control rounded-sm border-0 shadow-sm px-4" 
             type="text" [(ngModel)]= 'patientToUpdate.email' />
       </div>
-      <div class="modal-body"
+      <!-- <div class="modal-body"
       style="display:flex; flex-direction: row; justify-content: center; align-items: center">
           <label for="name" class="col-2">Photo:</label>
         <input 
             class="form-control rounded-sm border-0 shadow-sm px-4" 
             type="text" [(ngModel)]= 'patientToUpdate.urlPhoto' />
-      </div>
+      </div> -->
       <div class="modal-body"
       style="display:flex; flex-direction: row; justify-content: center; align-items: center">
           <label for="name" class="col-2">Age:</label>

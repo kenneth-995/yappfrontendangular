@@ -6,7 +6,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
+import { UploadFileService } from '../../../services/upload-file.service';
 import { PatientDto } from '../../../models/dto/PatientDto';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -24,18 +26,35 @@ export class PatientsComponent implements OnInit {
 
   public patientToUpdate: PatientDto = new PatientDto();
 
+  public file: File 
+  public imageSrc: string;
+
   public roleUser: number;
+
+  public uploadForm: FormGroup;
+
+/*   this.uploadForm = this.fb.group({
+    avatar: [null]
+  }) */
 
 
 
   constructor(
+      private fb: FormBuilder,
      private userService: UserService,
      private patientService: PatientService,
+     private uploadFileService: UploadFileService,
      private toast: ToastrService,
-     private modalService: NgbModal ) { }
+     private modalService: NgbModal ) {
+
+      this.uploadForm = this.fb.group({
+        file: null
+      })
+    }
 
   ngOnInit(): void {
-    this.patientToUpdate.name = 'asdasd'
+    
+
 
     if(this.userService.getUserLogged != null) {
       
@@ -106,7 +125,7 @@ export class PatientsComponent implements OnInit {
 
   public editPatient(patient: PatientDto, index:number) {
 
-
+    this.imageSrc = patient.urlPhoto;
     let aux = JSON.stringify (this.patients[index])
     
 
@@ -134,7 +153,39 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-  public
+  public updatePhoto($event: Event) {
+
+    
+  }
+
+  // Submit Form
+  submitForm() {
+    var formData: any = new FormData();
+    formData.append("file", this.uploadForm.get('file').value);
+    this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
+      res => console.log(res)
+    )
+  }
+
+  onFileChange(event) {
+    const reader = new FileReader();
+    
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+    
+      reader.onload = () => {
+   
+        this.imageSrc = reader.result as string;
+     
+        this.uploadForm.patchValue({
+          file: reader.result
+        });
+   
+      };
+   
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
