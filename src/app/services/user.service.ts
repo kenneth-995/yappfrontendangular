@@ -18,7 +18,6 @@ export class UserService {
   public base_url = environment.BASE_URL;
 
   
-
   constructor(private htttClient: HttpClient, private router: Router) { }
 
   login(formData: UserLoginDto) {
@@ -44,7 +43,7 @@ export class UserService {
     return this.htttClient.get(this.base_url+'/auth/roleuser');
   }
 
-  get getUserLogged() {
+  public getUserLogged() {
     return this.userLogged;
   }
 

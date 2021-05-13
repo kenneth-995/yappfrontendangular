@@ -1,8 +1,8 @@
 <div class="container">
     <div class="row">
         <div class="custom-control p-2">
-            <input class="form-control" type="text" placeholder="buscar">
-            <button type="button" class="btn btn-info"> Buscar </button>
+            <!-- <input class="form-control" type="text" placeholder="buscar"> -->
+            <button type="button" class="btn btn-info"> Add Patient </button>
 
         </div>
 
@@ -11,49 +11,30 @@
     <table class="table">
         <thead>
             <tr class="text-center">
-                <!-- <th scope="col-1">#</th> -->
+                <th class="col-2">#</th>
                 <th class="col-2">Fullname</th>
-                <!-- <th class="col-2">Surname</th> -->
-                <!-- <th class="col-2">Reason</th> -->
                 <th class="col-2">Telephone</th>
                 <th class="col-2">email</th>
-
-                <!-- <th scope="col-2">urlPhoto</th> -->
                 <th class="col-2">Age</th>
-                <!-- <th class="col-2">Address</th> -->
-                <!-- <th class="col-2">School</th> -->
-                <th class="col-2">Course</th>
-                <!-- <th class="col-2">Payment Type</th> -->
-                <th class="col-2">Active</th>
-                <!-- <th class="col-2">Clinic</th> -->
-                <th class="col-2">Actions</th>
-                <th class="col-2">Actions</th>
+                <th class="col-2">Action</th>
+                <th class="col-2" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
 
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor='let p of patients' class="text-center">
-                <!--<th scope="col-1">{{p.id}}</th> -->
+            <tr *ngFor='let p of patients let i = index' class="text-center">
+                <td class="col-2">{{i+1}}</td>
                 <td class="col-2">{{p.name + ' ' + p.surname}}</td>
-                <!-- <td class="col-2">{{p.reason}}</td> -->
                 <td class="col-2">{{p.phoneNumber}}</td>
                 <td class="col-2">{{p.email}}</td>
-                <!-- <td class="col-3">{{p.urlPhoto}}</td> -->
                 <td class="col-2">{{p.age}}</td>
-                <!-- <td class="col-2">{{p.homeAddress}}</td> -->
-                <!-- <td class="col-2">{{p.schoolName}}</td> -->
-                <td class="col-2">{{p.course}}</td>
-                <!-- <td class="col-2">{{p.paymentType}}</td> -->
-                <td class="col-2">{{p.active}}</td>
-                <!-- <td class="col-2">{{p.clinicName}}</td> -->
-
                 <td class="col-2">
-                    <button class="btn btn-primary mb-2">Detail/Edit</button>
+                    <button class="btn btn-primary mb-2" (click)='editPatient(p, i)'>Edit</button>
                 </td>
-                <td class="col-2">
+                <td class="col-2" *ngIf='roleUser ===1 || roleUser===2'>
 
 
-                    <button class="btn btn-danger">Delete</button>
+                    <button class="btn btn-danger" (click)='deletePatient(p.id)'>Delete</button>
                 </td>
             </tr>
         </tbody>
@@ -61,3 +42,137 @@
 
 
 </div>
+
+
+<ng-template #modalDelete let-modal>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Patient</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Cerrado desde la ventana')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+        You're going to delete a patient, are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('No')">No</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Si')">Si</button>
+      </div>
+    </div> 
+</ng-template>
+
+<ng-template #modalEdit let-modal>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Patient</h5>
+          <button type="button" 
+            class="close" 
+            data-dismiss="modal" 
+            aria-label="Close" 
+            (click)="modal.close('Cerrado desde la ventana')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body"
+           style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="name" class="col-2">Name:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            id="name"
+            type="text" [(ngModel)]= 'patientToUpdate.name' />
+      </div>
+      <div class="modal-body"
+           style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="name" class="col-2">Surname:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.surname' />
+      </div>
+      <div class="modal-body"
+           style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="name" class="col-2">Reason:</label>
+        <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
+        type="text" [(ngModel)]= 'patientToUpdate.reason'>
+
+        </textarea>  
+
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="name" class="col-2">Phone Number:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.phoneNumber' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Email:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.email' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Photo:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.urlPhoto' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Age:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.age' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Home Address:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.homeAddress' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">School Name:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4"
+            type="text" [(ngModel)]= 'patientToUpdate.schoolName' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Course:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.course' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Payment Type:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.paymentType' />
+      </div>
+      <div class="modal-body"
+      style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="name" class="col-2">Active:</label>
+        <input 
+            class="form-control rounded-sm border-0 shadow-sm px-4" 
+            type="text" [(ngModel)]= 'patientToUpdate.active' />
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" 
+                class="btn btn-secondary" 
+                data-dismiss="modal" 
+                (click)="modal.close('0')">Save
+        </button>
+        <button type="button" 
+                class="btn btn-primary" 
+                (click)="modal.close('1')">Cancel
+        </button>
+      </div>
+    </div>
+</ng-template>

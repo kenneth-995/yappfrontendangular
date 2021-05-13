@@ -20,9 +20,6 @@ export class AuthService implements HttpInterceptor {
 
     const token = 'Bearer ' + localStorage.getItem('accessToken') || '';
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    })
 
     if (localStorage.getItem('accessToken')) {
       request = request.clone(
@@ -48,9 +45,9 @@ export class AuthService implements HttpInterceptor {
       return next.handle(request)
     })).pipe(
       finalize(() => {
-        console.log('Desde el interceptor! -> token = ' + token)
+        /* console.log('Desde el interceptor! -> token = ' + token)
         console.log('Desde el interceptor! -> request = ')
-        console.log(request)
+        console.log(request) */
         this.count--;
         //this.ngxLoader.stop(); 
 

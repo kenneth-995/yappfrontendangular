@@ -1,5 +1,5 @@
 export class PatientDto {
-    id: string;
+    id: number;
     name: string;
     surname: string;
     reason: string;
@@ -13,5 +13,4 @@ export class PatientDto {
     paymentType: string;
     active: string;
     clinicId: string;
-    clinicName: string;
 }
