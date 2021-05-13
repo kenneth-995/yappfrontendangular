@@ -11,31 +11,25 @@
     <table class="table">
         <thead>
             <tr class="text-center">
-                <th class="col-2">#</th>
-                <th class="col-2">Fullname</th>
-                <th class="col-2">Telephone</th>
-                <th class="col-2">email</th>
-                <th class="col-2">Age</th>
-                <th class="col-2">Action</th>
-                <th class="col-2" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
+                <th scope="col">#</th>
+                <th scope="col">Fullname</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">email</th>
+                <th scope="col">Age</th>
+                <th scope="col">Action</th>
+                <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
 
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor='let p of patients let i = index' class="text-center">
-                <td class="col-2">{{i+1}}</td>
-                <td class="col-2">{{p.name + ' ' + p.surname}}</td>
-                <td class="col-2">{{p.phoneNumber}}</td>
-                <td class="col-2">{{p.email}}</td>
-                <td class="col-2">{{p.age}}</td>
-                <td class="col-2">
-                    <button class="btn btn-primary mb-2" (click)='editPatient(p, i)'>Edit</button>
-                </td>
-                <td class="col-2" *ngIf='roleUser ===1 || roleUser===2'>
-
-
-                    <button class="btn btn-danger" (click)='deletePatient(p.id)'>Delete</button>
-                </td>
+            <tr *ngFor='let p of patients let i = index' scope="row" class="text-center">
+                <td>{{i+1}}</td>
+                <td>{{p.name + ' ' + p.surname}}</td>
+                <td>{{p.phoneNumber}}</td>
+                <td>{{p.email}}</td>
+                <td>{{p.age}}</td>
+                <td><button class="btn btn-primary mb-2" (click)='editPatient(p, i)'>Edit</button></td>
+                <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger" (click)='deletePatient(p.id)'>Delete</button></td>
             </tr>
         </tbody>
     </table>
@@ -73,6 +67,7 @@
             (click)="modal.close('Cerrado desde la ventana')">
             <span aria-hidden="true">&times;</span>
           </button>
+          <img [src]= 'patientToUpdate.urlPhoto'/> asd
       </div>
       <div class="modal-body"
            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -93,8 +88,7 @@
            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="name" class="col-2">Reason:</label>
         <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
-        type="text" [(ngModel)]= 'patientToUpdate.reason'>
-
+                  type="text" [(ngModel)]= 'patientToUpdate.reason'>
         </textarea>  
 
       </div>
