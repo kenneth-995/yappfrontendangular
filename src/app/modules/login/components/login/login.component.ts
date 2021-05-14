@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit {
         concatMap(() => this.userService.getUserById(this.userId))
       ).subscribe((ress: User) => {
         this.userService.setUserLogged(ress)
+        this.userService.userLogged = ress as User;
         console.log(ress)
         this.router.navigateByUrl('/home');
 

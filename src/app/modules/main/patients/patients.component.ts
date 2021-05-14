@@ -6,9 +6,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
+import { ClinicService } from '../../../services/clinic.service';
 import { UploadFileService } from '../../../services/upload-file.service';
 import { PatientDto } from '../../../models/dto/PatientDto';
+import { CreatePatientDto } from '../../../models/dto/CreatePatientDto';
+import { ClinicDto } from '../../../models/dto/ClinicDto'
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { User } from 'src/app/models/entities/user-model';
 
 
 @Component({
@@ -23,12 +27,17 @@ export class PatientsComponent implements OnInit {
 
   private destroy$ = new Subject();
 
+  public userLogged : User;
+
   public patients: PatientDto[];
 
+  public clinics: ClinicDto[];
+
   public patientToUpdate: PatientDto = new PatientDto();
+  public patientToCreate: CreatePatientDto = new CreatePatientDto();
 
   public file: File
-  public imageSrc: string;
+  //public imageSrc: string;
 
   public roleUser: number;
 
@@ -38,6 +47,7 @@ export class PatientsComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private patientService: PatientService,
+    private clinicService: ClinicService,
     private uploadFileService: UploadFileService,
     private toast: ToastrService,
     private modalService: NgbModal) {
@@ -50,6 +60,13 @@ export class PatientsComponent implements OnInit {
   ngOnInit(): void {
 
     if (this.userService.getUserLogged != null) {
+      console.log('this.userService.userLogged')
+      console.log(this.userService.userLogged)
+      this.userLogged = this.userService.userLogged;
+
+      console.log('this.userLogged')
+      console.log(this.userLogged)
+
 
       this.getRoleUserAndPatients()
 
@@ -62,7 +79,7 @@ export class PatientsComponent implements OnInit {
 
   private getRoleUserAndPatients() {
 
-    console.log(this.userService.userLogged)
+    
     this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
       (res: number) => {
 
@@ -73,6 +90,14 @@ export class PatientsComponent implements OnInit {
               this.patients = res;
             }
           );
+          
+          this.clinicService.getAllClinics().subscribe(
+            (ress: ClinicDto[])=> {
+              this.clinics = ress as ClinicDto[];
+            }
+          );
+
+
         } else if (res === 2 || res === 3) {
           //admin / user
           this.patientService.getPatientsByClinic(this.userService.userLogged.clinicId).subscribe(
@@ -100,6 +125,7 @@ export class PatientsComponent implements OnInit {
                 (item, index) => {
                   if (item.id === id)
                     this.patients.splice(index, 1);
+                    this.toast.error('Deleted patient', 'Successfully');
                 })
             },
             (error) => {
@@ -118,7 +144,7 @@ export class PatientsComponent implements OnInit {
 
   public editPatient(patient: PatientDto, index: number) {
 
-    this.imageSrc = patient.urlPhoto;
+    //this.imageSrc = patient.urlPhoto;
     let aux = JSON.stringify(this.patients[index])
 
 
@@ -149,18 +175,30 @@ export class PatientsComponent implements OnInit {
   }
 
   createPatient() {
-    this.patientToUpdate = new PatientDto
+    let newPatient = new CreatePatientDto
+    newPatient.id = null;
+    newPatient.name = 'new patient'
+    newPatient.surname = 'new surname'
+    newPatient.reason = 'new reason'
+    newPatient.phoneNumber = '650190003'
+    newPatient.email = 'email@email.com'
+    newPatient.dateOfBirth = '2000-10-10'
+    newPatient.homeAddress = 'calle lalala'
+    newPatient.schoolName = 'Salvador Espriu'
+    newPatient.course = '4 ESO'
+    newPatient.paymentType = 'payment Type'
+    newPatient.active = true;
+    newPatient.clinicId = 4
 
-    console.log(this.patientToUpdate)
-    console.log(this.patientToUpdate.email)
     this.modalService.open(this.modalCreate).result.then(
       
       r => {
         if (r === '0') {
-          this.patientService.createPatient(this.patientToUpdate).subscribe(
+          this.patientService.createPatient(newPatient).subscribe(
             res => {
               console.log(res)
-              this.patientToUpdate = new PatientDto
+              console.log('helloooooo')
+              this.patients.push(res as PatientDto);
             }
           );
           
