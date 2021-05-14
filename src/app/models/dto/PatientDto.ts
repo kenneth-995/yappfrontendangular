@@ -12,5 +12,5 @@ export class PatientDto {
     course: string;
     paymentType: string;
     active: string;
-    clinicId: string;
+    clinicId: number;
 }

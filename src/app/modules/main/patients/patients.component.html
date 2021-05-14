@@ -2,7 +2,7 @@
   <div class="row">
     <div class="custom-control p-2">
       <!-- <input class="form-control" type="text" placeholder="buscar"> -->
-      <button type="button" class="btn btn-info"> Add Patient </button>
+      <button type="button" class="btn btn-info" (click)='createPatient()'> Add Patient </button>
 
     </div>
 
@@ -144,6 +144,106 @@
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
       <label for="name" class="col-2">Active:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.active' />
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">Save
+      </button>
+      <button type="button" class="btn btn-primary" (click)="modal.close('1')">Cancel
+      </button>
+    </div>
+
+  </div>
+</ng-template>
+
+
+<ng-template #modalCreate let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Create Patient</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Cerrado desde la ventana')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+    </div>
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+
+      <div class="form-group">
+        <form [formGroup]="uploadForm" (ngSubmit)="submitForm()">
+          <input type="file" (change)="onFileChange($event)">
+          <button type="submit">Save Image</button>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Name:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" id="name" type="text"
+        [(ngModel)]='patientToUpdate.name' />
+    </div>
+    
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Surname:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.surname' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Reason:</label>
+      <textarea class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.reason'>
+        </textarea>
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Phone Number:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.phoneNumber' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Email:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.email' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Age:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.age' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Home Address:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.homeAddress' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">School Name:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.schoolName' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Course:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.course' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Payment Type:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
+        [(ngModel)]='patientToUpdate.paymentType' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Active:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.active' />
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <label for="name" class="col-2">Active:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.clinicId' />
     </div>
 
     <div class="modal-footer">

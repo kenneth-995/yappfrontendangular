@@ -31,4 +31,8 @@ export class PatientService {
     return this.htttClient.put(this.base_url+'/patient/'+p.id, p);
   }
 
+  createPatient(p: PatientDto) {
+    return this.htttClient.post(this.base_url+'/patient/', p);
+  }
+
 }

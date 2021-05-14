@@ -19,6 +19,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class PatientsComponent implements OnInit {
   @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
   @ViewChild("modalEdit", { static: false }) modalEdit: TemplateRef<any>;
+  @ViewChild("modalCreate", { static: false }) modalCreate: TemplateRef<any>;
 
   private destroy$ = new Subject();
 
@@ -146,6 +147,35 @@ export class PatientsComponent implements OnInit {
       }
     );
   }
+
+  createPatient() {
+    this.patientToUpdate = new PatientDto
+
+    console.log(this.patientToUpdate)
+    console.log(this.patientToUpdate.email)
+    this.modalService.open(this.modalCreate).result.then(
+      
+      r => {
+        if (r === '0') {
+          this.patientService.createPatient(this.patientToUpdate).subscribe(
+            res => {
+              console.log(res)
+              this.patientToUpdate = new PatientDto
+            }
+          );
+          
+
+          
+        } else {
+          
+          console.log('cancelar')
+        }
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+  
 
 
   // Submit Form File
