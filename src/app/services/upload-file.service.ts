@@ -16,12 +16,12 @@ export class UploadFileService {
   public uploadFilePatient(formFile, id: number) {
 
     const header = {
-      headers: new HttpHeaders({ "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>" })
+      headers: new HttpHeaders({ "Content-Type": "multipart/form-data;" })
     }
 
     const url = this.base_url + '/patient/updatephoto/'+id
 
-    return this.htttClient.put(url, formFile, header);
+    return this.htttClient.put<any>(url, formFile, header);
   }
 
 }
