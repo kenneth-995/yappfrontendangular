@@ -4,8 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 import { Subject } from 'rxjs';
-import { PatientDto } from '../models/dto/PatientDto';
-import { CreatePatientDto } from '../models/dto/CreatePatientDto';
+import { PatientDto } from '../models/dto/patient/PatientDto';
+import { CreatePatientDto } from '../models/dto/patient/CreatePatientDto';
 
 
 @Injectable({

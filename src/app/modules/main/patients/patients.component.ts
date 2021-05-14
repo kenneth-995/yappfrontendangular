@@ -8,9 +8,9 @@ import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
 import { ClinicService } from '../../../services/clinic.service';
 import { UploadFileService } from '../../../services/upload-file.service';
-import { PatientDto } from '../../../models/dto/PatientDto';
-import { CreatePatientDto } from '../../../models/dto/CreatePatientDto';
-import { ClinicDto } from '../../../models/dto/ClinicDto'
+import { PatientDto } from '../../../models/dto/patient/PatientDto';
+import { CreatePatientDto } from '../../../models/dto/patient/CreatePatientDto';
+import { ClinicDto } from '../../../models/dto/clinic/ClinicDto'
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { User } from 'src/app/models/entities/user-model';
 
@@ -59,17 +59,9 @@ export class PatientsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.userService.getUserLogged != null) {
-      console.log('this.userService.userLogged')
-      console.log(this.userService.userLogged)
+    if (this.userService.userLogged != null) {
       this.userLogged = this.userService.userLogged;
-
-      console.log('this.userLogged')
-      console.log(this.userLogged)
-
-
       this.getRoleUserAndPatients()
-
     } else {
       console.log('[errorPatientComponent] user==null!');
     }
@@ -163,8 +155,10 @@ export class PatientsComponent implements OnInit {
             }
           );
 
-          
         } else {
+          let patient = new PatientDto;
+          patient = JSON.parse(aux)
+          console.log(patient)
           this.patients[index] = JSON.parse(aux);
           console.log('no editar')
         }
@@ -175,25 +169,32 @@ export class PatientsComponent implements OnInit {
   }
 
   createPatient() {
-    let newPatient = new CreatePatientDto
-    newPatient.id = null;
-    newPatient.name = 'new patient'
-    newPatient.surname = 'new surname'
-    newPatient.reason = 'new reason'
-    newPatient.phoneNumber = '650190003'
-    newPatient.email = 'email@email.com'
-    newPatient.dateOfBirth = '2000-10-10'
-    newPatient.homeAddress = 'calle lalala'
-    newPatient.schoolName = 'Salvador Espriu'
-    newPatient.course = '4 ESO'
-    newPatient.paymentType = 'payment Type'
-    newPatient.active = true;
-    newPatient.clinicId = 4
+    
 
     this.modalService.open(this.modalCreate).result.then(
       
       r => {
         if (r === '0') {
+          let newPatient = new CreatePatientDto
+          newPatient.id = 0;
+          newPatient.name = this.patientToCreate.name
+          newPatient.surname = this.patientToCreate.surname
+          newPatient.reason = this.patientToCreate.reason
+          newPatient.phoneNumber = this.patientToCreate.phoneNumber
+          newPatient.email = this.patientToCreate.email
+          newPatient.dateOfBirth = this.patientToCreate.dateOfBirth
+          newPatient.homeAddress = this.patientToCreate.homeAddress
+          newPatient.schoolName = this.patientToCreate.schoolName
+          newPatient.course = this.patientToCreate.course
+          newPatient.paymentType = this.patientToCreate.paymentType
+          newPatient.active = true;
+          //superadmin elige la clinica
+          if (this.roleUser != 1)
+            newPatient.clinicId = this.userLogged.clinicId
+          else
+            newPatient.clinicId = this.patientToCreate.clinicId
+
+
           this.patientService.createPatient(newPatient).subscribe(
             res => {
               console.log(res)
@@ -201,6 +202,7 @@ export class PatientsComponent implements OnInit {
               this.patients.push(res as PatientDto);
             }
           );
+          this.patientToCreate = new CreatePatientDto
           
 
           
@@ -214,7 +216,6 @@ export class PatientsComponent implements OnInit {
     );
   }
   
-
 
   // Submit Form File
   submitForm() {
@@ -243,4 +244,6 @@ export class PatientsComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+
 }

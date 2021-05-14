@@ -82,66 +82,103 @@
 
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Name:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" id="name" type="text"
-        [(ngModel)]='patientToUpdate.name' />
+      <label for="nameUpdate" class="col-2">Name:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="nameUpdate" 
+             name="nameUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.name' />
     </div>
     
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Surname:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.surname' />
+      <label for="surnameUpdate" class="col-2">Surname:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="surnameUpdate" 
+             name="surnameUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.surname' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Reason:</label>
-      <textarea class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.reason'>
+      <label for="reasonUpdate" class="col-2">Reason:</label>
+      <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="reasonUpdate" 
+                name="reasonUpdate"
+                type="text"
+                [(ngModel)]='patientToUpdate.reason'>
         </textarea>
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Phone Number:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.phoneNumber' />
+      <label for="numberUpdate" class="col-2">Phone Number:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="numberUpdate" 
+             name="numberUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.phoneNumber' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Email:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.email' />
+      <label for="emailUpdate" class="col-2">Email:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="emailUpdate" 
+             name="emailUpdate"
+             type="text" 
+            [(ngModel)]='patientToUpdate.email' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Age:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.age' />
+      <label for="ageUpdate" class="col-2">Age:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="ageUpdate" 
+             name="ageUpdate"
+             type="text" 
+             [(ngModel)]='patientToUpdate.age' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Home Address:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.homeAddress' />
+      <label for="homeAddressUpdate" class="col-2">Home Address:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="homeAddressUpdate" 
+             name="homeAddressUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.homeAddress' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">School Name:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.schoolName' />
+      <label for="schoolUpdate" class="col-2">School Name:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="schoolUpdate"
+             name="schoolUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.schoolName' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Course:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.course' />
+      <label for="courseUpdate" class="col-2">Course:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="courseUpdate"
+             name="courseUpdate"
+             type="text" 
+             [(ngModel)]='patientToUpdate.course' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Payment Type:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-        [(ngModel)]='patientToUpdate.paymentType' />
+      <label for="paymentTypeUpdate" class="col-2">Payment Type:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="paymentTypeUpdate"
+             name="paymentTypeUpdate"
+             type="text"
+             [(ngModel)]='patientToUpdate.paymentType' />
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="name" class="col-2">Active:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" type="text" [(ngModel)]='patientToUpdate.active' />
+      <label for="activeUpdate" class="col-2">Active:</label>
+      <input class="form-control rounded-sm border-0 shadow-sm px-4"
+             name="activeUpdate"
+             id="activeUpdate"
+             type="checkbox" 
+             [(ngModel)]='patientToUpdate.active' />
     </div>
 
     <div class="modal-footer">
@@ -169,8 +206,8 @@
       <label for="nameCreate" class="col-2">Name:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="nameCreate" 
-             type="text" 
              name="name"
+             type="text"
              [(ngModel)]='patientToCreate.name' />
     </div>
     
@@ -178,8 +215,8 @@
       <label for="surnameCreate" class="col-2">Surname:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="surnameCreate" 
-             type="text" 
              name="surnameCreate"
+             type="text"
              [(ngModel)]='patientToCreate.surname' />
     </div>
 
@@ -187,8 +224,8 @@
       <label for="reasonCreate" class="col-2">Reason:</label>
       <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="reasonCreate" 
-             type="text" 
              name="reasonCreate"
+             type="text"
              [(ngModel)]='patientToCreate.reason'>
         </textarea>
     </div>
@@ -197,8 +234,8 @@
       <label for="phoneCreate" class="col-2">Phone Number:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="phoneCreate" 
-             type="text" 
              name="phoneCreate"
+             type="text"
              [(ngModel)]='patientToCreate.phoneNumber' />
     </div>
 
@@ -206,8 +243,8 @@
       <label for="emailCreate" class="col-2">Email:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="emailCreate" 
-             type="text" 
              name="emailCreate"
+             type="text"
              [(ngModel)]='patientToCreate.email' />
     </div>
 
@@ -215,8 +252,8 @@
       <label for="dateOfBirthCreate" class="col-2">Date of Birth:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="dateOfBirthCreate" 
-             type="text" 
              name="dateOfBirthCreate"
+            type="text"
             [(ngModel)]='patientToCreate.dateOfBirth' />
     </div>
 
@@ -224,8 +261,8 @@
       <label for="addressCreate" class="col-2">Home Address:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="addressCreate" 
-             type="text" 
              name="addressCreate"
+             type="text"
              [(ngModel)]='patientToCreate.homeAddress' />
     </div>
 
@@ -233,8 +270,8 @@
       <label for="schoolCreate" class="col-2">School Name:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4"
              id="schoolCreate" 
-             type="text" 
              name="schoolCreate"
+             type="text"
              [(ngModel)]='patientToCreate.schoolName' />
     </div>
 
@@ -242,8 +279,8 @@
       <label for="nameCourse" class="col-2">Course:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4"
              id="nameCourse" 
-             type="text" 
              name="nameCourse"
+             type="text"
              [(ngModel)]='patientToCreate.course' />
     </div>
 
@@ -251,27 +288,28 @@
       <label for="paymentTypeCreate" class="col-2">Payment Type:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="paymentTypeCreate" 
-             type="text" 
              name="paymentTypeCreate"
+             type="text"
              [(ngModel)]='patientToCreate.paymentType' />
     </div>
 
-    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+<!--     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
       <label for="activeCreate" class="col-2">Active:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-             id="nameCreate" 
-             type="text" 
-             name="name"
+             id="activeCreate" 
+             name="activeCreate"
+             type="checkbox"
              [(ngModel)]='patientToCreate.active' />
-    </div>
+    </div> -->
 
-    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="clinicIdCreate" class="col-2">Clinic id:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-             id="clinicIdCreate" 
-             type="text" 
-             name="clinicIdCreate" 
-             [(ngModel)]='patientToCreate.clinicId'/>
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
+         *ngIf="roleUser === 1">
+      <label for="clinicIdCreate" class="col-2">Clinic: </label>
+      <select class="form-control" [(ngModel)]='patientToCreate.clinicId'>
+        <option *ngFor="let clinic of clinics" [value]="clinic.id">
+            {{clinic.name}}
+        </option>
+      </select>
     </div>
 
     <div class="modal-footer">
