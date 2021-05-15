@@ -26,7 +26,7 @@ export class ProfileUserComponent implements OnInit {
     surnames: ['', Validators.required],
     phone: ['', Validators.required],
     specialistType: [''],
-    collegiateNumber: [''],
+    collegiateNumber: ['', Validators.maxLength(9)],
     isAdminRole: [true, Validators.required],
     active: [true, Validators.required]
   })
@@ -57,11 +57,25 @@ export class ProfileUserComponent implements OnInit {
   }
 
   saveProfile() {
-    console.log(this.profileForm.valid)
+
+    //check colegiate number
+    let collegiateNumber = this.profileForm.controls['collegiateNumber'].value;
+    if (collegiateNumber.length > 9) {
+      this.toast.error('The collegiate number too large, maximum 9 digits', 'Error')
+      return;
+    }
+    
+    if (Number.isNaN(parseInt(collegiateNumber))) {
+      this.toast.error('The collegiate number cannot contain letters', 'Error')
+      return;
+    }
+
+
     if (!this.profileForm.valid) {
         this.toast.error('The fields marked with * are required', 'Error')
         return;
     }
+
 
     //OPEN MODAL WARNING DELETE ACOUNT
     if (!this.profileForm.controls['active'].value) {
@@ -89,7 +103,7 @@ export class ProfileUserComponent implements OnInit {
         console.log(res)
       },
       (error) => {
-
+        this.toast.error('In request', 'Error')
       }
     );
 
