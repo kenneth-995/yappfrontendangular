@@ -12,5 +12,5 @@ app.get('/*', function(req, res) {
 
 // default Heroku port
 console.log('hello! in PORT ' + process.env.PORT)
-console.log('hello! in PATH ' + path)
+console.log('hello! in PATH ' + path.__dirname)
 app.listen(process.env.PORT || 5000);
