@@ -15,10 +15,13 @@ import { AuthService } from './core/interceptors/auth.service';
 import { HeaderComponent } from './modules/shared/header/header.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { ProfileUserComponent } from './modules/profile-user/profile-user.component';
+
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    ProfileUserComponent
   ],
   imports: [
     BrowserModule,
