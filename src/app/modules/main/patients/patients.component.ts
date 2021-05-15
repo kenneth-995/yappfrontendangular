@@ -30,8 +30,8 @@ export class PatientsComponent implements OnInit {
 
   public userLogged: User;
 
-  public patients: PatientDto[];
-  public patientsAux: PatientDto[];
+  public patients: PatientDto[] = [];
+  public patientsAux: PatientDto[] = [];
 
   public clinics: ClinicDto[];
 
@@ -45,6 +45,7 @@ export class PatientsComponent implements OnInit {
   public uploadForm: FormGroup;
 
   public imageSrc: string;
+  public todayDate = '2020-07-22';
 
   constructor(
     private fb: FormBuilder,
@@ -87,9 +88,9 @@ export class PatientsComponent implements OnInit {
         if (res === 1) {
           //superadmin
           this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
-            (patients: PatientDto[]) => {
-              this.patients = patients;
-              this.patientsAux = patients;
+            (patientsRes: PatientDto[]) => {
+              this.patients = patientsRes;
+              this.patientsAux = patientsRes;
             }
           );
           //TODO: encadenar las 2 llamadas
@@ -104,9 +105,9 @@ export class PatientsComponent implements OnInit {
           //admin / user
           this.patientService.getPatientsByClinic(this.userLogged.clinicId)
             .pipe(takeUntil(this.destroy$)).subscribe(
-              (patients: PatientDto[]) => {
-                this.patients = patients;
-                this.patientsAux = patients;
+              (patientsRes: PatientDto[]) => {
+                this.patients = patientsRes;
+                this.patientsAux = patientsRes;
               }
             );
         } else {
@@ -117,7 +118,7 @@ export class PatientsComponent implements OnInit {
 
       }, error => {
         this.toast.error(JSON.stringify(error));
-    });
+      });
   }
 
   public deletePatient(id: number) {
@@ -170,30 +171,14 @@ export class PatientsComponent implements OnInit {
             concatMap(() => this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id))
           ).subscribe((resPhotoUrl) => {
             this.patients[index].urlPhoto = resPhotoUrl['url'];
+            this.toast.success('Update patient', 'Successfully');
           },
             (error) => {
               console.log('error')
               console.log(error.error)
               this.toast.error('Error updating patient, try again', 'Error');
-            })
-
-
-          /* this.patientService.updatePatient(this.patientToUpdate).subscribe(
-            (res: PatientDto) => {
-              this.patients[index] = res;
-            },
-            (error) => {
-              this.toast.error(error.error['message'], 'Error');
             }
           );
-
-          var formData: any = new FormData();
-          formData.append("file", this.uploadForm.get('file').value);
-          this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
-            res => {
-              console.log(res)
-              this.patientToUpdate.urlPhoto = res['url']
-            }) */
 
         } else {
           let patient = new PatientDto;
@@ -210,46 +195,49 @@ export class PatientsComponent implements OnInit {
   }
 
   createPatient() {
-
+    this.patientToCreate.dateOfBirth = new Date("2020-05-16");
 
     this.modalService.open(this.modalCreate).result.then(
 
       r => {
         if (r === '0') {
-          let newPatient = new CreatePatientDto
-          newPatient.id = 0;
-          newPatient.name = this.patientToCreate.name
-          newPatient.surname = this.patientToCreate.surname
-          newPatient.reason = this.patientToCreate.reason
-          newPatient.phoneNumber = this.patientToCreate.phoneNumber
-          newPatient.email = this.patientToCreate.email
-          newPatient.dateOfBirth = this.patientToCreate.dateOfBirth
-          newPatient.homeAddress = this.patientToCreate.homeAddress
-          newPatient.schoolName = this.patientToCreate.schoolName
-          newPatient.course = this.patientToCreate.course
-          newPatient.paymentType = this.patientToCreate.paymentType
-          newPatient.active = true;
-          //superadmin elige la clinica
-          if (this.roleUser != 1)
-            newPatient.clinicId = this.userLogged.clinicId
-          else
-            newPatient.clinicId = this.patientToCreate.clinicId
+
+          if (this.checkPatientForm(this.patientToCreate)) {
+            let newPatient = new CreatePatientDto
+            newPatient.id = 0;
+            newPatient.name = this.patientToCreate.name
+            newPatient.surname = this.patientToCreate.surname
+            newPatient.reason = this.patientToCreate.reason
+            newPatient.phoneNumber = this.patientToCreate.phoneNumber
+            newPatient.email = this.patientToCreate.email
+            console.log(this.patientToCreate.dateOfBirth)
+            newPatient.dateOfBirth = this.patientToCreate.dateOfBirth
+            newPatient.homeAddress = this.patientToCreate.homeAddress
+            newPatient.schoolName = this.patientToCreate.schoolName
+            newPatient.course = this.patientToCreate.course
+            newPatient.paymentType = this.patientToCreate.paymentType
+            newPatient.active = true;
+            
+            if (this.roleUser != 1)
+              newPatient.clinicId = this.userLogged.clinicId
+            else
+              newPatient.clinicId = this.patientToCreate.clinicId//superadmin elige la clinica
 
 
-          this.patientService.createPatient(newPatient).subscribe(
-            res => {
-              console.log(res)
-              console.log('helloooooo')
-              this.patients.push(res as PatientDto);
-            }
-          );
-          this.patientToCreate = new CreatePatientDto
-
-
+            this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
+              resPatient => {
+                this.patients.push(resPatient as PatientDto);
+                this.toast.success('Create patient', 'Successfully');
+                this.patientToCreate = new CreatePatientDto
+              }
+            );
+          } else {
+            this.toast.error('All fields is required', 'Error')
+          }
 
         } else {
-
-          console.log('cancelar')
+          console.log('cancelar la creacion del paciente')
+          //this.patientToCreate = new CreatePatientDto
         }
       }, error => {
         console.log(error);
@@ -259,23 +247,35 @@ export class PatientsComponent implements OnInit {
 
 
   public findByName(param: string) {
-    if (param.length === 0) {
-      return this.patients = this.patientsAux;
-    }
-    if (this.roleUser != 1)
-      this.patientService.getPatientsByNameByClinic(this.userLogged.clinicId, param).subscribe(
-        (res: PatientDto[]) => {
-          this.patients = res
-        }
-      );
-    else {
-      this.patientService.getAllPatientsByName(param).subscribe(
-        (res: PatientDto[]) => {
-          this.patients = res
-        }
-      );
 
+    if (param.length === 0) {
+      if (this.roleUser != 1) {
+        this.patientService.getPatientsByClinic(this.userLogged.clinicId).pipe(takeUntil(this.destroy$)).subscribe(
+          (res: PatientDto[]) => {
+            this.patients = res
+          }
+        );
+      } else {
+        this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).pipe(takeUntil(this.destroy$)).subscribe(
+          (res: PatientDto[]) => {
+            this.patients = res
+          }
+        );
+      }
+
+    } else {
+
+      this.patients.forEach(
+        (p, index) => {
+          if (!p.name.concat(' ').concat(p.surname).toUpperCase().includes(param.toUpperCase())) {
+            this.patients.splice(index, 1);
+          }
+        })
     }
+
+
+
+
 
 
   }
@@ -312,6 +312,15 @@ export class PatientsComponent implements OnInit {
 
 
     }
+  }
+
+  checkPatientForm(patient: CreatePatientDto): boolean {
+    return patient.name != null && patient.surname != null &&
+      patient.phoneNumber != null && patient.email != null &&
+      patient.dateOfBirth != null && patient.homeAddress != null &&
+      patient.schoolName != null && patient.course != null &&
+      patient.paymentType != null;
+
   }
 
   ngOnDestroy(): void {
