@@ -19,7 +19,10 @@ export class AuthGuard implements CanActivate {
       
       let token = localStorage.getItem("accessToken")
         if (token == null || token == ""){
-          return this._router.parseUrl("/login");
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('username');
+          localStorage.removeItem('id');
+          localStorage.removeItem('user');
         } else {
           return true;
         }

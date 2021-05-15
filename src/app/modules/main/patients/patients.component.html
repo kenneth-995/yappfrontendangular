@@ -1,9 +1,9 @@
 <div class="container">
   <div class="row">
     <div class="custom-control p-2">
-      <!-- <input class="form-control" type="text" placeholder="buscar"> -->
-      <button type="button" class="btn btn-info" (click)='createPatient()'> Add Patient </button>
-
+      <input class="form-control" type="text" placeholder="find by name"
+      #param (keyup) = "findByName(param.value)">
+      <button type="button" class="btn btn-primary" (click)='createPatient()'> Add Patient &#43;</button>
     </div>
 
   </div>
@@ -70,16 +70,21 @@
       </button>
 
     </div>
-    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
 
-      <div class="form-group">
-        <form [formGroup]="uploadForm" (ngSubmit)="submitForm()">
-          <input type="file" (change)="onFileChange($event)">
-          <button type="submit">Save Image</button>
-        </form>
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <!-- Image Preview -->
+          <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
       </div>
-    </div>
 
+      <form [formGroup]="uploadForm" (ngSubmit)="uploadPhoto()"
+        class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="uploadPhoto" class="col-2">Photo:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4"
+                 type="file" 
+                 id="uploadPhoto" 
+                 name="uploadPhoto"
+                 (change)="onFileChange($event)">
+      </form>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
       <label for="nameUpdate" class="col-2">Name:</label>
@@ -128,12 +133,16 @@
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="ageUpdate" class="col-2">Age:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+      <label for="dateOfBirthUpdate" class="col-2">Date:</label>
+      <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4"
+             id="dateOfBirthUpdate" 
+             name="dateOfBirthUpdate"
+            [(ngModel)]='patientToUpdate.dateOfBirth'/>
+      <!-- <input class="form-control rounded-sm border-0 shadow-sm px-4" 
              id="ageUpdate" 
              name="ageUpdate"
              type="text" 
-             [(ngModel)]='patientToUpdate.age' />
+             [(ngModel)]='patientToUpdate.age' /> -->
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -172,14 +181,14 @@
              [(ngModel)]='patientToUpdate.paymentType' />
     </div>
 
-    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+    <!-- <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
       <label for="activeUpdate" class="col-2">Active:</label>
       <input class="form-control rounded-sm border-0 shadow-sm px-4"
              name="activeUpdate"
              id="activeUpdate"
              type="checkbox" 
              [(ngModel)]='patientToUpdate.active' />
-    </div>
+    </div> -->
 
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">Save
@@ -250,11 +259,15 @@
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
       <label for="dateOfBirthCreate" class="col-2">Date of Birth:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+      <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4"
              id="dateOfBirthCreate" 
              name="dateOfBirthCreate"
-            type="text"
-            [(ngModel)]='patientToCreate.dateOfBirth' />
+            [(ngModel)]='patientToCreate.dateOfBirth'/>
+      <!-- <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+             id="dateOfBirthCreate" 
+             name="dateOfBirthCreate"
+             type="text"
+             [(ngModel)]='patientToCreate.dateOfBirth' /> -->
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">

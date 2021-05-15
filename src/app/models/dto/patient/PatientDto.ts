@@ -6,6 +6,7 @@ export class PatientDto {
     phoneNumber: string;
     email: string;
     urlPhoto: string;
+    dateOfBirth: Date;
     age: number;
     homeAddress: string;
     schoolName: string;

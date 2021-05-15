@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
@@ -27,9 +28,10 @@ export class PatientsComponent implements OnInit {
 
   private destroy$ = new Subject();
 
-  public userLogged : User;
+  public userLogged: User;
 
   public patients: PatientDto[];
+  public patientsAux: PatientDto[];
 
   public clinics: ClinicDto[];
 
@@ -37,87 +39,98 @@ export class PatientsComponent implements OnInit {
   public patientToCreate: CreatePatientDto = new CreatePatientDto();
 
   public file: File
-  //public imageSrc: string;
 
   public roleUser: number;
 
   public uploadForm: FormGroup;
 
+  public imageSrc: string;
+
   constructor(
     private fb: FormBuilder,
+    private router: Router,
+    private toast: ToastrService,
+    private modalService: NgbModal,
     private userService: UserService,
     private patientService: PatientService,
     private clinicService: ClinicService,
-    private uploadFileService: UploadFileService,
-    private toast: ToastrService,
-    private modalService: NgbModal) {
+    private uploadFileService: UploadFileService) {
 
-    this.uploadForm = this.fb.group({
-      file: null
-    })
   }
 
   ngOnInit(): void {
 
     if (this.userService.userLogged != null) {
       this.userLogged = this.userService.userLogged;
-      this.getRoleUserAndPatients()
     } else {
       console.log('[errorPatientComponent] user==null!');
+      console.log(this.userService.userLogged)
+      this.userLogged = this.userService.getUserLocalStorage()
+      console.log(this.userService.getUserLocalStorage())
+      console.log(this.userLogged)
     }
+    this.getRoleUserAndPatientsAndClinics()
 
+    this.uploadForm = this.fb.group({
+      file: null
+    })
 
   }
 
-  private getRoleUserAndPatients() {
+  private getRoleUserAndPatientsAndClinics() {
 
-    
+
     this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
       (res: number) => {
+        this.roleUser = res;
 
         if (res === 1) {
           //superadmin
-          this.patientService.getAllPatients().subscribe(
-            (res: PatientDto[]) => {
-              this.patients = res;
+          this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
+            (patients: PatientDto[]) => {
+              this.patients = patients;
+              this.patientsAux = patients;
             }
           );
-          
-          this.clinicService.getAllClinics().subscribe(
-            (ress: ClinicDto[])=> {
-              this.clinics = ress as ClinicDto[];
+          //TODO: encadenar las 2 llamadas
+          this.clinicService.getAllClinics().pipe(takeUntil(this.destroy$)).subscribe(
+            (clinics: ClinicDto[]) => {
+              this.clinics = clinics as ClinicDto[];
             }
           );
 
 
         } else if (res === 2 || res === 3) {
           //admin / user
-          this.patientService.getPatientsByClinic(this.userService.userLogged.clinicId).subscribe(
-            (res: PatientDto[]) => {
-              this.patients = res;
-            }
-          );
+          this.patientService.getPatientsByClinic(this.userLogged.clinicId)
+            .pipe(takeUntil(this.destroy$)).subscribe(
+              (patients: PatientDto[]) => {
+                this.patients = patients;
+                this.patientsAux = patients;
+              }
+            );
         } else {
+          this.router.navigateByUrl('/home');
           console.log('[errorPatientComponent] get role user !=1 !=2 =!3');
         }
 
-        this.roleUser = res as number;
+
       }, error => {
         this.toast.error(JSON.stringify(error));
-      });
+    });
   }
 
   public deletePatient(id: number) {
     this.modalService.open(this.modalDelete).result.then(
       r => {
         if (r === 'Si') {
-          this.patientService.deletePatient(id).subscribe(
+          this.patientService.deletePatient(id).pipe(takeUntil(this.destroy$)).subscribe(
             (res: any) => {
               this.patients.forEach(
                 (item, index) => {
                   if (item.id === id)
                     this.patients.splice(index, 1);
-                    this.toast.error('Deleted patient', 'Successfully');
+                  this.toast.success('Deleted patient', 'Successfully');
                 })
             },
             (error) => {
@@ -146,7 +159,26 @@ export class PatientsComponent implements OnInit {
       r => {
         if (r === '0') {
 
-          this.patientService.updatePatient(this.patientToUpdate).subscribe(
+          var formData: any = new FormData();
+          formData.append("file", this.uploadForm.get('file').value);
+
+          this.patientService.updatePatient(this.patientToUpdate).pipe(
+            takeUntil(this.destroy$),
+            map((res: PatientDto) => {
+              this.patients[index] = res;
+            }),
+            concatMap(() => this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id))
+          ).subscribe((resPhotoUrl) => {
+            this.patients[index].urlPhoto = resPhotoUrl['url'];
+          },
+            (error) => {
+              console.log('error')
+              console.log(error.error)
+              this.toast.error('Error updating patient, try again', 'Error');
+            })
+
+
+          /* this.patientService.updatePatient(this.patientToUpdate).subscribe(
             (res: PatientDto) => {
               this.patients[index] = res;
             },
@@ -155,11 +187,20 @@ export class PatientsComponent implements OnInit {
             }
           );
 
+          var formData: any = new FormData();
+          formData.append("file", this.uploadForm.get('file').value);
+          this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
+            res => {
+              console.log(res)
+              this.patientToUpdate.urlPhoto = res['url']
+            }) */
+
         } else {
           let patient = new PatientDto;
           patient = JSON.parse(aux)
           console.log(patient)
           this.patients[index] = JSON.parse(aux);
+          this.imageSrc = ''
           console.log('no editar')
         }
       }, error => {
@@ -169,10 +210,10 @@ export class PatientsComponent implements OnInit {
   }
 
   createPatient() {
-    
+
 
     this.modalService.open(this.modalCreate).result.then(
-      
+
       r => {
         if (r === '0') {
           let newPatient = new CreatePatientDto
@@ -203,11 +244,11 @@ export class PatientsComponent implements OnInit {
             }
           );
           this.patientToCreate = new CreatePatientDto
-          
 
-          
+
+
         } else {
-          
+
           console.log('cancelar')
         }
       }, error => {
@@ -215,17 +256,40 @@ export class PatientsComponent implements OnInit {
       }
     );
   }
-  
+
+
+  public findByName(param: string) {
+    if (param.length === 0) {
+      return this.patients = this.patientsAux;
+    }
+    if (this.roleUser != 1)
+      this.patientService.getPatientsByNameByClinic(this.userLogged.clinicId, param).subscribe(
+        (res: PatientDto[]) => {
+          this.patients = res
+        }
+      );
+    else {
+      this.patientService.getAllPatientsByName(param).subscribe(
+        (res: PatientDto[]) => {
+          this.patients = res
+        }
+      );
+
+    }
+
+
+  }
+
 
   // Submit Form File
-  submitForm() {
-    //console.log(this.uploadForm.get('file').value)
+  uploadPhoto() {
     var formData: any = new FormData();
     formData.append("file", this.uploadForm.get('file').value);
     this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
       res => {
         console.log(res)
         this.patientToUpdate.urlPhoto = res['url']
+
 
         //BACKEND: org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException: the request was rejected because its size (26099757) exceeds the configured maximum (10485760)
       })
@@ -234,9 +298,19 @@ export class PatientsComponent implements OnInit {
   }
 
   onFileChange(event) {
+    const reader = new FileReader();
+
     if (event.target.files && event.target.files.length) {
       const [file] = event.target.files;
       this.uploadForm.get('file').setValue(file)
+
+
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imageSrc = reader.result as string;
+      };
+
+
     }
   }
 

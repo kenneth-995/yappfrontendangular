@@ -16,22 +16,37 @@ export class PatientService {
 
   constructor(private htttClient: HttpClient) { }
 
+  //SUPERADMIN
   getAllPatients() {
     return this.htttClient.get(this.base_url+'/patient/');
   }
 
+  //SUPERADMIN
+  getAllPatientsByName(param:string) {
+    return this.htttClient.get(this.base_url+'/patient/name/' + param);
+  }
+
+  //USER
   getPatientsByClinic(id:number) {
     return this.htttClient.get(this.base_url+'/patient/clinic/'+id);
   }
 
-  deletePatient(id: number) {
-    return this.htttClient.delete(this.base_url+'/patient/'+id);
+  //USER
+  getPatientsByNameByClinic(id:number, name:string) {
+    return this.htttClient.get(this.base_url+'/patient/clinic/'+id + '/patientname/' + name);
   }
 
+  //USER
+  deletePatient(id: number) {
+    return this.htttClient.delete(this.base_url+'/patient/deactivate/'+id);
+  }
+
+  //USER
   updatePatient(p: PatientDto) {
     return this.htttClient.put(this.base_url+'/patient/'+p.id, p);
   }
 
+  //USER
   createPatient(p: CreatePatientDto) {
     return this.htttClient.post(this.base_url+'/patient/', p);
   }

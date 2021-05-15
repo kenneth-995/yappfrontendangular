@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         takeUntil(this.destroy$),
         map((resLogin) => {
           localStorage.setItem('accessToken', resLogin["accessToken"]);
-          localStorage.setItem('id', resLogin["id"]);
+          //localStorage.setItem('id', resLogin["id"]);
           localStorage.setItem('username', resLogin["username"]);
           this.userId = resLogin["id"];
         }),
@@ -54,13 +54,16 @@ export class LoginComponent implements OnInit {
         this.userService.setUserLogged(ress)
         this.userService.userLogged = ress as User;
         console.log(ress)
+
+        this.userService.saveUserLocalStorage(ress)
+
         this.router.navigateByUrl('/home');
 
         },
         (error) => {
           console.log('error')
           console.log(error.error)
-          this.toastr.error('everything is broken', 'Error');
+          this.toastr.error('Bad credentials', 'Error');
         }
       );
       
@@ -68,5 +71,7 @@ export class LoginComponent implements OnInit {
       this.toastr.error(JSON.stringify({"error":"username or password cannot be empty"}));
     }
   }
+
+
 
 }

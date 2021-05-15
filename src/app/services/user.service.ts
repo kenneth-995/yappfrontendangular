@@ -30,6 +30,14 @@ export class UserService {
     this.router.navigateByUrl('/');
   }
 
+  saveUserLocalStorage(user:User) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUserLocalStorage() : User{
+    return JSON.parse(localStorage.getItem('user'));
+  }
+
   
   public getUserById(userId: number) {
     return this.htttClient.get(this.base_url+'/user/'+userId );

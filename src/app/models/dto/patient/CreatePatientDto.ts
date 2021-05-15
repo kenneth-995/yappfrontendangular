@@ -5,7 +5,7 @@ export class CreatePatientDto {
     reason: string;
     phoneNumber: string;
     email: string;
-    dateOfBirth: string;
+    dateOfBirth: Date;
     homeAddress: string;
     schoolName: string;
     course: string;
