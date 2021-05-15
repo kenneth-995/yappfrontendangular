@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject, BehaviorSubject } from 'rxjs';
-
 import { environment } from 'src/environments/environment';
-
 
 import { User } from '../models/entities/user-model';
 import { UserLoginDto } from '../models/dto/UserLoginDto';
+import { UserUpdateProfile } from '../models/dto/user/UserUpdateProfile';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +56,10 @@ export class UserService {
 
   public setUserLogged(user: User) {
       this.userLogged = user;
+  }
+
+  public updateUserProfile(user: UserUpdateProfile, id:number) {
+    return this.htttClient.put(this.base_url+'/auth/updateuser/'+id, user);
   }
 
 
