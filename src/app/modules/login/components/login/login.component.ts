@@ -22,8 +22,8 @@ export class LoginComponent implements OnInit {
   public userId:number;
 
   public loginForm = this.formBuilder.group({
-    username: ['superadmin', Validators.required],
-    password: ['password', Validators.required]
+    username: ['', Validators.required],
+    password: ['', Validators.required]
   })
 
 
