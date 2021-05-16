@@ -6,12 +6,13 @@ import { HomeComponent } from './home/home.component';
 import { SharedModule } from '../shared/shared.module';
 import { PatientsComponent } from './patients/patients.component';
 import { MtsComponent } from './mts/mts.component';
+import { TreatmentComponent } from './treatment/treatment.component';
 
 
 
 
 @NgModule({
-  declarations: [HomeComponent, PatientsComponent, MtsComponent],
+  declarations: [HomeComponent, PatientsComponent, MtsComponent, TreatmentComponent],
   imports: [
     CommonModule,
     MainRoutingModule,
