@@ -93,7 +93,7 @@ export class PatientsComponent implements OnInit {
               this.patientsAux = patientsRes;
             }
           );
-          //TODO: encadenar las 2 llamadas
+
           this.clinicService.getAllClinics().pipe(takeUntil(this.destroy$)).subscribe(
             (clinics: ClinicDto[]) => {
               this.clinics = clinics as ClinicDto[];
@@ -129,10 +129,18 @@ export class PatientsComponent implements OnInit {
             (res: any) => {
               this.patients.forEach(
                 (item, index) => {
-                  if (item.id === id)
+                  if (item.id === id) {
                     this.patients.splice(index, 1);
-                  this.toast.success('Deleted patient', 'Successfully');
-                })
+                    this.toast.success('Deleted patient', 'Successfully');
+                  }  
+                }
+              );
+
+                this.patientsAux.forEach(
+                  (item, index) => {
+                    if (item.id === id) this.patientsAux.splice(index, 1);
+                  }
+                )
             },
             (error) => {
               this.toast.error(error.error['message'], 'Error');
@@ -150,8 +158,7 @@ export class PatientsComponent implements OnInit {
 
   public editPatient(patient: PatientDto, index: number) {
 
-    //this.imageSrc = patient.urlPhoto;
-    let aux = JSON.stringify(this.patients[index])
+    let auxPatient = JSON.stringify(this.patients[index])
 
 
     this.patientToUpdate = this.patients[index];
@@ -160,38 +167,61 @@ export class PatientsComponent implements OnInit {
       r => {
         if (r === '0') {
 
-          var formData: any = new FormData();
-          formData.append("file", this.uploadForm.get('file').value);
+          console.log('response === 0')
 
-          this.patientService.updatePatient(this.patientToUpdate).pipe(
-            takeUntil(this.destroy$),
-            map((res: PatientDto) => {
+
+          this.patientService.updatePatient(this.patientToUpdate).pipe(takeUntil(this.destroy$)).subscribe(
+            (res: PatientDto) => {
               this.patients[index] = res;
-            }),
-            concatMap(() => this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id))
-          ).subscribe((resPhotoUrl) => {
-            this.patients[index].urlPhoto = resPhotoUrl['url'];
-            this.toast.success('Update patient', 'Successfully');
-          },
-            (error) => {
-              console.log('error')
-              console.log(error.error)
-              this.toast.error('Error updating patient, try again', 'Error');
+              this.toast.success('Update patient', 'Successfully');
+            }, error => {
+              this.toast.error("Can't Update patient, try again", "Error")
             }
           );
 
+
+          const archivo: File = this.uploadForm.get('file').value;
+          if (archivo != null) {
+
+            var formData: any = new FormData();
+            formData.append("file", this.uploadForm.get('file').value);
+
+            this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).pipe(takeUntil(this.destroy$)).subscribe(
+              (resPhotoUrl) => {
+                this.patients[index].urlPhoto = resPhotoUrl['url'];
+                //this.toast.success('Update patient', 'Successfully');
+                this.uploadForm.reset();
+                this.imageSrc = ''
+
+              },
+              (error) => {
+                console.log(error)
+                this.toast.error('Error updating photo, try again', 'Error');
+              }
+            );
+
+          } else { console.log('no se cambia la foto archivo') }
+
+
+
         } else {
           let patient = new PatientDto;
-          patient = JSON.parse(aux)
+          patient = JSON.parse(auxPatient)
           console.log(patient)
-          this.patients[index] = JSON.parse(aux);
+          this.patients[index] = JSON.parse(auxPatient);
           this.imageSrc = ''
           console.log('no editar')
         }
+
+
       }, error => {
         console.log(error);
       }
-    );
+
+      
+
+
+    ); //modal
   }
 
   createPatient() {
@@ -210,14 +240,13 @@ export class PatientsComponent implements OnInit {
             newPatient.reason = this.patientToCreate.reason
             newPatient.phoneNumber = this.patientToCreate.phoneNumber
             newPatient.email = this.patientToCreate.email
-            console.log(this.patientToCreate.dateOfBirth)
             newPatient.dateOfBirth = this.patientToCreate.dateOfBirth
             newPatient.homeAddress = this.patientToCreate.homeAddress
             newPatient.schoolName = this.patientToCreate.schoolName
             newPatient.course = this.patientToCreate.course
             newPatient.paymentType = this.patientToCreate.paymentType
             newPatient.active = true;
-            
+
             if (this.roleUser != 1)
               newPatient.clinicId = this.userLogged.clinicId
             else
@@ -227,6 +256,7 @@ export class PatientsComponent implements OnInit {
             this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
               resPatient => {
                 this.patients.push(resPatient as PatientDto);
+                this.patientsAux.push(resPatient as PatientDto);
                 this.toast.success('Create patient', 'Successfully');
                 this.patientToCreate = new CreatePatientDto
               }

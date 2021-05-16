@@ -1,1 +1,151 @@
-<p>treatment works!</p>
+<div class="container">
+  <div class="row">
+    <div class="custom-control p-2">
+      <!--<input class="form-control" type="text" placeholder="find by name"
+        #param (keyup) = "findByName(param.value)">  -->
+      <button type="button" class="btn btn-primary" (click)='createTreatment()'> Add Treatment &#43;</button>
+    </div>
+
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr class="text-center">
+        <th scope="col">#</th>
+        <th scope="col">Patient name</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">Sessions Finshed</th>
+        <th scope="col">Patient Age</th>
+        <th scope="col">Specialist name</th>
+        <th scope="col">Specialist type</th>
+        <th scope="col">Action</th>
+        <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor='let t of treatments let idx = index' scope="row" class="text-center">
+        <td>{{idx+1}}</td>
+        <td>{{t.patientFullName}}</td>
+        <td>{{t.startDate}}</td>
+        <td>{{t.sessionsFinished}}</td>
+        <td>{{t.patientAge}}</td>
+        <td>{{t.specialistFullName}}</td>
+        <td>{{t.specialistType}}</td>
+        <td><button class="btn btn-primary mb-2" (click)='editTreatment(t, idx)'>Edit</button></td>
+        <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
+            (click)='deleteTreatment(t, idx)'>Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<ng-template #modalDelete let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Delete Treatment</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Cerrado desde la ventana')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      You're going to delete a treatment, are you sure?
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
+      <button type="button" class="btn btn-primary" (click)="modal.close('1')">Si</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #updateCreate let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">{{textModal}} Patient</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Cerrado desde la ventana')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+    </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <!-- Image Preview -->
+          <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
+      </div>
+
+      <form [formGroup]="createUpdateForm" (ngSubmit)="createUpdateTreatment()">
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="reasonTreatment" class="col-2">Reason Treatment:</label>
+          <textarea  class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
+                    type="text" 
+                    id="reasonTreatment" 
+                    name="reasonTreatment"
+                    formControlName="reason">
+          </textarea>
+        </div>
+          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="sessionsFinished" class="col-2">Sessions Finished:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                   id="sessionsFinished" 
+                   name="sessionsFinished"
+                   type="number"
+                   formControlName="sessionsFinished" />
+          </div>
+
+          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="startDate" class="col-2">Start Date:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                   id="startDate" 
+                   name="startDate"
+                   type="date"
+                   formControlName="startDate" />
+          </div>
+
+          <!-- <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="active" class="col-2">Start Date:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                   id="active" 
+                   name="active"
+                   type="checkbox"
+                   formControlName="active" />
+          </div> -->
+
+          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="active" class="col-2">Patient:</label>
+            <select class="form-control" formControlName="patientId">
+              <option *ngFor="let p of patients" [value]="p.id">
+                  {{p.name + ' ' + p.surname}}
+              </option>
+            </select>
+          </div>
+
+          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="userId" class="col-2">Specialist:</label>
+            <select class="form-control" formControlName="userId" id="userId" name="userId" [userId.disabled]="this.roleUser===3">
+              <option *ngFor="let s of specialists" [value]="s.id" >
+                  {{s.name + ' ' + s.surnames}}
+              </option>
+            </select>
+          </div>
+
+
+      </form>
+
+    
+
+
+    <div class="modal-footer" *ngIf="changeForm">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
+      </button>
+      <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
+      </button>
+    </div>
+
+  </div>
+
+<br>
+
+</ng-template>

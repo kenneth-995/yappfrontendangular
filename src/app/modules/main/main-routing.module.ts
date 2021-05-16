@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProfileUserComponent } from '../profile-user/profile-user.component';
 import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
+import { TreatmentComponent } from './treatment/treatment.component';
 
 const routes: Routes = [
 
@@ -11,6 +12,8 @@ const routes: Routes = [
   {path: 'patients', component: PatientsComponent, pathMatch: 'full'},
 
   {path: 'profile', component: ProfileUserComponent, pathMatch: 'full'},
+
+  {path: 'treatments', component: TreatmentComponent, pathMatch: 'full'},
 
 ];
 

@@ -125,19 +125,7 @@ export class ProfileUserComponent implements OnInit {
         );
 
       }
-      {
-      /* this.userService.updateUserProfile(this.profileForm.value, this.userLogged.id).pipe(
-        takeUntil(this.destroy$),
-        map((res:User) => {
-          console.log(res)
-          this.userService.setUserLogged(res)
-          this.userLogged = res;
-          this.setFormValues();
-        }) ,
-        concatMap(() => this.userService.getUserRole())
-        ).subscribe((res: number) => {
-          this.roleUser = res;
-        }); */}
+
 
       this.userService.updateUserProfile(this.profileForm.value, this.userLogged.id).pipe(
         takeUntil(this.destroy$)).subscribe(

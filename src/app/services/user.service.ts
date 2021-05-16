@@ -47,6 +47,10 @@ export class UserService {
     return this.htttClient.get(this.base_url + '/user/');
   }
 
+  public getAllUsersByClinicId(clinicId: number) {
+    return this.htttClient.get(this.base_url + '/user/clinic/'+ clinicId);
+  }
+
   public getUserRole() {
     return this.htttClient.get(this.base_url+'/auth/roleuser');
   }
