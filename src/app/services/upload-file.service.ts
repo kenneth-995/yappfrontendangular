@@ -24,4 +24,15 @@ export class UploadFileService {
     return this.htttClient.put<any>(url, formFile, header);
   }
 
+  public uploadFileUser(formFile, id: number) {
+
+    const header = {
+      headers: new HttpHeaders({ "Content-Type": "multipart/form-data;" })
+    }
+
+    const url = this.base_url + '/auth/updatephoto/'+id
+
+    return this.htttClient.put<any>(url, formFile, header);
+  }
+
 }

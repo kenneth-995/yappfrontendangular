@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { User } from '../models/entities/user-model';
 import { UserLoginDto } from '../models/dto/UserLoginDto';
 import { UserUpdateProfile } from '../models/dto/user/UserUpdateProfile';
+import { ChangePswdDto } from '../models/dto/user/ChangePswdDto';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class UserService {
   logout() {
     localStorage.removeItem("accessToken")
     localStorage.removeItem("id")
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/login');
   }
 
   saveUserLocalStorage(user:User) {
@@ -56,10 +57,15 @@ export class UserService {
 
   public setUserLogged(user: User) {
       this.userLogged = user;
+      this.saveUserLocalStorage(user)
   }
 
   public updateUserProfile(user: UserUpdateProfile, id:number) {
     return this.htttClient.put(this.base_url+'/auth/updateuser/'+id, user);
+  }
+
+  public updatePasswd (form: ChangePswdDto, id:number) {
+    return this.htttClient.put(this.base_url+'/auth/updatepassword/'+id, form);
   }
 
 
