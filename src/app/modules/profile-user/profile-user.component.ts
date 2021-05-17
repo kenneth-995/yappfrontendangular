@@ -83,36 +83,17 @@ export class ProfileUserComponent implements OnInit {
 
   saveProfile() {
 
-    console.log(this.profileForm.valid)
 
     if (this.profileForm.valid) {
-      //check colegiate number
-      let collegiateNumber = this.profileForm.controls['collegiateNumber'].value;
-      if (collegiateNumber.length > 9) {
-        this.toast.error('The collegiate number too large, maximum 9 digits', 'Error')
-        return;
-      }
-
-      //TODO: not work!
-      const checkNumber: number = parseInt(this.profileForm.controls['collegiateNumber'].value)
-      if (Number.isNaN(checkNumber)) {
-        this.toast.error('The collegiate number cannot contain letters', 'Error')
-        return;
-      }
-
-
-
-
 
       //OPEN MODAL WARNING DELETE ACOUNT
       if (!this.profileForm.controls['active'].value) {
-
         this.modalService.open(this.modalDeactivate).result.then(
           r => {
             if (r === '0') {
               console.log('no delete acount')
               this.profileForm.controls['active'].setValue(true);
-              return;
+              return true;
             }
             else {
               //SEND REQUEST
@@ -124,32 +105,44 @@ export class ProfileUserComponent implements OnInit {
           }
         );
 
+      } else { //NO OPEN MODAL WARNING 
+        //check colegiate number
+        let collegiateNumber = this.profileForm.controls['collegiateNumber'].value;
+        if (collegiateNumber.length > 9) {
+          this.toast.error('The collegiate number too large, maximum 9 digits', 'Error')
+          return;
+        }
+        //TODO: not work!
+        const checkNumber: number = parseInt(this.profileForm.controls['collegiateNumber'].value)
+        if (Number.isNaN(checkNumber)) {
+          this.toast.error('The collegiate number cannot contain letters', 'Error')
+          return;
+        }
+
+        this.userService.updateUserProfile(this.profileForm.value, this.userLogged.id).pipe(
+          takeUntil(this.destroy$)).subscribe(
+            (res: User) => {
+              console.log(res)
+              this.userService.setUserLogged(res)
+              this.userLogged = res;
+              this.setFormProfileValues();
+              this.toast.success('Profile updated', 'Successfuly')
+
+
+              this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
+                (res: number) => {
+                  this.roleUser = res;
+                }
+              );
+            },
+            (error) => {
+              this.toast.error('In request', 'Error')
+              console.log(this.profileForm.value)
+            }
+          );
       }
 
-
-      this.userService.updateUserProfile(this.profileForm.value, this.userLogged.id).pipe(
-        takeUntil(this.destroy$)).subscribe(
-          (res: User) => {
-            console.log(res)
-            this.userService.setUserLogged(res)
-            this.userLogged = res;
-            this.setFormProfileValues();
-            this.toast.success('Profile updated', 'Successfuly')
-
-
-            this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
-              (res: number) => {
-                this.roleUser = res;
-              }
-            );
-          },
-          (error) => {
-            this.toast.error('In request', 'Error')
-            console.log(this.profileForm.value)
-          }
-        );
-
-    } else {
+    } else { //if (this.profileForm.valid)
       this.toast.error('The fields marked with * are required', 'Error')
     }
   }
@@ -160,34 +153,34 @@ export class ProfileUserComponent implements OnInit {
         if (r === '1') {
           console.log('CHANGE')
           console.log(this.updatePasswordForm.value)
-          if (this.updatePasswordForm.valid) { 
+          if (this.updatePasswordForm.valid) {
 
             const psw1 = this.updatePasswordForm.controls['newPassword'].value;
             const psw2 = this.updatePasswordForm.controls['newPassword2'].value;
 
             if (this.matchTwoPasswords(psw1, psw2)) {
-              console.log('MATCH')  
+              console.log('MATCH')
               //SEND REQUEST
 
               this.userService.updatePasswd(this.updatePasswordForm.value, this.userLogged.id)
-              .pipe(takeUntil(this.destroy$)).subscribe(
-                (res) => {
-                  console.log(res)
-                  this.toast.success('The password has been changed', 'Successfully')
-                },
-                (error) => {
-                  this.toast.error('Please verify password', 'Your password is not correct')
-                }
-              );
+                .pipe(takeUntil(this.destroy$)).subscribe(
+                  (res) => {
+                    console.log(res)
+                    this.toast.success('The password has been changed', 'Successfully')
+                  },
+                  (error) => {
+                    this.toast.error('Please verify password', 'Your password is not correct')
+                  }
+                );
 
 
             } else {
               console.log('NO MATCH')
               this.toast.error('The new password does not match', 'Error change password')
             }
-            
 
-            
+
+
 
 
           } else {
@@ -268,7 +261,7 @@ export class ProfileUserComponent implements OnInit {
     this.previewImageStr = null;
   }
 
-  matchTwoPasswords(psw1: string, psw2: string):boolean {
+  matchTwoPasswords(psw1: string, psw2: string): boolean {
     return psw1 === psw2;
   }
 

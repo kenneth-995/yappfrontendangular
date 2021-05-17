@@ -11,7 +11,7 @@
           </li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="[ 'home/patients' ]" routerLinkActive="active">
-                  Patients
+                  Patients *
               </a>
             </li>
             <li class="nav-item">
@@ -21,23 +21,36 @@
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/treatments' ]" routerLinkActive="active">
-                  Treatments
+                  Treatments *
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange"  [routerLink]="[ 'home/reports' ]" routerLinkActive="active">
                 Reports
               </a>
-              <!-- <div class="dropdown-menu">
-                <a class="dropdown-item" [routerLink]="['admin']">Add report</a>             
-              </div> -->
             </li>
-            <li class="nav-item dropdown" *ngIf="roleUser===1">
+
+
+            <li class="nav-item" *ngIf="roleUser===2 || roleUser===3">
+              <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
+                My Clinic
+              </a>
+            </li>
+
+            <li class="nav-item" *ngIf="roleUser===1">
+              <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
+                All Registered Clinics
+              </a>
+            </li>
+
+
+
+            <!-- <li class="nav-item dropdown" *ngIf="roleUser===1">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Managment
               </a>
               <div class="dropdown-menu">
-                <a class="dropdown-item" [routerLink]="['admin', 'daysOffYear']">Clinic</a>
+                <a class="dropdown-item" [routerLink]="['admin', 'daysOffYear']">Clinics</a>
                 <a class="dropdown-item" [routerLink]="['admin', 'departments', 'daysoff']">Users</a>
                 <a class="dropdown-item" [routerLink]="['admin', 'workscheduler', 'types']">Patients</a>
                 <a class="dropdown-item" [routerLink]="['admin', 'departments']">Mts</a>
@@ -58,7 +71,7 @@
                 <a class="dropdown-item" [routerLink]="['admin', 'members']">Treatments </a>
                 <a class="dropdown-item" [routerLink]="['admin', 'daysoff', 'types']">Reports</a>
               </div>
-            </li>
+            </li> -->
 
 
 

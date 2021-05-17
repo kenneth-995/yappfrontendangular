@@ -38,9 +38,8 @@ export class TreatmentComponent implements OnInit {
   public specialists: User[] = [];
 
   public createUpdateForm: FormGroup;
-  public isCreated : boolean = true;
 
-  public changeForm: boolean = false;
+  public showButtonsForm: boolean = false;
 
   public textModal: string = '';
 
@@ -64,7 +63,7 @@ export class TreatmentComponent implements OnInit {
     this.getData();
 
     this.createUpdateForm = this.formBuilder.group({
-      reason: [Validators.required],
+      reason: ['', Validators.required],
       sessionsFinished: [Validators.required],
       startDate: [Validators.required],
       active: [Validators.required],
@@ -184,131 +183,104 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-  public createTreatment() {
-    this.isCreated = true;
+  public openModalCreate() {
     this.textModal = 'Create'
-    
-    console.log('createTreatment()')
+
+    console.log('openModalCreate()')
     //SET ALL FIELDS FORM TREATMENT
-    this.inicializeForm();
+    this.inicializeNewFormTreatment();
+
+
 
     //VALIDATE FORM
     this.modalService.open(this.updateCreate).result.then(
       r => {
-        if(r === '1') {
+        if (r === '1') {
           // CONFIRM CREATE
 
-          //VALIDAR MANUALMENTE EL FORMULARIO, NO SE VALIDA BIEN
+
           if (this.createUpdateForm.valid) {
-            console.log('form valid, senr request')
+            this.createTreatment(this.createUpdateForm.value)
           } else {
-            console.log('form invalid, show toast')
+            this.openModalCreate(); //todo: no eliminar los datos que ya ha introducido!
+            this.toast.warning('All fields is required', 'Warning')
           }
-          console.log('CREATE')
-          this.changeForm = false;
 
         } else {
-          // ABORT CREATE
+          this.createUpdateForm.reset();
           console.log('ABORT CREATE')
-          this.changeForm = false;
+          this.showButtonsForm = false;
         }
-        
-        console.log(this.createUpdateForm.value)
+
       }
 
     );
   }
 
-  public editTreatment(t: TreatmentDto, id: number) {
+  public openModalEdit(t: TreatmentDto, idx: number) {
     console.log('UPDATETreatment()')
-    this.isCreated = false;
+    console.log('treatmentId: ' + idx)
     this.textModal = 'Update'
-    
+
     //SET ALL FIELDS FORM BY SELECTED TREATMENT
     this.inicializeFormWithTreatment(t);
 
     //VALIDATE FORM
     this.modalService.open(this.updateCreate).result.then(
       r => {
-        if(r === '1') {
+        if (r === '1') {
           // CONFIRM UPDATE
           if (this.createUpdateForm.valid) {
-            console.log('form valid, senr request')
+
+            this.updateTreatment(this.createUpdateForm.value, t.id, idx);
+
           } else {
-            console.log('form invalid, show toast')
+            this.toast.warning('All fields is required', 'Warning')
           }
 
-          console.log('CONFIRM EDITED')
-          this.changeForm = false;
+          this.showButtonsForm = false;
 
         } else {
           // ABORT UPDATE
           console.log('ABORT EDITED')
-          this.changeForm = false;
+          //TODO: not work hide buttons 'edit' 'cancel'
+          this.showButtonsForm = false;
+          this.createUpdateForm.reset();
         }
-        
+        this.showButtonsForm = false;
         console.log(this.createUpdateForm.value)
       }
 
     );
   }
 
-  public deleteTreatment(id: number) {
-    console.log('deleteTreatment()')
-    this.modalService.open(this.modalDelete).result.then(
-      r => {
-        if (r === '1') { //si
-          console.log('borrar')
-          this.treatmentService.deleteTreatment(id).pipe(takeUntil(this.destroy$)).subscribe(
-            () => {
-              //delete in array frontend
-              this.treatments.forEach(
-                (item, index) => {
-                  if (item.id === id) {
-                    this.treatments.splice(index, 1);
-                    this.toast.success('Deleted treatment', 'Successfully');
-                  }   
-              });
-              //delete in array aux frontend
-              this.treatmentsAux.forEach(
-                (item, index) => {
-                  if (item.id === id) this.treatmentsAux.splice(index, 1);
-              });
-            }
-          );
+  inicializeNewFormTreatment() {
 
-
-        } else { console.log('no borrar') }
-      }, error => {
-        console.log(error);
-      }
-    );
-  }
-
-  inicializeForm() {
-    this.createUpdateForm.controls['reason'].setValue(null);
-    this.createUpdateForm.controls['sessionsFinished'].setValue(0);
-    this.createUpdateForm.controls['startDate'].setValue(null);
-    this.createUpdateForm.controls['active'].setValue(true);
-
-    if (this.roleUser === 3) {
-      this.createUpdateForm.controls['userId'].setValue(this.userLogged.id);
-    } else {
-
-    }
-    this.createUpdateForm.controls['patientId'].setValue(0);
+    this.createUpdateForm.reset();
 
     this.createUpdateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
-        console.log(field)
-        this.changeForm = true;
+        console.log('inicializeNewFormTreatment subscriber')
+        if (this.createUpdateForm.valid) this.showButtonsForm = true;
+        else this.showButtonsForm = false;
       }
     );
-    
+
 
   }
 
   inicializeFormWithTreatment(treatment: TreatmentDto) {
+    //TODO: not work hide buttons 'edit' 'cancel'
+    this.showButtonsForm = false;
+
+    let _reason = treatment.reason;
+    let _sessionsFinished = treatment.sessionsFinished;
+    let _startDate = treatment.startDate;
+    let _active = true;
+    let _patientId = treatment.patientId;
+    let _specialistId = treatment.specialistId;
+
+
     this.createUpdateForm.controls['reason'].setValue(treatment.reason);
     this.createUpdateForm.controls['sessionsFinished'].setValue(treatment.sessionsFinished);
     this.createUpdateForm.controls['startDate'].setValue(treatment.startDate);
@@ -318,16 +290,81 @@ export class TreatmentComponent implements OnInit {
 
     this.createUpdateForm.valueChanges.subscribe(
       (field) => {
-        console.log(field)
-        this.changeForm = true;
+        console.log('inicializeFormWithTreatment subscriber')
+        /* if (this.createUpdateForm.valid) this.showButtonsForm = true;
+        else this.showButtonsForm = false; */
+        if (this.createUpdateForm.valid &&
+          _reason != this.createUpdateForm.controls['reason'].value ||
+          _sessionsFinished != this.createUpdateForm.controls['sessionsFinished'].value ||
+          _startDate != this.createUpdateForm.controls['startDate'].value ||
+          _active != this.createUpdateForm.controls['active'].value ||
+          _patientId != this.createUpdateForm.controls['patientId'].value ||
+          _specialistId != this.createUpdateForm.controls['userId'].value) {
+          this.showButtonsForm = true;
+        } else {
+          this.showButtonsForm = false;
+        }
+
       }
     );
   }
 
-  checkFormTreatment():boolean {
 
-    return null;
+  createTreatment(form: CreateUpdateTreatmentDto) {
+    //pipe() es para encadenar operadores observables 
+    //subscribe() para activar los observables y escuchar los valores emitidos.
+    this.treatmentService.insertTreatment(form)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto) => {
+          console.log(res)
+          this.treatments.push(res);
+          this.toast.success('Create Treatment ', 'Successfuly')
+        }
+      );
   }
+
+  updateTreatment(form: CreateUpdateTreatmentDto, id: number, idx: number) {
+    this.treatmentService.updateTreatment(form, id)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto) => {
+          this.treatments[idx] = res // update treatment in frontend
+          this.toast.success('Update treatment', 'Successfully')
+        }
+      );
+  }
+
+
+  public openModalDelete(treatment: TreatmentDto, idx: number) {
+
+    this.modalService.open(this.modalDelete).result.then(
+      r => {
+        if (r === '1') { //si
+          //console.log('confirmacion borrar')
+          this.treatmentService.deleteTreatment(treatment.id).pipe(takeUntil(this.destroy$)).subscribe(
+            (res) => {
+              //delete in array frontend
+              //console.log(res)
+              this.treatments.splice(idx, 1);
+              console.log('this.treatments')
+              console.log(this.treatments)
+              console.log('treatmentsAux')
+              console.log(this.treatmentsAux)
+              this.toast.success('Treatment deleted', 'Successfully');
+              //this.treatmentsAux.splice(idx, 1)
+
+
+            }
+          );
+
+
+        } else { console.log('desconfirmacion borrar') }
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+
+
 
 
   ngOnDestroy(): void {

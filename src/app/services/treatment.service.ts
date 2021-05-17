@@ -35,12 +35,12 @@ export class TreatmentService {
   }
 
   
-  createTreatment(treatment:CreateUpdateTreatmentDto) {
-
+  insertTreatment(treatment:CreateUpdateTreatmentDto) {
+      return this.htttClient.post(this.base_url + '/treatment/', treatment);
   }
 
   updateTreatment(treatment:CreateUpdateTreatmentDto, treatmentId:number) {
-
+    return this.htttClient.put(this.base_url + '/treatment/'+ treatmentId, treatment);
   }
 
   deleteTreatment(treatmentId:number) {

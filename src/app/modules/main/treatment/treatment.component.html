@@ -3,7 +3,7 @@
     <div class="custom-control p-2">
       <!--<input class="form-control" type="text" placeholder="find by name"
         #param (keyup) = "findByName(param.value)">  -->
-      <button type="button" class="btn btn-primary" (click)='createTreatment()'> Add Treatment &#43;</button>
+      <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Treatment &#43;</button>
     </div>
 
   </div>
@@ -18,7 +18,7 @@
         <th scope="col">Patient Age</th>
         <th scope="col">Specialist name</th>
         <th scope="col">Specialist type</th>
-        <th scope="col">Action</th>
+        <th scope="col">Detail</th>
         <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
 
       </tr>
@@ -32,9 +32,9 @@
         <td>{{t.patientAge}}</td>
         <td>{{t.specialistFullName}}</td>
         <td>{{t.specialistType}}</td>
-        <td><button class="btn btn-primary mb-2" (click)='editTreatment(t, idx)'>Edit</button></td>
+        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(t, idx)'>View</button></td>
         <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-            (click)='deleteTreatment(t, idx)'>Delete</button></td>
+            (click)='openModalDelete(t, idx)'>Delete</button></td>
       </tr>
     </tbody>
   </table>
@@ -136,8 +136,8 @@
 
     
 
-
-    <div class="modal-footer" *ngIf="changeForm">
+      <!-- TODO: ngIf not work -->
+    <div class="modal-footer" *ngIf="showButtonsForm">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
       </button>
       <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
