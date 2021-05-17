@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -42,6 +42,9 @@ export class TreatmentComponent implements OnInit {
   public showButtonsForm: boolean = false;
 
   public textModal: string = '';
+
+
+  public observableCreateUpdateForm: Subscription = new Subscription();
 
   constructor(private formBuilder: FormBuilder,
     private router: Router,
@@ -255,14 +258,35 @@ export class TreatmentComponent implements OnInit {
   }
 
   inicializeNewFormTreatment() {
-
+    this.observableCreateUpdateForm.unsubscribe();
     this.createUpdateForm.reset();
 
-    this.createUpdateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+    this.createUpdateForm.controls['sessionsFinished'].setValue(0);
+
+    this.createUpdateForm.controls['userId'].setValue(this.userLogged.id);
+    this.createUpdateForm.controls['startDate'].setValue('');
+
+    if (this.roleUser === 3) {
+      this.createUpdateForm.controls['userId'].disable();
+    } 
+
+    
+
+
+    this.observableCreateUpdateForm = this.createUpdateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
         console.log('inicializeNewFormTreatment subscriber')
-        if (this.createUpdateForm.valid) this.showButtonsForm = true;
-        else this.showButtonsForm = false;
+        if (this.createUpdateForm.controls['reason'].value != '' &&
+            this.createUpdateForm.controls['startDate'].value != '' &&
+            this.createUpdateForm.controls['userId'].value != 0 &&
+            this.createUpdateForm.controls['patientId'].value != 0) {
+          
+            this.showButtonsForm = true;
+        }
+        else {
+          this.showButtonsForm = false;
+        }
+        
       }
     );
 
@@ -270,8 +294,11 @@ export class TreatmentComponent implements OnInit {
   }
 
   inicializeFormWithTreatment(treatment: TreatmentDto) {
+    this.observableCreateUpdateForm.unsubscribe();
     //TODO: not work hide buttons 'edit' 'cancel'
     this.showButtonsForm = false;
+
+    this.createUpdateForm.reset();
 
     let _reason = treatment.reason;
     let _sessionsFinished = treatment.sessionsFinished;
@@ -285,10 +312,21 @@ export class TreatmentComponent implements OnInit {
     this.createUpdateForm.controls['sessionsFinished'].setValue(treatment.sessionsFinished);
     this.createUpdateForm.controls['startDate'].setValue(treatment.startDate);
     this.createUpdateForm.controls['active'].setValue(true);
+    console.log('treatment.patientId')
+    console.log(treatment.patientId)
     this.createUpdateForm.controls['patientId'].setValue(treatment.patientId);
-    this.createUpdateForm.controls['userId'].setValue(treatment.specialistId);
 
-    this.createUpdateForm.valueChanges.subscribe(
+    this.createUpdateForm.controls['userId'].setValue(treatment.specialistId);
+    console.log('treatment.specialistId')
+    console.log(treatment.specialistId)
+
+    if (this.roleUser === 3) {
+      this.createUpdateForm.controls['userId'].disable();
+    }
+    
+
+    //instanciar 
+    this.observableCreateUpdateForm =  this.createUpdateForm.valueChanges.subscribe(
       (field) => {
         console.log('inicializeFormWithTreatment subscriber')
         /* if (this.createUpdateForm.valid) this.showButtonsForm = true;

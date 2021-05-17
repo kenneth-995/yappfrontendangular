@@ -35,7 +35,7 @@ export class ReportService {
     return this.htttClient.post(this.base_url + '/report/', report);
   }
 
-  update(report: UpdateReportDto, id:number) {
+  update(report: CreateReportDto, id:number) {
     return this.htttClient.put(this.base_url + '/report/'+ id, report);
   }
 }

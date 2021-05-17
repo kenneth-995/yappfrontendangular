@@ -1,6 +1,6 @@
 export class CreateReportDto {
     diagnosis: string;
     objectives: string;
-    date: string;
+    date: Date;
     treatmentId: number;
 }

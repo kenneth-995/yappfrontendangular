@@ -1,70 +1,71 @@
 <p>report works!</p>
-<!-- 
-<div class="container">
-    <div class="row">
-      <div class="custom-control p-2">
 
-        <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Treatment &#43;</button>
-      </div>
-  
+<div class="container">
+  <div class="row">
+    <div class="custom-control p-2">
+
+      <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Report &#43;</button>
     </div>
-  
-    <table class="table table-striped">
-      <thead>
-        <tr class="text-center">
-          <th scope="col">#</th>
-          <th scope="col">Patient name</th>
-          <th scope="col">Start Date</th>
-          <th scope="col">Sessions Finshed</th>
-          <th scope="col">Patient Age</th>
-          <th scope="col">Specialist name</th>
-          <th scope="col">Specialist type</th>
-          <th scope="col">Detail</th>
-          <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
-  
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor='let t of treatments let idx = index' scope="row" class="text-center">
-          <td>{{idx+1}}</td>
-          <td>{{t.patientFullName}}</td>
-          <td>{{t.startDate}}</td>
-          <td>{{t.sessionsFinished}}</td>
-          <td>{{t.patientAge}}</td>
-          <td>{{t.specialistFullName}}</td>
-          <td>{{t.specialistType}}</td>
-          <td><button class="btn btn-primary mb-2" (click)='openModalEdit(t, idx)'>View</button></td>
-          <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-              (click)='openModalDelete(t, idx)'>Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
-  
+
   </div>
-  
-  <ng-template #modalDelete let-modal>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Delete Treatment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-          (click)="modal.close('Cerrado desde la ventana')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        You're going to delete a treatment, are you sure?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
-        <button type="button" class="btn btn-primary" (click)="modal.close('1')">Si</button>
-      </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr class="text-center">
+        <th scope="col">#</th>
+        <th scope="col">Patient name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Specialist name</th>
+        <th scope="col">Specialist type</th>
+        <th scope="col">Detail</th>
+        <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor='let r of reports let idx = index' scope="row" class="text-center">
+        <td>{{idx+1}}</td>
+        <td>{{r.patientFullName}}</td>
+        <td>{{r.date}}</td>
+        <td>{{r.specialistFullName}}</td>
+        <td>{{r.specialistType}}</td>
+
+        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(r, idx)'>View</button></td>
+        <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
+            (click)='openModalDelete(r.id, idx)'>Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+
+<ng-template #modalDelete let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Delete Treatment</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Cerrado desde la ventana')">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-  </ng-template>
+    <div class="modal-body">
+      You're going to delete a treatment, are you sure?
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('1')">Yes</button>
+    </div>
+  </div>
+</ng-template>
+
+
   
   <ng-template #updateCreate let-modal>
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{textModal}} Patient</h5>
+        <h5 class="modal-title">{{textModal}} Report</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
           (click)="modal.close('Cerrado desde la ventana')">
           <span aria-hidden="true">&times;</span>
@@ -76,53 +77,47 @@
             <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
         </div>
   
-        <form [formGroup]="createUpdateForm" (ngSubmit)="createUpdateTreatment()">
+        <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()">
+
           <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-            <label for="reasonTreatment" class="col-2">Reason Treatment:</label>
+            <label for="diagnosis" class="col-2">Diagnosis </label>
             <textarea  class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
                       type="text" 
-                      id="reasonTreatment" 
-                      name="reasonTreatment"
-                      formControlName="reason">
+                      id="diagnosis" 
+                      name="diagnosis"
+                      formControlName="diagnosis">
             </textarea>
+
           </div>
             <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="sessionsFinished" class="col-2">Sessions Finished:</label>
+              <label for="objectives" class="col-2">Objectives:</label>
               <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-                     id="sessionsFinished" 
-                     name="sessionsFinished"
-                     type="number"
-                     formControlName="sessionsFinished" />
+                     id="objectives" 
+                     name="objectives"
+                     type="text"
+                     formControlName="objectives" />
             </div>
   
             <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="startDate" class="col-2">Start Date:</label>
+              <label for="startDate" class="col-2">Date:</label>
               <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-                     id="startDate" 
-                     name="startDate"
+                     id="date" 
+                     name="date"
                      type="date"
-                     formControlName="startDate" />
+                     formControlName="date" />
             </div>
 
   
             <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="active" class="col-2">Patient:</label>
-              <select class="form-control" formControlName="patientId">
-                <option *ngFor="let p of patients" [value]="p.id">
-                    {{p.name + ' ' + p.surname}}
+              <label for="treatmentId" class="col-2">Treatment:</label>
+              <select class="form-control" formControlName="treatmentId">
+                <option *ngFor="let t of treatments" [value]="t.id">
+                    {{'-patient=' + t.patientFullName + ' -specialist=' + t.specialistFullName}}
                 </option>
               </select>
             </div>
   
-            <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="userId" class="col-2">Specialist:</label>
-              <select class="form-control" formControlName="userId" id="userId" name="userId" [userId.disabled]="this.roleUser===3">
-                <option *ngFor="let s of specialists" [value]="s.id" >
-                    {{s.name + ' ' + s.surnames}}
-                </option>
-              </select>
-            </div>
-  
+            
   
         </form>
   
@@ -140,4 +135,3 @@
   <br>
   
   </ng-template>
- -->

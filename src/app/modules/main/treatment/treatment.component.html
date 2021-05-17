@@ -55,7 +55,7 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
-      <button type="button" class="btn btn-primary" (click)="modal.close('1')">Si</button>
+      <button type="button" class="btn btn-danger" (click)="modal.close('1')">Si</button>
     </div>
   </div>
 </ng-template>
@@ -63,18 +63,13 @@
 <ng-template #updateCreate let-modal>
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title">{{textModal}} Patient</h5>
+      <h5 class="modal-title">{{textModal}} Treatment</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"
         (click)="modal.close('Cerrado desde la ventana')">
         <span aria-hidden="true">&times;</span>
       </button>
 
     </div>
-
-      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-        <!-- Image Preview -->
-          <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
-      </div>
 
       <form [formGroup]="createUpdateForm" (ngSubmit)="createUpdateTreatment()">
         <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -104,14 +99,6 @@
                    formControlName="startDate" />
           </div>
 
-          <!-- <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-            <label for="active" class="col-2">Start Date:</label>
-            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-                   id="active" 
-                   name="active"
-                   type="checkbox"
-                   formControlName="active" />
-          </div> -->
 
           <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
             <label for="active" class="col-2">Patient:</label>
@@ -124,7 +111,7 @@
 
           <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
             <label for="userId" class="col-2">Specialist:</label>
-            <select class="form-control" formControlName="userId" id="userId" name="userId" [userId.disabled]="this.roleUser===3">
+            <select class="form-control" formControlName="userId" id="userId" name="userId" [disabled]="this.roleUser===3">
               <option *ngFor="let s of specialists" [value]="s.id" >
                   {{s.name + ' ' + s.surnames}}
               </option>
@@ -138,9 +125,9 @@
 
       <!-- TODO: ngIf not work -->
     <div class="modal-footer" *ngIf="showButtonsForm">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
+      <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="modal.close('1')">Save
       </button>
-      <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
+      <button type="button" class="btn btn-secondary" (click)="modal.close('0')">Cancel
       </button>
     </div>
 
