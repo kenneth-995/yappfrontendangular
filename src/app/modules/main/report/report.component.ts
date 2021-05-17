@@ -56,7 +56,6 @@ export class ReportComponent implements OnInit {
 
   ngOnInit(): void {
 
-
     console.log('hello treatments component ngOnInit()')
     if (this.userService.userLogged != null) {
       this.userLogged = this.userService.userLogged;
@@ -74,9 +73,6 @@ export class ReportComponent implements OnInit {
     });
 
 
-
-
-    
   }
 
   getData() {
@@ -165,11 +161,11 @@ export class ReportComponent implements OnInit {
     this.updateCreateForm.reset();
     this.showButtonsForm = false;
 
+    //for chech is value changes, show button save
     let _diagnosis = r.diagnosis;
     let _objectives = r.objectives;
     let _date = r.date;
     let _treatmentId = r.treatmentId;
-    console.log(r)
 
     this.updateCreateForm.controls['diagnosis'].setValue(r.diagnosis);
     this.updateCreateForm.controls['objectives'].setValue(r.objectives);
@@ -258,6 +254,7 @@ export class ReportComponent implements OnInit {
       );
   }
 
+  //USER
   createReport(createReport: CreateReportDto) {
     this.reportService.create(createReport).pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto) => {
@@ -269,6 +266,7 @@ export class ReportComponent implements OnInit {
     );
   }
 
+  //USER
   updateReport(updateReport: CreateReportDto, id:number, idx:number) {
     this.reportService.update(updateReport, id).pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto) => {
@@ -281,6 +279,7 @@ export class ReportComponent implements OnInit {
     );
   }
 
+  //ADMIN
   deleteReport(id: number, idx:number) {
     this.reportService.delete(id).pipe(takeUntil(this.destroy$)).subscribe(
       (res) => {
@@ -290,7 +289,7 @@ export class ReportComponent implements OnInit {
     );
   }
 
-
+  //SUPERADMIN
   getAllTreatments() {
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
       (res: TreatmentDto[]) => {
@@ -301,6 +300,7 @@ export class ReportComponent implements OnInit {
     );
   }
 
+  //ADMIN
   getAllTreatmentsByClinic() {
     this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
     .pipe(takeUntil(this.destroy$)).subscribe(
@@ -312,6 +312,7 @@ export class ReportComponent implements OnInit {
     );
   }
 
+  //USER
   getAllTreatmentsBySpecialist() {
     this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
     .pipe(takeUntil(this.destroy$)).subscribe(
