@@ -11,6 +11,6 @@ export class CreatePatientDto {
     schoolName: string;
     course: string;
     paymentType: string;
-    active: boolean;
     clinicId: number;
+    //active: boolean;
 }
