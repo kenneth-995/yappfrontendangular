@@ -32,14 +32,14 @@
 
 
             <li class="nav-item" *ngIf="roleUser===2 || roleUser===3">
-              <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
-                My Clinic ***** hidden for role user
+              <a class="nav-link orange"  [routerLink]="[ 'home/clinic' ]" routerLinkActive="active">
+                My Clinic
               </a>
             </li>
 
             <li class="nav-item" *ngIf="roleUser===1">
               <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
-                All Registered Clinics *****
+                Management Clinics
               </a>
             </li>
 

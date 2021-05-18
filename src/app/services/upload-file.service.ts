@@ -35,4 +35,15 @@ export class UploadFileService {
     return this.htttClient.put<any>(url, formFile, header);
   }
 
+  public uploadFileClinic(formFile, id: number) {
+
+    const header = {
+      headers: new HttpHeaders({ "Content-Type": "multipart/form-data;" })
+    }
+
+    const url = this.base_url + '/clinic/updatephoto/'+id
+
+    return this.htttClient.post<any>(url, formFile, header);
+  }
+
 }

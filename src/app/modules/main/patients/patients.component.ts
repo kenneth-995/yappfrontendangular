@@ -32,7 +32,7 @@ export class PatientsComponent implements OnInit {
   public patients: PatientDto[] = [];
   public patientsAux: PatientDto[] = [];
 
-  public clinics: ClinicDto[];
+  public clinics: ClinicDto[] = [];
 
   public patientToUpdate: PatientDto = new PatientDto();
   public patientToCreate: CreatePatientDto = new CreatePatientDto();
@@ -342,7 +342,7 @@ export class PatientsComponent implements OnInit {
 
           this.clinicService.getAllClinics().pipe(takeUntil(this.destroy$)).subscribe(
             (clinics: ClinicDto[]) => {
-              this.clinics = clinics as ClinicDto[];
+              this.clinics = clinics ;
             }
           );
 

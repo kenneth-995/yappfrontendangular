@@ -8,12 +8,13 @@ import { PatientsComponent } from './patients/patients.component';
 import { MtsComponent } from './mts/mts.component';
 import { TreatmentComponent } from './treatment/treatment.component';
 import { ReportComponent } from './report/report.component';
+import { ClinicComponent } from './clinic/clinic.component';
 
 
 
 
 @NgModule({
-  declarations: [HomeComponent, PatientsComponent, MtsComponent, TreatmentComponent, ReportComponent],
+  declarations: [HomeComponent, PatientsComponent, MtsComponent, TreatmentComponent, ReportComponent, ClinicComponent],
   imports: [
     CommonModule,
     MainRoutingModule,

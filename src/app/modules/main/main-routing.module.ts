@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProfileUserComponent } from '../profile-user/profile-user.component';
+import { ClinicComponent } from './clinic/clinic.component';
 import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
 import { ReportComponent } from './report/report.component';
@@ -17,6 +18,8 @@ const routes: Routes = [
   {path: 'treatments', component: TreatmentComponent, pathMatch: 'full'},
 
   {path: 'reports', component: ReportComponent, pathMatch: 'full'},
+
+  {path: 'clinics', component: ClinicComponent, pathMatch: 'full'},
 
 ];
 

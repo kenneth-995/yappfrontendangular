@@ -1,0 +1,134 @@
+<div class="container">
+    <div class="row">
+        <div class="custom-control p-2">
+            <!--<input class="form-control" type="text" placeholder="find by name"
+        #param (keyup) = "findByName(param.value)">  -->
+            <button type="button" class="btn btn-primary" (click)='openModalCreateClinic()'> Add Clinic &#43;</button>
+            <!-- <button type="button" class="btn btn-primary" (click)='openModalCreatePatient()'> Add Patient &#43;</button> -->
+        </div>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr class="text-center">
+                <th scope="col">#</th>
+                <th scope="col">Photo</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Action</th>
+                <th scope="col" *ngIf='roleUser ===1'>Action</th>
+
+            </tr>
+        </thead>
+        <tbody *ngIf="clinics">
+            <tr *ngFor='let c of clinics let i = index' scope="row" class="text-center">
+                <td>{{i+1}}</td>
+                <td><img [src]="c.photo" class="imgUserTable cursorMouseHover" [alt]="c.name"></td>
+                <td>{{c.name}}</td>
+                <td>{{c.adress}}</td>
+                <td>{{c.email}}</td>
+                <td>{{c.phoneNumber}}</td>
+                <td><button class="btn btn-primary mb-2" (click)='openModalEditClinic(c, i)'>Edit</button></td>
+                <td *ngIf='roleUser ===1'><button class="btn btn-danger"
+                        (click)='openModalDeleteClinic(c.id, i)'>Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<ng-template #modalDelete let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Delete Clinic</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                (click)="modal.close('Cerrado desde la ventana')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            You are going to delete a clinic, the users associated with this clinic will no longer have access to their
+            account, are you sure?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('1')">Yes</button>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #modalCreateEdit let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{textCreateUpdateModal}} Clinic</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('0')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div *ngIf="!isCreated">
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <!-- Image Preview -->
+                <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
+            </div>
+
+            <form [formGroup]="uploadPhotoForm" (ngSubmit)="uploadPhoto()" class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <label for="uploadPhoto" class="col-2">Photo:</label>
+                <input class="form-control rounded-sm border-0 shadow-sm px-4" type="file" id="uploadPhoto"
+                    name="uploadPhoto" (change)="onFileChange($event)">
+            </form>
+        </div>
+        <form [formGroup]="createUpdateForm" (ngSubmit)="submitFormCreate()">
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <label for="nameCreate" class="col-2">Name:</label>
+                <input class="form-control rounded-sm border-0 shadow-sm px-4" id="nameCreate" name="name" type="text"
+                    formControlName='name' />
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <label for="address" class="col-2">Address:</label>
+                <input class="form-control rounded-sm border-0 shadow-sm px-4" id="address" name="address" type="text"
+                    formControlName='address' />
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <label for="phoneCreate" class="col-2">Phone Number:</label>
+                <input class="form-control rounded-sm border-0 shadow-sm px-4" id="phoneCreate" name="phoneCreate"
+                    type="text" formControlName='phoneNumber' />
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <label for="email" class="col-2">Email:</label>
+                <input class="form-control rounded-sm border-0 shadow-sm px-4" id="email" name="email" type="text"
+                    formControlName='email' />
+            </div>
+
+
+
+        </form>
+
+        <div class="modal-footer" *ngIf="showButtonsForm">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                (click)="modal.close('1')">Save</button>
+            <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel</button>
+        </div>
+        <div class="modal-footer" *ngIf="!showButtonsForm && isCreated">
+            <span style="color: red;">All fields is required</span>
+        </div>
+
+    </div>
+
+
+
+</ng-template>
