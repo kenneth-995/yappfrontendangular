@@ -42,8 +42,8 @@ export class PatientService {
   }
 
   //USER
-  updatePatient(p: PatientDto) {
-    return this.htttClient.put(this.base_url+'/patient/'+p.id, p);
+  updatePatient(p: PatientDto, id:number) {
+    return this.htttClient.put(this.base_url+'/patient/'+id, p);
   }
 
   //USER

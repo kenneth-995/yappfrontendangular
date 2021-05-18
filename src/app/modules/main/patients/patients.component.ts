@@ -24,7 +24,7 @@ import { User } from 'src/app/models/entities/user-model';
 export class PatientsComponent implements OnInit {
   @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
   @ViewChild("modalEdit", { static: false }) modalEdit: TemplateRef<any>;
-  @ViewChild("modalCreate", { static: false }) modalCreate: TemplateRef<any>;
+  @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
 
   private destroy$ = new Subject();
 
@@ -43,9 +43,12 @@ export class PatientsComponent implements OnInit {
   public roleUser: number;
 
   public uploadPhotoForm: FormGroup;
+  public observableuploadPhotoForm: Subscription = new Subscription();
 
   public createPatientForm: FormGroup;
   public observableupdateCreateForm: Subscription = new Subscription();
+
+
 
   public imageSrc: string;
   public todayDate = '2020-07-22';
@@ -53,6 +56,7 @@ export class PatientsComponent implements OnInit {
   public showButtonsForm: boolean = false;
 
   public textCreateUpdateModal: string;
+  public isCreated: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -90,6 +94,7 @@ export class PatientsComponent implements OnInit {
       reason: ['',Validators.required],
       email: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
+      urlPhoto: [''],
       homeAddress: ['', Validators.required],
       schoolName: ['', Validators.required],
       course: ['', Validators.required],
@@ -99,13 +104,13 @@ export class PatientsComponent implements OnInit {
 
   }
 
-  public submitFormCreate() {
-    console.log('send form!!!')
-  }
+
 
   private inicializeFormCreate() {
+    this.textCreateUpdateModal = 'Create ';
     this.observableupdateCreateForm.unsubscribe();
     this.showButtonsForm = false;
+    this.isCreated = true;
     this.createPatientForm.reset();
     //set form
     this.createPatientForm.controls['name'].setValue('');
@@ -135,7 +140,8 @@ export class PatientsComponent implements OnInit {
             this.createPatientForm.controls['homeAddress'].value != '' && this.createPatientForm.controls['homeAddress'].value != null &&
             this.createPatientForm.controls['schoolName'].value != '' && this.createPatientForm.controls['schoolName'].value != null &&
             this.createPatientForm.controls['course'].value != '' && this.createPatientForm.controls['course'].value != null &&
-            this.createPatientForm.controls['paymentType'].value != '' && this.createPatientForm.controls['paymentType'].value != null 
+            this.createPatientForm.controls['paymentType'].value != '' && this.createPatientForm.controls['paymentType'].value != null  &&
+            this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != null
           ) {
 
           this.showButtonsForm = true;
@@ -148,17 +154,161 @@ export class PatientsComponent implements OnInit {
 
   }
 
+  private inicializeFormEdit(patient: PatientDto, index: number){
+      this.observableupdateCreateForm.unsubscribe();
+      this.observableuploadPhotoForm.unsubscribe();
+      this.isCreated = false;
+      this.showButtonsForm = false;
+      this.createPatientForm.reset();
+      this.textCreateUpdateModal = 'Update ';
+      //set form
+      this.createPatientForm.controls['name'].setValue(patient.name);
+      this.createPatientForm.controls['surname'].setValue(patient.surname);
+      this.createPatientForm.controls['phoneNumber'].setValue(patient.phoneNumber);
+      this.createPatientForm.controls['reason'].setValue(patient.reason);
+      this.createPatientForm.controls['email'].setValue(patient.email);
+      this.createPatientForm.controls['dateOfBirth'].setValue(patient.dateOfBirth);
+      this.createPatientForm.controls['homeAddress'].setValue(patient.homeAddress);
+      this.createPatientForm.controls['schoolName'].setValue(patient.schoolName);
+      this.createPatientForm.controls['course'].setValue(patient.course);
+      this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
+      this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
+      //??
+      this.createPatientForm.controls['urlPhoto'].setValue(patient.urlPhoto);
+
+      let _name= patient.name;
+      let _surname= patient.surname;
+      let _phoneNumber= patient.phoneNumber;
+      let _reason= patient.reason;
+      let _email= patient.email;
+      let _dateOfBirth= patient.dateOfBirth;
+      let _homeAddress= patient.homeAddress;
+      let _schoolName= patient.schoolName;
+      let _course= patient.course;
+      let _paymentType= patient.paymentType;
+      let _clinicId = patient.clinicId;
+
+
+      this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+        (field) => {
+          console.log('createPatientForm subscriber')
+          if (
+              this.createPatientForm.valid && (
+              this.createPatientForm.controls['name'].value != _name || 
+              this.createPatientForm.controls['surname'].value != _surname || 
+              this.createPatientForm.controls['phoneNumber'].value != _phoneNumber ||
+              this.createPatientForm.controls['reason'].value != _reason ||
+              this.createPatientForm.controls['email'].value != _email ||
+              this.createPatientForm.controls['dateOfBirth'].value != _dateOfBirth ||
+              this.createPatientForm.controls['homeAddress'].value != _homeAddress || 
+              this.createPatientForm.controls['schoolName'].value != _schoolName ||
+              this.createPatientForm.controls['course'].value != _course ||
+              this.createPatientForm.controls['paymentType'].value != _paymentType ||
+              (this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != _clinicId) )
+            ) {
+              console.log( this.uploadPhotoForm.get('file').value)
+              console.log('form valid')
+              console.log(this.createPatientForm.value)
+            this.showButtonsForm = true;
+          }
+          else {
+            console.log('form novalid')
+              console.log(this.createPatientForm.value)
+            this.showButtonsForm = false;
+          }
+        }
+      );
+
+      this.observableuploadPhotoForm = this.uploadPhotoForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+        (field) => {
+          if (this.uploadPhotoForm.get('file').value != null) this.showButtonsForm = true;
+          else this.showButtonsForm = false;
+          
+        }
+      );
+  }
+
   ///////////////////////////////////////
   ///////////D O I N G///////////////////
   ///////////////////////////////////////
   public openModalCreatePatientNew() {
     console.log('OPEN MODAL CREATE')
     this.inicializeFormCreate();
-    this.modalService.open(this.modalCreate).result.then(
+    this.modalService.open(this.modalCreateEdit).result.then(
 
       r => {
         if (r === '1') {
+
           console.log('confirma la creacion del paciente')
+          console.log('this.createPatientForm.value')
+          console.log(this.createPatientForm.value)
+          this.createNewPatient(this.createPatientForm.value);
+
+        } else {
+          console.log('cancelar la creacion del paciente')
+          //this.patientToCreate = new CreatePatientDto
+        }
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+
+  
+
+  public openModalEditPatient(patient: PatientDto, index: number) {
+    console.log('OPEN MODAL EDITED')
+    this.inicializeFormEdit(patient, index);
+
+    this.modalService.open(this.modalCreateEdit).result.then(
+
+      r => {
+        if (r === '1') {
+
+          console.log('confirma la creacion del paciente')
+          console.log('this.createPatientForm.value')
+          console.log(this.createPatientForm.value)
+          //this.editPatient(this.createPatientForm.value, index);
+          
+          this.patientService.updatePatient(this.createPatientForm.value, patient.id).pipe(takeUntil(this.destroy$)).subscribe(
+            (res: PatientDto) => {
+              console.log('res update patient')
+              console.log(res)
+              this.patients[index] = res;
+              this.toast.success('Update patient', 'Successfully');
+            }, error => {
+              this.toast.error("Can't Update patient, try again", "Error")
+            }
+          );
+
+
+          const archivo: File = this.uploadPhotoForm.get('file').value;
+          if (archivo != null) {
+
+            var formData: any = new FormData();
+            formData.append("file", this.uploadPhotoForm.get('file').value);
+
+            this.uploadFileService.uploadFilePatient(formData, patient.id).pipe(takeUntil(this.destroy$)).subscribe(
+              (resPhotoUrl) => {
+                this.patients[index].urlPhoto = resPhotoUrl['url'];
+                //this.toast.success('Update patient', 'Successfully');
+                this.uploadPhotoForm.reset();
+                this.imageSrc = ''
+                console.log('res resPhotoUrl patient')
+                console.log(resPhotoUrl)
+
+              },
+              (error) => {
+                console.log(error)
+                this.toast.error('Error updating photo, try again', 'Error');
+              }
+            );
+
+          } else { console.log('no se cambia la foto archivo') }
+
+
+
+
 
         } else {
           console.log('cancelar la creacion del paciente')
@@ -261,41 +411,6 @@ export class PatientsComponent implements OnInit {
 
           console.log('response === 0')
 
-
-          this.patientService.updatePatient(this.patientToUpdate).pipe(takeUntil(this.destroy$)).subscribe(
-            (res: PatientDto) => {
-              this.patients[index] = res;
-              this.toast.success('Update patient', 'Successfully');
-            }, error => {
-              this.toast.error("Can't Update patient, try again", "Error")
-            }
-          );
-
-
-          const archivo: File = this.uploadPhotoForm.get('file').value;
-          if (archivo != null) {
-
-            var formData: any = new FormData();
-            formData.append("file", this.uploadPhotoForm.get('file').value);
-
-            this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).pipe(takeUntil(this.destroy$)).subscribe(
-              (resPhotoUrl) => {
-                this.patients[index].urlPhoto = resPhotoUrl['url'];
-                //this.toast.success('Update patient', 'Successfully');
-                this.uploadPhotoForm.reset();
-                this.imageSrc = ''
-
-              },
-              (error) => {
-                console.log(error)
-                this.toast.error('Error updating photo, try again', 'Error');
-              }
-            );
-
-          } else { console.log('no se cambia la foto archivo') }
-
-
-
         } else {
           let patient = new PatientDto;
           patient = JSON.parse(auxPatient)
@@ -310,13 +425,10 @@ export class PatientsComponent implements OnInit {
         console.log(error);
       }
 
-      
-
-
     ); //modal
   }
 
-  openModalCreatePatient() {
+  /* openModalCreatePatient() {
     this.showButtonsForm = true
 
     this.patientToCreate.dateOfBirth = new Date("2020-05-16");
@@ -365,6 +477,20 @@ export class PatientsComponent implements OnInit {
         }
       }, error => {
         console.log(error);
+      }
+    );
+  }
+ */
+
+  public createNewPatient(newPatient) {
+    this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
+      resPatient => {
+        this.patients.push(resPatient as PatientDto);
+        //this.patientsAux.push(resPatient as PatientDto);
+        this.toast.success('Create patient', 'Successfully');
+        this.patientToCreate = new CreatePatientDto
+        this.createPatientForm.reset();
+
       }
     );
   }
@@ -435,14 +561,14 @@ export class PatientsComponent implements OnInit {
 
   checkPatientForm(patient: CreatePatientDto): boolean {
     return patient.name != null && patient.name != '' && 
-    patient.surname != null && patient.surname != '' &&
-      patient.phoneNumber != null && patient.phoneNumber != '' &&
-      patient.email != null && patient.email != '' &&
-      patient.dateOfBirth != null && patient.dateOfBirth.toString() != '' &&
-       patient.homeAddress != null && patient.homeAddress != '' &&
-      patient.schoolName != null && patient.schoolName != '' &&
-      patient.course != null && patient.course != '' &&
-      patient.paymentType != null && patient.paymentType != '';
+           patient.surname != null && patient.surname != '' &&
+           patient.phoneNumber != null && patient.phoneNumber != '' &&
+           patient.email != null && patient.email != '' &&
+           patient.dateOfBirth != null && patient.dateOfBirth.toString() != '' &&
+           patient.homeAddress != null && patient.homeAddress != '' &&
+           patient.schoolName != null && patient.schoolName != '' &&
+           patient.course != null && patient.course != '' &&
+           patient.paymentType != null && patient.paymentType != '';
 
   }
 
