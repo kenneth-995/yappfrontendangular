@@ -23,7 +23,6 @@ import { User } from 'src/app/models/entities/user-model';
 })
 export class PatientsComponent implements OnInit {
   @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
-  @ViewChild("modalEdit", { static: false }) modalEdit: TemplateRef<any>;
   @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
 
   private destroy$ = new Subject();
@@ -48,10 +47,7 @@ export class PatientsComponent implements OnInit {
   public createPatientForm: FormGroup;
   public observableupdateCreateForm: Subscription = new Subscription();
 
-
-
   public imageSrc: string;
-  public todayDate = '2020-07-22';
 
   public showButtonsForm: boolean = false;
 
@@ -123,8 +119,12 @@ export class PatientsComponent implements OnInit {
     this.createPatientForm.controls['schoolName'].setValue('');
     this.createPatientForm.controls['course'].setValue('');
     this.createPatientForm.controls['paymentType'].setValue('');
-    //??
-    this.createPatientForm.controls['clinicId'].setValue(0);
+    if (this.roleUser != 1) {
+      this.createPatientForm.controls['clinicId'].setValue(this.userLogged.clinicId);
+    } else {
+      this.createPatientForm.controls['clinicId'].setValue(this.clinics[0].id);
+    }
+    
 
     this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
@@ -154,6 +154,7 @@ export class PatientsComponent implements OnInit {
 
   }
 
+
   private inicializeFormEdit(patient: PatientDto, index: number){
       this.observableupdateCreateForm.unsubscribe();
       this.observableuploadPhotoForm.unsubscribe();
@@ -161,6 +162,7 @@ export class PatientsComponent implements OnInit {
       this.showButtonsForm = false;
       this.createPatientForm.reset();
       this.textCreateUpdateModal = 'Update ';
+      this.imageSrc = patient.urlPhoto;
       //set form
       this.createPatientForm.controls['name'].setValue(patient.name);
       this.createPatientForm.controls['surname'].setValue(patient.surname);
@@ -172,10 +174,10 @@ export class PatientsComponent implements OnInit {
       this.createPatientForm.controls['schoolName'].setValue(patient.schoolName);
       this.createPatientForm.controls['course'].setValue(patient.course);
       this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
-      this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
-      //??
+      this.createPatientForm.controls['clinicId'].setValue(patient.clinicId);
       this.createPatientForm.controls['urlPhoto'].setValue(patient.urlPhoto);
 
+      //detect change in patient
       let _name= patient.name;
       let _surname= patient.surname;
       let _phoneNumber= patient.phoneNumber;
@@ -187,7 +189,6 @@ export class PatientsComponent implements OnInit {
       let _course= patient.course;
       let _paymentType= patient.paymentType;
       let _clinicId = patient.clinicId;
-
 
       this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
         (field) => {
@@ -228,9 +229,7 @@ export class PatientsComponent implements OnInit {
       );
   }
 
-  ///////////////////////////////////////
-  ///////////D O I N G///////////////////
-  ///////////////////////////////////////
+
   public openModalCreatePatientNew() {
     console.log('OPEN MODAL CREATE')
     this.inicializeFormCreate();
@@ -246,6 +245,8 @@ export class PatientsComponent implements OnInit {
 
         } else {
           console.log('cancelar la creacion del paciente')
+          this.createPatientForm.reset();
+          this.uploadPhotoForm.reset();
           //this.patientToCreate = new CreatePatientDto
         }
       }, error => {
@@ -254,7 +255,6 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-  
 
   public openModalEditPatient(patient: PatientDto, index: number) {
     console.log('OPEN MODAL EDITED')
@@ -312,13 +312,17 @@ export class PatientsComponent implements OnInit {
 
         } else {
           console.log('cancelar la creacion del paciente')
-          //this.patientToCreate = new CreatePatientDto
+          /* this.uploadPhotoForm.reset();
+          this.imageSrc = '' */
+
+
         }
       }, error => {
         console.log(error);
       }
     );
   }
+
 
   private getRoleUserAndPatientsAndClinics() {
 
@@ -360,8 +364,9 @@ export class PatientsComponent implements OnInit {
 
       }, error => {
         this.toast.error(JSON.stringify(error));
-      });
+    });
   }
+
 
   public deletePatient(id: number) {
     this.modalService.open(this.modalDelete).result.then(
@@ -372,20 +377,17 @@ export class PatientsComponent implements OnInit {
               this.patients.forEach(
                 (item, index) => {
                   if (item.id === id) {
+                    console.log('patients')
+                    console.log(item)
                     this.patients.splice(index, 1);
-                    this.toast.success('Deleted patient', 'Successfully');
+                    this.toast.success('The patient could not be deleted', 'Try again');
                   }  
                 }
               );
-
-                this.patientsAux.forEach(
-                  (item, index) => {
-                    if (item.id === id) this.patientsAux.splice(index, 1);
-                  }
-                )
             },
             (error) => {
-              this.toast.error(error.error['message'], 'Error');
+              this.toast.warning(error.error['message'], 'Info');
+              //this.toast.warning(error.error['message'], 'Error');
             }
           );//subscribe
         } else {
@@ -398,89 +400,6 @@ export class PatientsComponent implements OnInit {
 
   }
 
-  public editPatient(patient: PatientDto, index: number) {
-
-    let auxPatient = JSON.stringify(this.patients[index])
-
-
-    this.patientToUpdate = this.patients[index];
-
-    this.modalService.open(this.modalEdit).result.then(
-      r => {
-        if (r === '0') {
-
-          console.log('response === 0')
-
-        } else {
-          let patient = new PatientDto;
-          patient = JSON.parse(auxPatient)
-          console.log(patient)
-          this.patients[index] = JSON.parse(auxPatient);
-          this.imageSrc = ''
-          console.log('no editar')
-        }
-
-
-      }, error => {
-        console.log(error);
-      }
-
-    ); //modal
-  }
-
-  /* openModalCreatePatient() {
-    this.showButtonsForm = true
-
-    this.patientToCreate.dateOfBirth = new Date("2020-05-16");
-
-    this.modalService.open(this.modalCreate).result.then(
-
-      r => {
-        if (r === '0') {
-
-          if (this.checkPatientForm(this.patientToCreate)) {
-            let newPatient = new CreatePatientDto
-            newPatient.id = 0;
-            newPatient.name = this.patientToCreate.name
-            newPatient.surname = this.patientToCreate.surname
-            newPatient.reason = this.patientToCreate.reason
-            newPatient.phoneNumber = this.patientToCreate.phoneNumber
-            newPatient.email = this.patientToCreate.email
-            newPatient.dateOfBirth = this.patientToCreate.dateOfBirth
-            newPatient.homeAddress = this.patientToCreate.homeAddress
-            newPatient.schoolName = this.patientToCreate.schoolName
-            newPatient.course = this.patientToCreate.course
-            newPatient.paymentType = this.patientToCreate.paymentType
-            newPatient.active = true;
-
-            if (this.roleUser != 1)
-              newPatient.clinicId = this.userLogged.clinicId
-            else
-              newPatient.clinicId = this.patientToCreate.clinicId//superadmin elige la clinica
-
-
-            this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
-              resPatient => {
-                this.patients.push(resPatient as PatientDto);
-                //this.patientsAux.push(resPatient as PatientDto);
-                this.toast.success('Create patient', 'Successfully');
-                this.patientToCreate = new CreatePatientDto
-              }
-            );
-          } else {
-            this.toast.error('All fields is required', 'Error')
-          }
-
-        } else {
-          console.log('cancelar la creacion del paciente')
-          //this.patientToCreate = new CreatePatientDto
-        }
-      }, error => {
-        console.log(error);
-      }
-    );
-  }
- */
 
   public createNewPatient(newPatient) {
     this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
@@ -490,7 +409,6 @@ export class PatientsComponent implements OnInit {
         this.toast.success('Create patient', 'Successfully');
         this.patientToCreate = new CreatePatientDto
         this.createPatientForm.reset();
-
       }
     );
   }
@@ -542,6 +460,8 @@ export class PatientsComponent implements OnInit {
 
   }
 
+
+  //set form photo
   onFileChange(event) {
     const reader = new FileReader();
 
@@ -557,19 +477,6 @@ export class PatientsComponent implements OnInit {
 
 
     }
-  }
-
-  checkPatientForm(patient: CreatePatientDto): boolean {
-    return patient.name != null && patient.name != '' && 
-           patient.surname != null && patient.surname != '' &&
-           patient.phoneNumber != null && patient.phoneNumber != '' &&
-           patient.email != null && patient.email != '' &&
-           patient.dateOfBirth != null && patient.dateOfBirth.toString() != '' &&
-           patient.homeAddress != null && patient.homeAddress != '' &&
-           patient.schoolName != null && patient.schoolName != '' &&
-           patient.course != null && patient.course != '' &&
-           patient.paymentType != null && patient.paymentType != '';
-
   }
 
   ngOnDestroy(): void {

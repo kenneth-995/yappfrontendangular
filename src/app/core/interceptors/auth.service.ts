@@ -56,7 +56,17 @@ export class AuthService implements HttpInterceptor {
         //TODO: MANAGE REFRESH TOKEN IN BACKEND
         this.route.navigateByUrl('/login')
         console.log('PLEASE, RENEW TOKEN , DEVES VOLVERTE A LOGUEAR')
-        this.toast.warning('Please re-enter the login form', 'INFO')
+        this.toast.info('You need to log in', 'INFO')
+        //this.ngxLoader.stop();
+        /*localStorage.removeItem('accessToken');
+        localStorage.removeItem('username');
+         */
+
+      };
+
+      if (error.status == 404) { //TODO: refresh token, add endpoint refresh  backend
+        console.log('STATUS 404')
+        this.toast.warning(error.error['message'], 'Info');
         //this.ngxLoader.stop();
         /*localStorage.removeItem('accessToken');
         localStorage.removeItem('username');
