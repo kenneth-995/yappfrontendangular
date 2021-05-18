@@ -56,7 +56,7 @@ export class ReportComponent implements OnInit {
 
   ngOnInit(): void {
 
-    console.log('hello treatments component ngOnInit()')
+    console.log('hello report component ngOnInit()')
     if (this.userService.userLogged != null) {
       this.userLogged = this.userService.userLogged;
     } else {
@@ -108,45 +108,44 @@ export class ReportComponent implements OnInit {
   }
 
 
-
   openModalCreate() {
-      this.textModal = 'Create ';
-      console.log('open modal Create')
+    this.textModal = 'Create ';
+    console.log('open modal Create')
 
-      //set values form
-      this.inicializeNewFormReport();
+    //set values form
+    this.inicializeNewFormReport();
 
-      this.modalService.open(this.updateCreate).result.then(
+    this.modalService.open(this.updateCreate).result.then(
 
-        r => {
-          if (r ==='1') {
-            console.log('SAVE')
-            this.createReport(this.updateCreateForm.value);
-          } else {
-            console.log('CANCEL')
-          }
+      r => {
+        if (r === '1') {
+          console.log('SAVE')
+          this.createReport(this.updateCreateForm.value);
+        } else {
+          console.log('CANCEL')
         }
-      );
+      }
+    );
   }
 
   inicializeNewFormReport() {
-    this.showButtonsForm = false;
-
     this.observableupdateCreateForm.unsubscribe();
+    this.showButtonsForm = false;
     this.updateCreateForm.reset();
     this.updateCreateForm.controls['date'].setValue('');
     this.updateCreateForm.controls['objectives'].setValue('');
     this.updateCreateForm.controls['diagnosis'].setValue('');
+    this.updateCreateForm.controls['treatmentId'].setValue(0);
 
     this.observableupdateCreateForm = this.updateCreateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
         console.log('inicializeNewFormReport subscriber')
         if (this.updateCreateForm.controls['diagnosis'].value != '' &&
-            this.updateCreateForm.controls['objectives'].value != '' &&
-            this.updateCreateForm.controls['date'].value != '' &&
-            this.updateCreateForm.controls['treatmentId'].value != 0) {
-          
-            this.showButtonsForm = true;
+          this.updateCreateForm.controls['objectives'].value != '' &&
+          this.updateCreateForm.controls['date'].value != '' &&
+          this.updateCreateForm.controls['treatmentId'].value != 0) {
+
+          this.showButtonsForm = true;
         }
         else {
           this.showButtonsForm = false;
@@ -154,6 +153,22 @@ export class ReportComponent implements OnInit {
       }
     );
 
+  }
+
+  openModalEdit(reportDto: ReportDto, idx: number) {
+    console.log('open modal update')
+    this.textModal = 'Update ';
+    this.inicializeFormWithReport(reportDto, idx);
+    this.modalService.open(this.updateCreate).result.then(
+      r => {
+        if (r === '1') {
+          console.log('SAVE')
+          this.updateReport(this.updateCreateForm.value, reportDto.id, idx);
+        } else {
+          console.log('CANCEL')
+        }
+      }
+    );
   }
 
   inicializeFormWithReport(r: ReportDto, idx: number) {
@@ -177,11 +192,12 @@ export class ReportComponent implements OnInit {
       (field) => {
         console.log('inicializeFormWithTreatment subscriber')
 
-        if (this.updateCreateForm.valid &&
-          _diagnosis != this.updateCreateForm.controls['diagnosis'].value ||
-          _objectives != this.updateCreateForm.controls['objectives'].value ||
-          _date != this.updateCreateForm.controls['date'].value ||
-          _treatmentId != this.updateCreateForm.controls['treatmentId'].value ) {
+        if (this.updateCreateForm.valid && (
+            _diagnosis != this.updateCreateForm.controls['diagnosis'].value ||
+            _objectives != this.updateCreateForm.controls['objectives'].value ||
+            _date != this.updateCreateForm.controls['date'].value ||
+            _treatmentId != this.updateCreateForm.controls['treatmentId'].value)
+          ) {
           this.showButtonsForm = true;
         } else {
           this.showButtonsForm = false;
@@ -193,26 +209,10 @@ export class ReportComponent implements OnInit {
 
   }
 
-  openModalEdit(reportDto: ReportDto, idx: number) {
-    console.log('open modal update')
-    this.textModal = 'Update ';
-    this.inicializeFormWithReport(reportDto, idx);
-    this.modalService.open(this.updateCreate).result.then(
-      r => {
-        if (r ==='1') {
-          console.log('SAVE')
-          this.updateReport(this.updateCreateForm.value, reportDto.id, idx);
-        } else {
-          console.log('CANCEL')
-        }
-      }
-    );
-  }
-
   openModalDelete(id: number, idx: number) {
     this.modalService.open(this.modalDelete).result.then(
       r => {
-        if (r === '1') { 
+        if (r === '1') {
           console.log('DELETE REPORT')
           this.deleteReport(id, idx);
         } else {
@@ -294,8 +294,6 @@ export class ReportComponent implements OnInit {
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
       (res: TreatmentDto[]) => {
         this.treatments = res;
-        console.log('TreatmentDto[]');
-        console.log(res);
       }
     );
   }
@@ -303,25 +301,21 @@ export class ReportComponent implements OnInit {
   //ADMIN
   getAllTreatmentsByClinic() {
     this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
-    .pipe(takeUntil(this.destroy$)).subscribe(
-      (res: TreatmentDto[]) => {
-        this.treatments = res;
-        console.log('TreatmentDto[]');
-        console.log(res);
-      }
-    );
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+        }
+      );
   }
 
   //USER
   getAllTreatmentsBySpecialist() {
     this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
-    .pipe(takeUntil(this.destroy$)).subscribe(
-      (res: TreatmentDto[]) => {
-        this.treatments = res;
-        console.log('TreatmentDto[]');
-        console.log(res);
-      }
-    );
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+        }
+      );
   }
 
 

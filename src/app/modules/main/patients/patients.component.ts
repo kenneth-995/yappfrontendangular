@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { pipe, Subject, Subscription } from 'rxjs';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
@@ -12,7 +13,6 @@ import { UploadFileService } from '../../../services/upload-file.service';
 import { PatientDto } from '../../../models/dto/patient/PatientDto';
 import { CreatePatientDto } from '../../../models/dto/patient/CreatePatientDto';
 import { ClinicDto } from '../../../models/dto/clinic/ClinicDto'
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { User } from 'src/app/models/entities/user-model';
 
 
@@ -42,10 +42,17 @@ export class PatientsComponent implements OnInit {
 
   public roleUser: number;
 
-  public uploadForm: FormGroup;
+  public uploadPhotoForm: FormGroup;
+
+  public createPatientForm: FormGroup;
+  public observableupdateCreateForm: Subscription = new Subscription();
 
   public imageSrc: string;
   public todayDate = '2020-07-22';
+
+  public showButtonsForm: boolean = false;
+
+  public textCreateUpdateModal: string;
 
   constructor(
     private fb: FormBuilder,
@@ -65,17 +72,102 @@ export class PatientsComponent implements OnInit {
       this.userLogged = this.userService.userLogged;
     } else {
       console.log('[errorPatientComponent] user==null!');
-      console.log(this.userService.userLogged)
+      console.log(this.userService.userLogged) //null
       this.userLogged = this.userService.getUserLocalStorage()
-      console.log(this.userService.getUserLocalStorage())
-      console.log(this.userLogged)
+      /* console.log(this.userService.getUserLocalStorage())
+      console.log(this.userLogged) */
     }
     this.getRoleUserAndPatientsAndClinics()
 
-    this.uploadForm = this.fb.group({
+    this.uploadPhotoForm = this.fb.group({
       file: null
     })
 
+    this.createPatientForm = this.fb.group({
+      name: ['', Validators.required],
+      surname: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      reason: ['',Validators.required],
+      email: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      homeAddress: ['', Validators.required],
+      schoolName: ['', Validators.required],
+      course: ['', Validators.required],
+      paymentType: ['', Validators.required],
+      clinicId: ['', Validators.required],
+    });
+
+  }
+
+  public submitFormCreate() {
+    console.log('send form!!!')
+  }
+
+  private inicializeFormCreate() {
+    this.observableupdateCreateForm.unsubscribe();
+    this.showButtonsForm = false;
+    this.createPatientForm.reset();
+    //set form
+    this.createPatientForm.controls['name'].setValue('');
+    this.createPatientForm.controls['surname'].setValue('');
+    this.createPatientForm.controls['phoneNumber'].setValue('');
+    this.createPatientForm.controls['reason'].setValue('');
+    this.createPatientForm.controls['email'].setValue('');
+    this.createPatientForm.controls['dateOfBirth'].setValue('');
+    this.createPatientForm.controls['homeAddress'].setValue('');
+    this.createPatientForm.controls['schoolName'].setValue('');
+    this.createPatientForm.controls['course'].setValue('');
+    this.createPatientForm.controls['paymentType'].setValue('');
+    //??
+    this.createPatientForm.controls['clinicId'].setValue(0);
+
+    this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+      (field) => {
+        console.log('createPatientForm subscriber')
+        if (
+            this.createPatientForm.valid &&
+            this.createPatientForm.controls['name'].value != '' && this.createPatientForm.controls['name'].value != null &&
+            this.createPatientForm.controls['surname'].value != '' && this.createPatientForm.controls['surname'].value != null &&
+            this.createPatientForm.controls['phoneNumber'].value != '' && this.createPatientForm.controls['phoneNumber'].value != null &&
+            this.createPatientForm.controls['reason'].value != '' && this.createPatientForm.controls['reason'].value != null &&
+            this.createPatientForm.controls['email'].value != '' && this.createPatientForm.controls['email'].value != null && 
+            this.createPatientForm.controls['dateOfBirth'].value != '' && this.createPatientForm.controls['dateOfBirth'].value != null &&
+            this.createPatientForm.controls['homeAddress'].value != '' && this.createPatientForm.controls['homeAddress'].value != null &&
+            this.createPatientForm.controls['schoolName'].value != '' && this.createPatientForm.controls['schoolName'].value != null &&
+            this.createPatientForm.controls['course'].value != '' && this.createPatientForm.controls['course'].value != null &&
+            this.createPatientForm.controls['paymentType'].value != '' && this.createPatientForm.controls['paymentType'].value != null 
+          ) {
+
+          this.showButtonsForm = true;
+        }
+        else {
+          this.showButtonsForm = false;
+        }
+      }
+    );
+
+  }
+
+  ///////////////////////////////////////
+  ///////////D O I N G///////////////////
+  ///////////////////////////////////////
+  public openModalCreatePatientNew() {
+    console.log('OPEN MODAL CREATE')
+    this.inicializeFormCreate();
+    this.modalService.open(this.modalCreate).result.then(
+
+      r => {
+        if (r === '1') {
+          console.log('confirma la creacion del paciente')
+
+        } else {
+          console.log('cancelar la creacion del paciente')
+          //this.patientToCreate = new CreatePatientDto
+        }
+      }, error => {
+        console.log(error);
+      }
+    );
   }
 
   private getRoleUserAndPatientsAndClinics() {
@@ -180,17 +272,17 @@ export class PatientsComponent implements OnInit {
           );
 
 
-          const archivo: File = this.uploadForm.get('file').value;
+          const archivo: File = this.uploadPhotoForm.get('file').value;
           if (archivo != null) {
 
             var formData: any = new FormData();
-            formData.append("file", this.uploadForm.get('file').value);
+            formData.append("file", this.uploadPhotoForm.get('file').value);
 
             this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).pipe(takeUntil(this.destroy$)).subscribe(
               (resPhotoUrl) => {
                 this.patients[index].urlPhoto = resPhotoUrl['url'];
                 //this.toast.success('Update patient', 'Successfully');
-                this.uploadForm.reset();
+                this.uploadPhotoForm.reset();
                 this.imageSrc = ''
 
               },
@@ -224,7 +316,9 @@ export class PatientsComponent implements OnInit {
     ); //modal
   }
 
-  createPatient() {
+  openModalCreatePatient() {
+    this.showButtonsForm = true
+
     this.patientToCreate.dateOfBirth = new Date("2020-05-16");
 
     this.modalService.open(this.modalCreate).result.then(
@@ -256,7 +350,7 @@ export class PatientsComponent implements OnInit {
             this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
               resPatient => {
                 this.patients.push(resPatient as PatientDto);
-                this.patientsAux.push(resPatient as PatientDto);
+                //this.patientsAux.push(resPatient as PatientDto);
                 this.toast.success('Create patient', 'Successfully');
                 this.patientToCreate = new CreatePatientDto
               }
@@ -303,18 +397,13 @@ export class PatientsComponent implements OnInit {
         })
     }
 
-
-
-
-
-
   }
 
 
   // Submit Form File
   uploadPhoto() {
     var formData: any = new FormData();
-    formData.append("file", this.uploadForm.get('file').value);
+    formData.append("file", this.uploadPhotoForm.get('file').value);
     this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
       res => {
         console.log(res)
@@ -332,7 +421,7 @@ export class PatientsComponent implements OnInit {
 
     if (event.target.files && event.target.files.length) {
       const [file] = event.target.files;
-      this.uploadForm.get('file').setValue(file)
+      this.uploadPhotoForm.get('file').setValue(file)
 
 
       reader.readAsDataURL(file);
@@ -345,11 +434,15 @@ export class PatientsComponent implements OnInit {
   }
 
   checkPatientForm(patient: CreatePatientDto): boolean {
-    return patient.name != null && patient.surname != null &&
-      patient.phoneNumber != null && patient.email != null &&
-      patient.dateOfBirth != null && patient.homeAddress != null &&
-      patient.schoolName != null && patient.course != null &&
-      patient.paymentType != null;
+    return patient.name != null && patient.name != '' && 
+    patient.surname != null && patient.surname != '' &&
+      patient.phoneNumber != null && patient.phoneNumber != '' &&
+      patient.email != null && patient.email != '' &&
+      patient.dateOfBirth != null && patient.dateOfBirth.toString() != '' &&
+       patient.homeAddress != null && patient.homeAddress != '' &&
+      patient.schoolName != null && patient.schoolName != '' &&
+      patient.course != null && patient.course != '' &&
+      patient.paymentType != null && patient.paymentType != '';
 
   }
 

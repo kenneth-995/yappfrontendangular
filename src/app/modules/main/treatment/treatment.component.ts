@@ -194,7 +194,7 @@ export class TreatmentComponent implements OnInit {
     this.inicializeNewFormTreatment();
 
 
-
+    
     //VALIDATE FORM
     this.modalService.open(this.updateCreate).result.then(
       r => {
@@ -211,7 +211,6 @@ export class TreatmentComponent implements OnInit {
 
         } else {
           this.createUpdateForm.reset();
-          console.log('ABORT CREATE')
           this.showButtonsForm = false;
         }
 
@@ -279,7 +278,9 @@ export class TreatmentComponent implements OnInit {
         if (this.createUpdateForm.controls['reason'].value != '' &&
             this.createUpdateForm.controls['startDate'].value != '' &&
             this.createUpdateForm.controls['userId'].value != 0 &&
-            this.createUpdateForm.controls['patientId'].value != 0) {
+            this.createUpdateForm.controls['userId'].value != null &&
+            this.createUpdateForm.controls['patientId'].value != 0 &&
+            this.createUpdateForm.controls['patientId'].value != null) {
           
             this.showButtonsForm = true;
         }

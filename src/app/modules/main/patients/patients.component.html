@@ -3,7 +3,8 @@
     <div class="custom-control p-2">
       <input class="form-control" type="text" placeholder="find by name"
       #param (keyup) = "findByName(param.value)"><!--  -->
-      <button type="button" class="btn btn-primary" (click)='createPatient()'> Add Patient &#43;</button>
+      <button type="button" class="btn btn-primary" (click)='openModalCreatePatientNew()'> Add Patient &#43;</button>
+      <!-- <button type="button" class="btn btn-primary" (click)='openModalCreatePatient()'> Add Patient &#43;</button> -->
     </div>
 
   </div>
@@ -138,11 +139,7 @@
              id="dateOfBirthUpdate" 
              name="dateOfBirthUpdate"
             [(ngModel)]='patientToUpdate.dateOfBirth'/>
-      <!-- <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-             id="ageUpdate" 
-             name="ageUpdate"
-             type="text" 
-             [(ngModel)]='patientToUpdate.age' /> -->
+
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -181,14 +178,7 @@
              [(ngModel)]='patientToUpdate.paymentType' />
     </div>
 
-    <!-- <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="activeUpdate" class="col-2">Active:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4"
-             name="activeUpdate"
-             id="activeUpdate"
-             type="checkbox" 
-             [(ngModel)]='patientToUpdate.active' />
-    </div> -->
+    <!-- CLINIC ID NO SE CAMBIA ! PERO NO ENCAJARA CON EL MODELO QUE RECIBE EL BACKEND -->
 
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">Save
@@ -202,6 +192,136 @@
 
 
 <ng-template #modalCreate let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Create Patient</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('0')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <form [formGroup]="createPatientForm" (ngSubmit)="submitFormCreate()">
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="nameCreate" class="col-2">Name:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="nameCreate" 
+              name="name"
+              type="text"
+              formControlName='name' />
+      </div>
+      
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="surnameCreate" class="col-2">Surname:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="surnameCreate" 
+              name="surnameCreate"
+              type="text"
+              formControlName='surname' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="phoneCreate" class="col-2">Phone Number:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="phoneCreate" 
+              name="phoneCreate"
+              type="text"
+              formControlName='phoneNumber' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="reasonCreate" class="col-2">Reason:</label>
+        <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="reasonCreate" 
+              name="reasonCreate"
+              type="text"
+              formControlName='reason'>
+          </textarea>
+      </div>
+
+
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="emailCreate" class="col-2">Email:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="emailCreate" 
+              name="emailCreate"
+              type="email"
+              placeholder="example: oneemail@gmail.com"
+              formControlName='email' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="dateOfBirthCreate" class="col-2">Date of Birth:</label>
+        <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4"
+              id="dateOfBirthCreate" 
+              name="dateOfBirthCreate"
+              formControlName='dateOfBirth'/>
+
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="addressCreate" class="col-2">Home Address:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="addressCreate" 
+              name="addressCreate"
+              type="text"
+              formControlName='homeAddress' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="schoolCreate" class="col-2">School Name:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4"
+              id="schoolCreate" 
+              name="schoolCreate"
+              type="text"
+              formControlName='schoolName' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="nameCourse" class="col-2">Course:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4"
+              id="nameCourse" 
+              name="nameCourse"
+              type="text"
+              formControlName='course' />
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="paymentTypeCreate" class="col-2">Payment Type:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+              id="paymentTypeCreate" 
+              name="paymentTypeCreate"
+              type="text"
+              formControlName='paymentType' />
+      </div>
+
+
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
+          *ngIf="roleUser === 1">
+        <label for="clinicIdCreate" class="col-2">Clinic: </label>
+        <select class="form-control" formControlName='clinicId'>
+          <option *ngFor="let clinic of clinics" [value]="clinic.id">
+              {{clinic.name}}
+          </option>
+        </select>
+      </div>
+
+    </form>
+
+    <div class="modal-footer" *ngIf="showButtonsForm">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save</button>
+      <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel</button>
+    </div>
+
+  </div>
+</ng-template>
+
+
+
+<!-- <ng-template #modalCreate let-modal>
   <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title">Create Patient</h5>
@@ -263,11 +383,7 @@
              id="dateOfBirthCreate" 
              name="dateOfBirthCreate"
             [(ngModel)]='patientToCreate.dateOfBirth'/>
-      <!-- <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-             id="dateOfBirthCreate" 
-             name="dateOfBirthCreate"
-             type="text"
-             [(ngModel)]='patientToCreate.dateOfBirth' /> -->
+
     </div>
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -306,14 +422,7 @@
              [(ngModel)]='patientToCreate.paymentType' />
     </div>
 
-<!--     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-      <label for="activeCreate" class="col-2">Active:</label>
-      <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-             id="activeCreate" 
-             name="activeCreate"
-             type="checkbox"
-             [(ngModel)]='patientToCreate.active' />
-    </div> -->
+
 
     <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
          *ngIf="roleUser === 1">
@@ -325,10 +434,11 @@
       </select>
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer" *ngIf="showButtonsForm">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">Save</button>
       <button type="button" class="btn btn-primary" (click)="modal.close('1')">Cancel</button>
     </div>
 
   </div>
-</ng-template>
+</ng-template> -->
+

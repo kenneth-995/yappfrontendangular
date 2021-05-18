@@ -11,35 +11,35 @@
           </li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="[ 'home/patients' ]" routerLinkActive="active">
-                  Patients *
+                  Patients 
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/mts' ]" routerLinkActive="active">
-                  Mts
+                  Mts *****
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/treatments' ]" routerLinkActive="active">
-                  Treatments *
+                  Treatments
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange"  [routerLink]="[ 'home/reports' ]" routerLinkActive="active">
-                Reports **
+                Reports
               </a>
             </li>
 
 
             <li class="nav-item" *ngIf="roleUser===2 || roleUser===3">
               <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
-                My Clinic
+                My Clinic ***** hidden for role user
               </a>
             </li>
 
             <li class="nav-item" *ngIf="roleUser===1">
               <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
-                All Registered Clinics
+                All Registered Clinics *****
               </a>
             </li>
 
@@ -92,3 +92,5 @@
           </div>
     </div>
 </nav>
+
+<h2 class="text-center">Put clinic data, hidden for role user</h2>
