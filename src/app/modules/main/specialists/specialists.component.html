@@ -24,6 +24,7 @@
         </thead>
         <tbody>
             <tr *ngFor='let s of specialists let i = index' scope="row" class="text-center">
+                
                 <td>{{i+1}}</td>
                 <td><img [src]="s.photoUrl" class="imgUserTable cursorMouseHover" [alt]="s.name"></td>
                 <td>{{s.username}}</td>
@@ -35,7 +36,9 @@
                     {{s.roles[0]}}
                 </td>
                 <td>{{s.clinicId}}</td>
-                <td><button class="btn btn-danger" (click)='openModalDeleteSpecialist(s.id)' [disabled]="userLogged.id === s.id">Delete</button></td>
+                <td><button class="btn btn-danger" (click)='openModalDeleteSpecialist(s.id, i)'
+                        [disabled]="userLogged.id === s.id">Delete</button></td>
+                    
             </tr>
         </tbody>
     </table>
@@ -43,19 +46,141 @@
 
 <ng-template #modalDelete let-modal>
     <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Delete Specialist</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                (click)="modal.close('Cerrado desde la ventana')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            You're going to delete a specialist, are you sure?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('1')" disabled="true">Yes</button>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<ng-template #modalCreate let-modal>
+    <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Specialist</h5>
+        <h5 class="modal-title">Create Specialist</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-          (click)="modal.close('Cerrado desde la ventana')">
+          (click)="modal.close('0')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        You're going to delete a specialist, are you sure?
+  
+
+      <form [formGroup]="createSpecialistForm" (ngSubmit)="submitFormCreate()">
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="usernameCreate" class="col-2">Username:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="usernameCreate" 
+                name="usernameCreate"
+                type="text"
+                formControlName='username' />
+        </div>
+        
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="emailCreate" class="col-2">email:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="emailCreate" 
+                name="emailCreate"
+                type="text"
+                formControlName='email' />
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="passwordCreate" class="col-2">Password:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="passwordCreate" 
+                name="passwordCreate"
+                type="text"
+                formControlName='password' />
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="password2Create" class="col-2">Repeat password:</label>
+          <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="password2Create" 
+                name="password2Create"
+                type="text"
+                formControlName='password2'>
+            </textarea>
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="nameCreate" class="col-2">Name:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="nameCreate" 
+                name="nameCreate"
+                type="email"
+                placeholder="example: oneemail@gmail.com"
+                formControlName='name' />
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="surnamesCreate" class="col-2">Surnames:</label>
+          <input type="text" class="form-control rounded-sm border-0 shadow-sm px-4"
+                id="surnamesCreate" 
+                name="surnamesCreate"
+                formControlName='surnames'/>
+  
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="phoneCreate" class="col-2">Phone:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+                id="phoneCreate" 
+                name="phoneCreate"
+                type="text"
+                formControlName='phone' />
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="collegiateNumberCreate" class="col-2">Collegiate Number:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4"
+                id="collegiateNumberCreate" 
+                name="collegiateNumberCreate"
+                type="text"
+                formControlName='collegiateNumber' />
+        </div>
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+          <label for="specialistTypeCreate" class="col-2">Specialist Type:</label>
+          <input class="form-control rounded-sm border-0 shadow-sm px-4"
+                id="specialistTypeCreate" 
+                name="specialistTypeCreate"
+                type="text"
+                formControlName='specialistType' />
+        </div>
+    
+  
+        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
+            *ngIf="roleUser === 1">
+          <label for="clinicIdCreate" class="col-2">Clinic: </label>
+          <select class="form-control" formControlName='clinicId'>
+            <option *ngFor="let clinic of clinics" [value]="clinic.id">
+                {{clinic.name}}
+            </option>
+          </select>
+        </div>
+  
+      </form>
+  
+      <div class="modal-footer" *ngIf="showButtonsForm">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel</button>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
-        <button type="button" class="btn btn-danger" (click)="modal.close('1')">Yes</button>
+      <div class="modal-footer" *ngIf="!showButtonsForm">
+        <span style="color: red;">All fields is required</span>
       </div>
+  
     </div>
   </ng-template>

@@ -72,6 +72,10 @@ export class UserService {
     return this.htttClient.put(this.base_url+'/auth/updatepassword/'+id, form);
   }
 
+  public deactivateUser(id:number) {
+    return this.htttClient.delete(this.base_url+'/auth/deactivate/'+id);
+  }
+
 
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
-import { pipe, Subject, Subscription } from 'rxjs';
-import { concatMap, map, takeUntil } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
@@ -22,7 +22,7 @@ import { User } from 'src/app/models/entities/user-model';
 })
 export class SpecialistsComponent implements OnInit {
   @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
-  @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
+  @ViewChild("modalCreate", { static: false }) modalCreate: TemplateRef<any>;
 
   private destroy$ = new Subject();
 
@@ -35,6 +35,8 @@ export class SpecialistsComponent implements OnInit {
 
   public createSpecialistForm: FormGroup;
   public observablecreateSpecialistForm: Subscription = new Subscription();
+
+  public showButtonsForm: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +52,19 @@ export class SpecialistsComponent implements OnInit {
     if (this.userService.userLogged != null) this.userLogged = this.userService.userLogged;
     else this.userLogged = this.userService.getUserLocalStorage()
     this.getData();
+
+    this.createSpecialistForm = this.fb.group({
+      username:  ['', Validators.required],
+      email:  ['', Validators.required],
+      password:  ['', Validators.required],
+      password2:  ['', Validators.required],
+      name:  ['', Validators.required],
+      surnames:  ['', Validators.required],
+      phone:  ['', Validators.required],
+      collegiateNumber:  ['', Validators.required],
+      specialistType:  ['', Validators.required],
+      clinicId:  ['', Validators.required],
+    });
   }
 
 
@@ -107,17 +122,35 @@ export class SpecialistsComponent implements OnInit {
   }
 
   public openModalCreateNewSpecialist() {
-
-  }
-
-  public openModalDeleteSpecialist(id:number) {
-    this.modalService.open(this.modalDelete).result.then(
+    this.modalService.open(this.modalCreate).result.then(
       r=> {
         if (r ==='1') {
-          console.log('CONFIRM CREATE SPECIALIST: ' + id)
+          console.log('CONFIRM CREATE SPECIALIST: ')
         } else {
           console.log('CANCEL CREATE SPECIALIST')
         }
+      }
+    );
+  }
+
+  public openModalDeleteSpecialist(id:number, idx:number) {
+    this.modalService.open(this.modalDelete).result.then(
+      r=> {
+        if (r ==='1') {
+          console.log('CONFIRM DELETE SPECIALIST: ' + id)
+          this.deleteSpecialist(id, idx);
+        } else {
+          console.log('CANCEL DELETE SPECIALIST')
+        }
+      }
+    );
+  }
+
+  private deleteSpecialist(id: number, idx:number) {
+    this.userService.deactivateUser(id).pipe(takeUntil(this.destroy$)).subscribe(
+      (res) => {
+        this.specialists.splice(idx, 1);  
+        this.toast.success('Delete specialist', 'Successfully');
       }
     );
   }
