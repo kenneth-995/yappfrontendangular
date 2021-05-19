@@ -9,7 +9,7 @@ export class User {
     public specialistType: string;
     public collegiateNumber: string;
     public clinicId: number;
-    public role: string[];
+    public roles: string[];
 }
 
 

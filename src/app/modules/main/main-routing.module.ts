@@ -6,6 +6,7 @@ import { ClinicsComponent } from './clinics/clinics.component';
 import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
 import { ReportComponent } from './report/report.component';
+import { SpecialistsComponent } from './specialists/specialists.component';
 import { TreatmentComponent } from './treatment/treatment.component';
 
 const routes: Routes = [
@@ -19,6 +20,8 @@ const routes: Routes = [
   {path: 'treatments', component: TreatmentComponent, pathMatch: 'full'},
 
   {path: 'reports', component: ReportComponent, pathMatch: 'full'},
+
+  {path: 'specialists', component: SpecialistsComponent, pathMatch: 'full'},
 
   {path: 'clinic', component: ClinicComponent, pathMatch: 'full'},
 

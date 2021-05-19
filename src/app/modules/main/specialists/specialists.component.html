@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row">
+        <div class="custom-control p-2">
+            <button type="button" class="btn btn-primary" (click)='openModalCreateNewSpecialist()'> Add Specialist
+                &#43;</button>
+        </div>
+
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr class="text-center">
+                <th scope="col">#</th>
+                <th scope="col">Photo</th>
+                <th scope="col">Username</th>
+                <th scope="col">Full name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">Role</th>
+                <th scope="col">Clinic</th>
+                <th scope="col">Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let s of specialists let i = index' scope="row" class="text-center">
+                <td>{{i+1}}</td>
+                <td><img [src]="s.photoUrl" class="imgUserTable cursorMouseHover" [alt]="s.name"></td>
+                <td>{{s.username}}</td>
+                <td>{{s.name + ' ' + s.surnames}}</td>
+
+                <td>{{s.email}}</td>
+                <td>{{s.phone}}</td>
+                <td>
+                    {{s.roles[0]}}
+                </td>
+                <td>{{s.clinicId}}</td>
+                <td><button class="btn btn-danger" (click)='openModalDeleteSpecialist(s.id)' [disabled]="userLogged.id === s.id">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-template #modalDelete let-modal>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Specialist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Cerrado desde la ventana')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        You're going to delete a specialist, are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('0')">No</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close('1')">Yes</button>
+      </div>
+    </div>
+  </ng-template>
