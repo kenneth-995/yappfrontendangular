@@ -9,4 +9,5 @@ export class ReportDto {
     specialistFullName:string;
     specialistType:string;
     treatmentId:number;
+    treatmentReason:string;
 }
