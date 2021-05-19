@@ -230,6 +230,7 @@ export class ReportComponent implements OnInit {
     this.reportService.getAllReports().pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto[]) => {
         this.reports = res;
+        console.log(res)
       }
     );
   }
@@ -239,6 +240,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
+          console.log(res)
         }
       );
 
