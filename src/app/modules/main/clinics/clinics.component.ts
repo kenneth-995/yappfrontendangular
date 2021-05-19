@@ -174,8 +174,8 @@ export class ClinicsComponent implements OnInit {
             this.createUpdateForm.controls['name'].value != _name || 
             this.createUpdateForm.controls['address'].value != _address || 
             this.createUpdateForm.controls['phoneNumber'].value != _phoneNumber || 
-            this.createUpdateForm.controls['email'].value != _email || 
-            (this.uploadPhotoForm.get('file').value != null)
+            this.createUpdateForm.controls['email'].value != _email /* || 
+            (this.uploadPhotoForm.get('file').value != null) */
           ) {
             console.log( this.uploadPhotoForm.get('file').value)
             console.log('form valid')

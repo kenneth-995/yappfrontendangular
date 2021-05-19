@@ -1,1 +1,70 @@
-<p>clinic works!</p>
+<div class="container">
+    <div >
+        <div class="modal-body"
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <!-- Image Preview -->
+            <img [src]="clinic.photo"  class="imgPreview" *ngIf="!imageSrc"> <!--  -->
+        </div>
+
+        <div class="modal-body"
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <!-- Image Preview -->
+            <img [src]="imageSrc"  class="imgPreview" *ngIf="imageSrc"> <!--  -->
+        </div>
+
+        <form [formGroup]="uploadPhotoForm" class="modal-body" *ngIf="roleUser ===2"
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="uploadPhoto" class="col-2">Change Photo:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" type="file" id="uploadPhoto"
+                name="uploadPhoto" (change)="onFileChange($event)">
+        </form>
+    </div>
+
+    <form [formGroup]="updateForm" *ngIf="roleUser ===2; else other_content">
+
+        <div class="modal-body" 
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="nameCreate" class="col-2">Name:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" id="nameCreate" name="name" type="text"
+                formControlName='name' />
+        </div>
+
+        <div class="modal-body" 
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="address" class="col-2">Address:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" id="address" name="address" type="text"
+                formControlName='address' />
+        </div>
+
+        <div class="modal-body"
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="phoneCreate" class="col-2">Phone Number:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" id="phoneCreate" name="phoneCreate"
+                type="text" formControlName='phoneNumber' />
+        </div>
+
+        <div class="modal-body"
+            style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="email" class="col-2">Email:</label>
+            <input class="form-control rounded-sm border-0 shadow-sm px-4" id="email" name="email" type="text"
+                formControlName='email' />
+        </div>
+
+    </form>
+
+    <div class="modal-footer" *ngIf="showButtonsForm && roleUser===2">
+        <button type="button" class="btn btn-secondary" (click)="sendForms()">Save</button>
+        <button type="button" class="btn btn-primary"   (click)="cancelUpdate()">Cancel</button>
+    </div>
+    
+</div>
+
+<ng-template #other_content>
+    <div class="text-left ml-5">
+        <h3> -Name: {{clinic.name}}</h3>
+        <h3> -Address: {{clinic.address}}</h3>
+        <h3> -Email: {{clinic.email}}</h3>
+        <h3> -Phone: {{clinic.phoneNumber}}</h3>
+    </div>    
+</ng-template>
+
