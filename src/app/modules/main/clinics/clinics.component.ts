@@ -6,21 +6,21 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { UserService } from '../../../services/user.service';
-import { ClinicService } from '../../../services/clinic.service';
-import { UploadFileService } from '../../../services/upload-file.service';
+import { UserService } from 'src/app/services/user.service';
+import { ClinicService } from 'src/app/services/clinic.service';
+import { UploadFileService } from 'src/app/services/upload-file.service';
 
-import { ClinicDto } from '../../../models/dto/clinic/ClinicDto'
-import { UpdateCreateClinicDto } from '../../../models/dto/clinic/UpdateCreateClinicDto'
+import { ClinicDto } from 'src/app/models/dto/clinic/ClinicDto'
+import { UpdateCreateClinicDto } from 'src/app/models/dto/clinic/UpdateCreateClinicDto'
 
 import { User } from 'src/app/models/entities/user-model';
 
 @Component({
   selector: 'app-clinic',
-  templateUrl: './clinic.component.html',
-  styleUrls: ['./clinic.component.css']
+  templateUrl: './clinics.component.html',
+  styleUrls: ['./clinics.component.css']
 })
-export class ClinicComponent implements OnInit {
+export class ClinicsComponent implements OnInit {
   @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
   @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
 
@@ -140,11 +140,9 @@ export class ClinicComponent implements OnInit {
     );
   }
 
-
   private inicializeFormEdit(clinic: ClinicDto, index: number){
     this.observableuploadPhotoForm.unsubscribe();
     this.observablecreateUpdateForm.unsubscribe();
-    this.isCreated = false;
 
     this.isCreated = false;
     this.showButtonsForm = false;
@@ -167,7 +165,6 @@ export class ClinicComponent implements OnInit {
     let _address= clinic.address;
     let _phoneNumber= clinic.phoneNumber;
     let _email= clinic.email;
-
 
 
     this.observablecreateUpdateForm = this.createUpdateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
@@ -202,9 +199,7 @@ export class ClinicComponent implements OnInit {
   }
 
   public openModalCreateClinic() {
-    //INICIALIZE FORM
     this.inicializeFormCreate();
-
     this.modalService.open(this.modalCreateEdit).result.then(
       r => {
         if (r === '1') {
@@ -241,8 +236,6 @@ export class ClinicComponent implements OnInit {
     );
   }
 
-
-  //TODO: add enpoint backend!!
   public openModalDeleteClinic(id:number, idx:number) {
     this.modalService.open(this.modalDelete).result.then(
       r => {
@@ -264,12 +257,12 @@ export class ClinicComponent implements OnInit {
     );
   }
 
-
   private updateClinic(clinic: UpdateCreateClinicDto, idx:number) {
     console.log(clinic)
     this.clinicService.updateClinic(clinic, clinic.id).pipe(takeUntil(this.destroy$)).subscribe(
       (res:ClinicDto) => {
         this.clinics[idx] = res;
+        this.toast.success('Updated clinic', 'Successfully')
       }
     );
   }
@@ -289,6 +282,7 @@ export class ClinicComponent implements OnInit {
     this.clinicService.createClinic(clinic).pipe(takeUntil(this.destroy$)).subscribe(
       (res:ClinicDto) => {
         this.clinics.push(res);
+        this.toast.success('Created clinic', 'Successfully')
       }
     );
   }
@@ -302,8 +296,6 @@ export class ClinicComponent implements OnInit {
       }
     );
   }
-
-
 
   onFileChange(event) {
     const reader = new FileReader();
@@ -321,7 +313,6 @@ export class ClinicComponent implements OnInit {
 
     }
   }
-
 
 
   ngOnDestroy(): void {

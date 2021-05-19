@@ -1,11 +1,17 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-1">
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto components">
-          <li class="nav-item">
-            <img width="70" height="32" src="./../../../../assets//images//logo_yapp.png"/>
+          <li class="nav-item" *ngIf="roleUser ===1; else other_content">
+            <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/>
           </li>
+          <ng-template #other_content>
+            <li class="nav-item">
+              <img [src]="clinic.photo" class="imgHeader">
+            </li>
+            
+          </ng-template>
           <li class="nav-item ml-5">
-            <a class="nav-link orange" [routerLink]="[ 'home' ]" routerLinkActive="active">
+            <a class="nav-link orange" [routerLink]="[ 'home' ]" >
                 Inicio
             </a>
           </li>
@@ -16,7 +22,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/mts' ]" routerLinkActive="active">
-                  Mts *****
+                  Mts *
               </a>
             </li>
             <li class="nav-item">
@@ -31,56 +37,51 @@
             </li>
 
 
-            <li class="nav-item" *ngIf="roleUser===2 || roleUser===3">
-              <a class="nav-link orange"  [routerLink]="[ 'home/clinic' ]" routerLinkActive="active">
-                My Clinic
-              </a>
-            </li>
-
-            <li class="nav-item" *ngIf="roleUser===1">
+            <!-- <li class="nav-item dropdown" *ngIf="roleUser===1">
               <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
                 Management Clinics
               </a>
             </li>
 
-
-
-            <!-- <li class="nav-item dropdown" *ngIf="roleUser===1">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Managment
+            <li class="nav-item dropdown" *ngIf="roleUser===1">
+              <a class="nav-link orange"  [routerLink]="[ 'home/users' ]" routerLinkActive="active">
+                Management Users
               </a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" [routerLink]="['admin', 'daysOffYear']">Clinics</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'departments', 'daysoff']">Users</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'workscheduler', 'types']">Patients</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'departments']">Mts</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'members']">Treatments </a>
-                <a class="dropdown-item" [routerLink]="['admin', 'daysoff', 'types']">Reports</a>
+            </li> -->
+
+            <li class="nav-item dropdown" *ngIf="roleUser===1">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Management
+              </a>
+
+              <div class="dropdown-menu" >
+                <a class="dropdown-item" [routerLink]="['home', 'clinics']">Clinics</a>
+                <a class="dropdown-item" [routerLink]="['home', 'specialists']">Users</a>
+                 
               </div>
             </li>
 
-            <li class="nav-item dropdown" *ngIf="roleUser===2">
+
+            <li class="nav-item dropdown" *ngIf="roleUser===2 || roleUser===3">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Managment
+                My Clinic
               </a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" [routerLink]="['admin', 'daysOffYear']">Clinic</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'departments', 'daysoff']">Users</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'workscheduler', 'types']">Patients</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'departments']">Mts</a>
-                <a class="dropdown-item" [routerLink]="['admin', 'members']">Treatments </a>
-                <a class="dropdown-item" [routerLink]="['admin', 'daysoff', 'types']">Reports</a>
+
+              <div class="dropdown-menu" >
+                <a class="dropdown-item" [routerLink]="['home', 'clinic']">Clinic</a>
+                <a class="dropdown-item" [routerLink]="['home', 'specialists']" *ngIf="roleUser===2">Specialists</a>
+                 
               </div>
-            </li> -->
-
-
+            </li>
 
         </ul>
+
+
         <div class="collapse navbar-collapse w-20 order-2 dual-collapse2" id="navbarNav">
             <ul class="navbar-nav ml-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle orange" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-user mr-1"></i>{{username}}
+                  <i class="fas fa-user mr-1"></i>{{userLogged.username}}
                 </a>
                 <div class="dropdown-menu ">
                   <a class="dropdown-item" routerLink="home/profile"><i class="fas fa-sign-out-alt mr-1"></i>Profile</a>
@@ -88,9 +89,21 @@
                 </div>
               </li>
             </ul>
-        
           </div>
     </div>
 </nav>
 
-<h2 class="text-center">Put clinic data, hidden for role user</h2>
+<div class="text-center" *ngIf="roleUser ===2 || roleUser ===3">
+
+  <h2 >{{clinic.name}}</h2>
+  <!-- <img [src]="clinic.photo" class="imgHeader"> -->
+
+</div>
+
+<div class="text-center" *ngIf="roleUser ===1">
+
+  <h2>Back Office YAPP</h2>
+  <!-- <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/> -->
+</div>
+
+

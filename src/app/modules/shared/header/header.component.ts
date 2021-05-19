@@ -4,7 +4,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
+import { User } from 'src/app/models/entities/user-model';
 import { UserService } from '../../../services/user.service'
+import { ClinicService } from 'src/app/services/clinic.service';
+import { ClinicDto } from 'src/app/models/dto/clinic/ClinicDto';
 
 @Component({
   selector: 'app-header',
@@ -14,35 +17,43 @@ import { UserService } from '../../../services/user.service'
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
 
-  constructor(
-    private userService: UserService, 
-    private router: Router,
-    private toast: ToastrService
-    ) {}
+  constructor(private userService: UserService, 
+    private clinicService: ClinicService) {}
 
-  public username: string;
+  public userLogged: User;
   public roleUser: number;
 
-  ngOnInit(): void {
-    this.username = localStorage.getItem('username');
-    this.getRoleUser();
-  }
+  public clinic: ClinicDto = new ClinicDto;
 
-  private getRoleUser() {
+  ngOnInit(): void {
+    if (this.userService.userLogged != null) {
+      this.userLogged = this.userService.userLogged;
+    } else {
+      console.log('[HeaderComponent] user==null!');
+      console.log(this.userService.userLogged) //null
+      this.userLogged = this.userService.getUserLocalStorage()
+    }
+
+
     this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
       res => {
         this.roleUser = res as number;
-      }, error=> {
-        this.toast.error(JSON.stringify(error));
-    });
+        if (res ===2 || res ===3) this.getClinic();
+      }
+    );
+    
   }
 
-  logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('username');
-    localStorage.removeItem('id');
-    localStorage.removeItem('user');
-    this.router.navigateByUrl('/login');
+
+  private getClinic() {
+      this.clinicService.getClinic(this.userLogged.clinicId)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res) => this.clinic = res as ClinicDto
+      );
+  }
+
+  public logout() {
+    this.userService.logout()
   }
 
   ngOnDestroy(): void {
