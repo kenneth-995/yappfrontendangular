@@ -33,6 +33,9 @@
             (click)='openModalDelete(r.id, idx)'>Delete</button></td>
       </tr>
     </tbody>
+    <div class="text-center">
+      <p *ngIf="reports" style="color: blue;">No tienes informes registrados</p>
+    </div>
   </table>
 
 </div>

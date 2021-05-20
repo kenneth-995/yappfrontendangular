@@ -37,6 +37,10 @@
             (click)='deletePatient(p.id)'>Delete</button></td>
       </tr>
     </tbody>
+    <div class="text-center" style="text-align: center;">
+      <p *ngIf="patients" style="color: blue;">No tiene pacientes registrados</p>
+    </div>
+    
   </table>
 </div>
 
