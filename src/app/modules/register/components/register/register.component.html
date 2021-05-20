@@ -1,1 +1,135 @@
-<p>register works!</p>
+<div class="container">
+    <!-- <>
+
+    <div class="row">
+        <div class="col-6">
+            <input type="text" class="form-control" placeholder="First name">
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control" placeholder="Last name">
+        </div>
+    </div>
+</form> -->
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Register account</h5>
+            <p>
+                Complete the user data and the clinic data.<br>
+                You will receive a confirmation email in your email<br>
+                You will be the administrator of the clinic
+            </p>
+        </div>
+
+        <form form [formGroup]="registerForm" (ngSubmit)="submitFormRegister()">
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <h4>User Data</h4>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="username"
+                        formControlName='username' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="email" placeholder="email" formControlName='email' />
+                </div>
+            </div>
+            <div *ngIf="msgEmail" class="text-center" style="color: red;">
+                <span>{{msgEmail}}</span>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="password" placeholder="password"
+                        formControlName='password' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="password" placeholder="repeat password"
+                        formControlName='password2' />
+                </div>
+            </div>
+            <div *ngIf="msgPsswd" class="text-center" style="color: red;">
+                <span>{{msgPsswd}}</span>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="name" formControlName='name' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="surnames"
+                        formControlName='surnames' />
+                </div>
+            </div>
+            <!-- <div *ngIf="msgEmail" class="text-center" style="color: red;">
+                <span>{{msgEmail}}</span>
+            </div> -->
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="phone" formControlName='phone' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="collegiateNumber" placeholder="collegiate number"
+                        formControlName='collegiateNumber' />
+                </div>
+            </div>
+            <div class="modal-body" style="display:flex; flex-direction: row; justify-content: left; align-items: left">
+
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="specialistType"
+                        placeholder="specialist type: Psychologist" formControlName='specialistType' />
+                </div>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <h4>Clinic Data</h4>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="name clinic"
+                        formControlName='nameClinic' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="address clinic"
+                        formControlName='addressClinic' />
+                </div>
+            </div>
+
+            <div class="modal-body"
+                style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="text" placeholder="phone number clinic"
+                        formControlName='phoneNumberClinic' />
+                </div>
+                <div class="col-6">
+                    <input class="form-control rounded-sm" type="email" placeholder="email clinic"
+                        formControlName='emailClinic' />
+                </div>
+            </div>
+            <!-- <div *ngIf="msgEmail" class="text-center" style="color: red;">
+                <span>{{msgEmail}}</span>
+            </div> -->
+            <div class="modal-footer" *ngIf="showButtonsForm">
+                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="button" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div class="modal-footer" *ngIf="messageForm">
+                <span style="color: red;">{{messageForm}}</span>
+            </div>
+
+        </form>
+
+
+
+    </div>
+</div>

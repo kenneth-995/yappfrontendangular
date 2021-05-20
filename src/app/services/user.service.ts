@@ -9,6 +9,7 @@ import { UserLoginDto } from '../models/dto/UserLoginDto';
 import { UserUpdateProfile } from '../models/dto/user/UserUpdateProfile';
 import { ChangePswdDto } from '../models/dto/user/ChangePswdDto';
 
+import { CreateSpecialistAdminDto } from 'src/app/models/dto/user/CreateSpecialistAdminDto';
 import { CreateSpecialistDto } from 'src/app/models/dto/user/CreateSpecialistDto';
 
 @Injectable({
@@ -82,6 +83,9 @@ export class UserService {
     return this.htttClient.post(this.base_url+'/auth/processregisteruser/', specialistDto);
   }
 
+  public createSpecialistAdmin(specialistAdminDto: CreateSpecialistAdminDto) {
+    return this.htttClient.post(this.base_url+'/auth/processregisteradmin', specialistAdminDto);
+  }
 
 
 }

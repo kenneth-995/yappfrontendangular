@@ -72,6 +72,9 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 }
