@@ -9,6 +9,8 @@ import { UserLoginDto } from '../models/dto/UserLoginDto';
 import { UserUpdateProfile } from '../models/dto/user/UserUpdateProfile';
 import { ChangePswdDto } from '../models/dto/user/ChangePswdDto';
 
+import { CreateSpecialistDto } from 'src/app/models/dto/user/CreateSpecialistDto';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -74,6 +76,10 @@ export class UserService {
 
   public deactivateUser(id:number) {
     return this.htttClient.delete(this.base_url+'/auth/deactivate/'+id);
+  }
+
+  public createSpecialist(specialistDto: CreateSpecialistDto) {
+    return this.htttClient.post(this.base_url+'/auth/processregisteruser/', specialistDto);
   }
 
 

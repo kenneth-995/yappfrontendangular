@@ -33,7 +33,7 @@
                 <td>{{s.email}}</td>
                 <td>{{s.phone}}</td>
                 <td>
-                    {{s.roles[0]}}
+                    {{s.roles}}
                 </td>
                 <td>{{s.clinicId}}</td>
                 <td><button class="btn btn-danger" (click)='openModalDeleteSpecialist(s.id, i)'
@@ -95,6 +95,10 @@
                 type="text"
                 formControlName='email' />
         </div>
+        <div *ngIf="msgEmail" class="text-center" style="color: red;">
+            <span  >{{msgEmail}}</span>
+        </div>
+        
   
         <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
           <label for="passwordCreate" class="col-2">Password:</label>
@@ -103,16 +107,19 @@
                 name="passwordCreate"
                 type="text"
                 formControlName='password' />
+
+        </div>
+        <div *ngIf="msgPsswd" class="text-center" style="color: red;">
+            <span  >{{msgPsswd}}</span>
         </div>
   
         <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
           <label for="password2Create" class="col-2">Repeat password:</label>
-          <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
+          <input class="form-control rounded-sm border-0 shadow-sm px-4" 
                 id="password2Create" 
                 name="password2Create"
                 type="text"
-                formControlName='password2'>
-            </textarea>
+                formControlName='password2' />
         </div>
   
         <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -120,8 +127,7 @@
           <input class="form-control rounded-sm border-0 shadow-sm px-4" 
                 id="nameCreate" 
                 name="nameCreate"
-                type="email"
-                placeholder="example: oneemail@gmail.com"
+                type="text"
                 formControlName='name' />
         </div>
   
@@ -179,7 +185,7 @@
         <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel</button>
       </div>
       <div class="modal-footer" *ngIf="!showButtonsForm">
-        <span style="color: red;">All fields is required</span>
+        <span style="color: red;">{{messageForm}}</span>
       </div>
   
     </div>

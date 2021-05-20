@@ -35,6 +35,10 @@ export class SpecialistsComponent implements OnInit {
 
   public createSpecialistForm: FormGroup;
   public observablecreateSpecialistForm: Subscription = new Subscription();
+  public messageForm: string = '';
+  public msgEmail: string = '';
+  public msgPsswd: string = '';
+
 
   public showButtonsForm: boolean = false;
 
@@ -54,16 +58,16 @@ export class SpecialistsComponent implements OnInit {
     this.getData();
 
     this.createSpecialistForm = this.fb.group({
-      username:  ['', Validators.required],
-      email:  ['', Validators.required],
-      password:  ['', Validators.required],
-      password2:  ['', Validators.required],
-      name:  ['', Validators.required],
-      surnames:  ['', Validators.required],
-      phone:  ['', Validators.required],
-      collegiateNumber:  ['', Validators.required],
-      specialistType:  ['', Validators.required],
-      clinicId:  ['', Validators.required],
+      username: ['', Validators.required],
+      email: ['', Validators.required],
+      password: [' ', Validators.required],
+      password2: [' ', Validators.required],
+      name: ['', Validators.required],
+      surnames: ['', Validators.required],
+      phone: ['', Validators.required],
+      collegiateNumber: [0, Validators.required],
+      specialistType: ['', Validators.required],
+      clinicId: ['', Validators.required],
     });
   }
 
@@ -87,7 +91,7 @@ export class SpecialistsComponent implements OnInit {
             (clinics: ClinicDto[]) => {
               console.log('clinics')
               console.log(clinics)
-              this.clinics = clinics ;
+              this.clinics = clinics;
             }
           );
 
@@ -106,7 +110,7 @@ export class SpecialistsComponent implements OnInit {
             (clinic: ClinicDto) => {
               console.log('clinic')
               console.log(clinic)
-              this.clinic = clinic ;
+              this.clinic = clinic;
             }
           );
 
@@ -118,14 +122,17 @@ export class SpecialistsComponent implements OnInit {
 
       }, error => {
         this.toast.error(JSON.stringify(error));
-    });
+      });
   }
 
   public openModalCreateNewSpecialist() {
+    this.inicializeFormCreate();
     this.modalService.open(this.modalCreate).result.then(
-      r=> {
-        if (r ==='1') {
+      r => {
+        if (r === '1') {
           console.log('CONFIRM CREATE SPECIALIST: ')
+          console.log(this.createSpecialistForm.value)
+          this.registerSpecialist();
         } else {
           console.log('CANCEL CREATE SPECIALIST')
         }
@@ -133,10 +140,75 @@ export class SpecialistsComponent implements OnInit {
     );
   }
 
-  public openModalDeleteSpecialist(id:number, idx:number) {
+  private inicializeFormCreate() {
+    this.observablecreateSpecialistForm.unsubscribe();
+    this.createSpecialistForm.reset();
+    let formValid: boolean = false;
+
+
+    if (this.roleUser != 1) {
+      this.createSpecialistForm.controls['clinicId'].setValue(this.userLogged.clinicId);
+    } else {
+      this.createSpecialistForm.controls['clinicId'].setValue(this.clinics[0].id);
+    }
+
+    this.observablecreateSpecialistForm = this.createSpecialistForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+      (field) => {
+        if (this.isValidEmail(this.createSpecialistForm.controls['email'].value)) {
+          this.msgEmail = ''
+          formValid = true;
+        } else {
+          this.msgEmail = 'invalid email'
+          formValid = false;
+        }
+
+        let _password = this.createSpecialistForm.controls['password'].value;
+        let _password2 = this.createSpecialistForm.controls['password2'].value;
+
+        if (_password != null && _password === _password2 && _password.length >= 6) {
+          this.msgPsswd = ''
+          formValid = true;
+        } else {
+          this.msgPsswd = 'invalid passwords'
+          formValid = false;
+        }
+
+        if (formValid && 
+          this.createSpecialistForm.controls['username'].value != '' &&
+          this.createSpecialistForm.controls['name'].value != '' &&
+          this.createSpecialistForm.controls['surnames'].value != '' &&
+          this.createSpecialistForm.controls['phone'].value != '' &&
+          this.createSpecialistForm.controls['collegiateNumber'].value != '' &&
+          this.createSpecialistForm.controls['specialistType'].value != 0) {
+
+          this.showButtonsForm = true;
+          this.messageForm = '';
+          this.msgPsswd = ''
+          this.msgEmail = ''
+        }
+        
+
+        else {
+          this.messageForm = 'all fields is required'
+          this.showButtonsForm = false;
+        }
+
+
+      }
+    );
+
+  }
+
+  isValidEmail(value) {
+    return /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,5}$/.test(value);
+  }
+
+
+
+  public openModalDeleteSpecialist(id: number, idx: number) {
     this.modalService.open(this.modalDelete).result.then(
-      r=> {
-        if (r ==='1') {
+      r => {
+        if (r === '1') {
           console.log('CONFIRM DELETE SPECIALIST: ' + id)
           this.deleteSpecialist(id, idx);
         } else {
@@ -146,13 +218,31 @@ export class SpecialistsComponent implements OnInit {
     );
   }
 
-  private deleteSpecialist(id: number, idx:number) {
+  private deleteSpecialist(id: number, idx: number) {
     this.userService.deactivateUser(id).pipe(takeUntil(this.destroy$)).subscribe(
       (res) => {
-        this.specialists.splice(idx, 1);  
+        this.specialists.splice(idx, 1);
         this.toast.success('Delete specialist', 'Successfully');
       }
     );
   }
+
+  private registerSpecialist() {
+    this.userService.createSpecialist(this.createSpecialistForm.value).pipe(takeUntil(this.destroy$)).subscribe(
+      (res) => {
+        console.log(res)
+        this.toast.success('Registered user, it will be necessary for the user to confirm the email', 'Successfully')
+      }, 
+      (error) => {
+        console.log(error)
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 
 }
