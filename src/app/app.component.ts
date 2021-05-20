@@ -19,7 +19,7 @@ export class AppComponent {
   ngOnInit(): void {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
     .subscribe((event: NavigationEnd) => {
-      this.headerFooter = (event.url !== '/login')
+      this.headerFooter = (event.url !== '/login' && event.url !== '/register')
       
     });
 
