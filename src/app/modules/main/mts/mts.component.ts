@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
-//import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 
 import { UserService } from 'src/app/services/user.service';
@@ -57,7 +57,7 @@ export class MtsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
-    plugins: [ dayGridPlugin,  ],/* interactionPlugin */
+    plugins: [ dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     themeSystem: 'standard',
     locale: esLocale,
