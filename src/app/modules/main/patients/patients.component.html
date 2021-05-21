@@ -37,10 +37,11 @@
             (click)='deletePatient(p.id)'>Delete</button></td>
       </tr>
     </tbody>
-    <div class="text-center">
-      <p *ngIf="patients" style="color: blue;">There aren't registered patients</p>
+    <div class="text-center" *ngIf="!isPatients">
+      <p style="color: blue;">
+        There aren't registered patients
+      </p>
     </div>
-    
   </table>
 </div>
 

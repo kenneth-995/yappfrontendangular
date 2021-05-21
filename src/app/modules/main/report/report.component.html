@@ -1,10 +1,14 @@
 <div class="container">
-  <div class="row">
-    <div class="custom-control p-2">
-
+  <div class="row my-5">
+    <div class="custom-control p-2" *ngIf="isTreatments; else msgAddReport">
       <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Report &#43;</button>
     </div>
-
+    <ng-template #msgAddReport class="custom-control p-6">
+      To add a report, you need to have a registered treatment &nbsp;
+      <button class="btn-primary" [routerLink]="[ '../treatments']">
+        Register Treatment &#43;
+      </button>
+    </ng-template>
   </div>
 
   <table class="table table-striped">
@@ -17,7 +21,6 @@
         <th scope="col">Specialist type</th>
         <th scope="col">Detail</th>
         <th scope="col" *ngIf='roleUser ===1 || roleUser===2'>Action</th>
-
       </tr>
     </thead>
     <tbody>
@@ -33,9 +36,6 @@
             (click)='openModalDelete(r.id, idx)'>Delete</button></td>
       </tr>
     </tbody>
-    <div class="text-center">
-      <p *ngIf="reports" style="color: blue;">There aren't registered reports</p>
-    </div>
   </table>
 
 </div>
@@ -62,78 +62,70 @@
 </ng-template>
 
 
-  
-  <ng-template #updateCreate let-modal>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{textModal}} Report</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-          (click)="modal.close('Cerrado desde la ventana')">
-          <span aria-hidden="true">&times;</span>
-        </button>
-  
-      </div>
-  
-        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-            <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
-        </div>
-  
-        <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()">
 
-          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-            <label for="diagnosis" class="col-2">Diagnosis </label>
-            <textarea  class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
-                      type="text" 
-                      id="diagnosis" 
-                      name="diagnosis"
-                      formControlName="diagnosis">
-            </textarea>
+<ng-template #updateCreate let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">{{textModal}} Report</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Cerrado desde la ventana')">
+        <span aria-hidden="true">&times;</span>
+      </button>
 
-          </div>
-            <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="objectives" class="col-2">Objectives:</label>
-              <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
-                     id="objectives" 
-                     name="objectives"
-                     type="text"
-                     formControlName="objectives" >
-            </textarea>
-            </div>
-  
-            <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="startDate" class="col-2">Date:</label>
-              <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-                     id="date" 
-                     name="date"
-                     type="date"
-                     formControlName="date" />
-            </div>
-
-  
-            <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-              <label for="treatmentId" class="col-2">Treatment:</label>
-              <select class="form-control" formControlName="treatmentId">
-                <option *ngFor="let t of treatments" [value]="t.id">
-                    {{'-patient=' + t.patientFullName + ' -specialist=' + t.specialistFullName}}
-                </option>
-              </select>
-            </div>
-  
-            
-  
-        </form>
-  
-      
-  
-      <div class="modal-footer" *ngIf="showButtonsForm">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
-        </button>
-        <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
-        </button>
-      </div>
-  
     </div>
-  
+
+    <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
+    </div>
+
+    <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()">
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="diagnosis" class="col-2">Diagnosis </label>
+        <textarea class="modal-body"
+          style="display:flex; flex-direction: row; justify-content: center; align-items: center" type="text"
+          id="diagnosis" name="diagnosis" formControlName="diagnosis">
+            </textarea>
+
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="objectives" class="col-2">Objectives:</label>
+        <textarea class="form-control rounded-sm border-0 shadow-sm px-4" id="objectives" name="objectives" type="text"
+          formControlName="objectives">
+            </textarea>
+      </div>
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="startDate" class="col-2">Date:</label>
+        <input class="form-control rounded-sm border-0 shadow-sm px-4" id="date" name="date" type="date"
+          formControlName="date" />
+      </div>
+
+
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="treatmentId" class="col-2">Treatment:</label>
+        <select class="form-control" formControlName="treatmentId">
+          <option *ngFor="let t of treatments" [value]="t.id">
+            {{'-patient=' + t.patientFullName + ' -specialist=' + t.specialistFullName}}
+          </option>
+        </select>
+      </div>
+
+
+
+    </form>
+
+
+
+    <div class="modal-footer" *ngIf="showButtonsForm">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
+      </button>
+      <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
+      </button>
+    </div>
+
+  </div>
+
   <br>
-  
-  </ng-template>
+
+</ng-template>

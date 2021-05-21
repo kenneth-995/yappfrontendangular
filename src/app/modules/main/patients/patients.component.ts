@@ -31,6 +31,7 @@ export class PatientsComponent implements OnInit {
 
   public patients: PatientDto[] = [];
   public patientsAux: PatientDto[] = [];
+  public isPatients: boolean = false;
 
   public clinics: ClinicDto[] = [];
 
@@ -337,6 +338,7 @@ export class PatientsComponent implements OnInit {
             (patientsRes: PatientDto[]) => {
               this.patients = patientsRes;
               this.patientsAux = patientsRes;
+              if (this.patients.length>0) this.isPatients = true;
             }
           );
 
@@ -354,6 +356,8 @@ export class PatientsComponent implements OnInit {
               (patientsRes: PatientDto[]) => {
                 this.patients = patientsRes;
                 this.patientsAux = patientsRes;
+                if (this.patients.length>0) this.isPatients = true;
+                
               }
             );
         } else {

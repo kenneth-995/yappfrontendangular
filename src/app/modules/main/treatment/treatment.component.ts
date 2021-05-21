@@ -32,6 +32,7 @@ export class TreatmentComponent implements OnInit {
 
   public treatments: TreatmentDto[] = [];
   public treatmentsAux: TreatmentDto[] = [];
+  public isPatients: boolean = false;
 
   public patients: PatientDto[] = [];
 
@@ -171,6 +172,8 @@ export class TreatmentComponent implements OnInit {
       (patientsRes: PatientDto[]) => {
         console.log(patientsRes)
         this.patients = patientsRes;
+        if (this.patients.length>0) this.isPatients=true;
+        console.log(this.patients)
       }
     );
   }
@@ -182,6 +185,8 @@ export class TreatmentComponent implements OnInit {
         (patientsRes: PatientDto[]) => {
           console.log(patientsRes)
           this.patients = patientsRes;
+          if (this.patients.length>0) this.isPatients=true;
+          console.log(this.patients)
         }
       );
   }

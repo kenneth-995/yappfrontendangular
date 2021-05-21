@@ -35,7 +35,9 @@ export class ReportComponent implements OnInit {
   public roleUser: number;
 
   public reports: ReportDto[] = [];
+  
   public treatments: TreatmentDto[] = [];
+  public isTreatments: boolean = false;
 
   public updateCreateForm: FormGroup;
 
@@ -230,7 +232,6 @@ export class ReportComponent implements OnInit {
     this.reportService.getAllReports().pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto[]) => {
         this.reports = res;
-        console.log(res)
       }
     );
   }
@@ -240,7 +241,6 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
-          console.log(res)
         }
       );
 
@@ -252,6 +252,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
+          if(this.reports.length>0) this.isTreatments = true;
         }
       );
   }
@@ -296,6 +297,7 @@ export class ReportComponent implements OnInit {
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
       (res: TreatmentDto[]) => {
         this.treatments = res;
+        if (this.treatments.length>0) this.isTreatments = true;
       }
     );
   }
@@ -306,6 +308,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
           this.treatments = res;
+          if (this.treatments.length>0) this.isTreatments = true;
         }
       );
   }
@@ -316,6 +319,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
           this.treatments = res;
+          if (this.treatments.length>0) this.isTreatments = true;
         }
       );
   }
