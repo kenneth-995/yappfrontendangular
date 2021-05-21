@@ -6,6 +6,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+//import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 
 import { UserService } from 'src/app/services/user.service';
 import { MtsService } from 'src/app/services/mts.service';
@@ -26,6 +29,10 @@ import { User } from 'src/app/models/entities/user-model';
 })
 export class MtsComponent implements OnInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+
+  public showCalendar: boolean = true;
+  public classShowCalendar: string = 'col-8 shadow p-0 rounded bg-white';
+  public classShowTable: string = 'col-8 shadow p-0 rounded bg-white';
 
   private destroy$ = new Subject();
   public userLogged: User;
@@ -50,7 +57,23 @@ export class MtsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
-    initialView: 'dayGridMonth'
+    plugins: [ dayGridPlugin,  ],/* interactionPlugin */
+    initialView: 'dayGridMonth',
+    themeSystem: 'standard',
+    locale: esLocale,
+    weekNumberCalculation: 'ISO',
+    initialEvents: [],
+    events: [
+      { title: 'event 1', date: '2021-05-01' },
+      { title: 'event 2', date: '2021-05-02' }
+    ],
+    weekends: true,
+    editable: true,
+    selectable: true,
+    selectMirror: true,
+    dayMaxEvents: true,
+    eventClick: this.handleDateClick.bind(this),
+    select: this.handleDateClick.bind(this)
   };
 
   ngOnInit(): void {
@@ -61,6 +84,26 @@ export class MtsComponent implements OnInit {
     }
 
     this.getRoleUserAndData();
+
+    
+  }
+
+  public handleDateClick(arg) {
+    console.log(arg)
+  }
+
+  public checkShowCalendar(event:any) {
+    console.log(event)
+    if (!event) {
+      this.classShowCalendar = "col-8 shadow p-0 rounded bg-white d-none";
+      this.classShowTable = "col-8 shadow p-0 rounded bg-white";
+    } 
+    else {
+      this.classShowCalendar = "col-8 shadow p-0 rounded bg-white";
+      this.classShowTable = "col-8 shadow p-0 rounded bg-white d-none";
+    } 
+    console.log(this.classShowCalendar)
+    console.log(this.classShowTable)
   }
 
   private getRoleUserAndData() {

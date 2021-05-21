@@ -1,11 +1,66 @@
 <div class="container-fluid h-100">
-    <div class="row my-1 h-100">
+
+    <div class="custom-control custom-switch custom-switch-md">
+        <input type="checkbox" class="custom-control-input" id="customSwitches" [(ngModel)]="showCalendar"
+            (change)="checkShowCalendar(showCalendar?true:false)">
+        <label class="custom-control-label" for="customSwitches">Calendar</label>
+    </div>
+
+
+
+    <div class="row" *ngIf="showCalendar; else tableData">
         <div class="col-10 shadow p-0 rounded bg-white">
             <full-calendar #calendar [options]="calendarOptions"></full-calendar>
         </div>
-
-        <div class="col-2 shadow p-0 rounded bg-white">
-            <full-calendar #calendar [options]="calendarOptions"></full-calendar>
-        </div>
     </div>
-</div>
+
+
+        <ng-template #tableData class="row">
+            <div class="col-8 shadow p-0 rounded bg-white">
+            <button class="btn btn-primary">add mts</button> <br />
+
+            <table class="table table-striped">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">email</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let p of patients let i = index' scope="row" class="text-center">
+                        <td>{{i+1}}</td>
+                        <td>Date Mts</td>
+                        <td>{{p.name + ' ' + p.surname}}</td>
+                        <td>{{p.phoneNumber}}</td>
+                        <td>{{p.email}}</td>
+                        <td>{{p.age}}</td>
+                        <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger">Delete</button>
+                        </td>
+                        <!-- (click)='deletePatient(p.id)' -->
+                    </tr>
+                </tbody>
+                <div class="text-center" *ngIf="!patients">
+                    <p style="color: blue;">
+                        There aren't registered patients
+                    </p>
+                </div>
+            </table>
+
+        </div>
+        <div class="col-4 shadow p-0 rounded bg-white">
+            <h2>From Mts</h2>
+        </div>
+        </ng-template>
+
+                    
+
+
+
+
+
+    </div>
