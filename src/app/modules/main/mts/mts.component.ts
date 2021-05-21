@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular'; // useful for typechecking
 
 @Component({
   selector: 'app-mts',
@@ -6,8 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./mts.component.css']
 })
 export class MtsComponent implements OnInit {
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
   constructor() { }
+
+  calendarOptions: CalendarOptions = {
+    initialView: 'dayGridMonth'
+  };
 
   ngOnInit(): void {
   }
