@@ -35,7 +35,7 @@ export class MtsService {
   }
 
   detele(id: number) {
-    return this.htttClient.delete(this.base_url + '/medicalsheet/deactivate/' + id);
+    return this.htttClient.delete(this.base_url + '/medicalsheet/' + id);
   }
 }
 

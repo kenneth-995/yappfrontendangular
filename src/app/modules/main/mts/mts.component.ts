@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common'
 import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -29,6 +30,7 @@ import { User } from 'src/app/models/entities/user-model';
 })
 export class MtsComponent implements OnInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+  @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
 
   public showCalendar: boolean = true;
   public classShowCalendar: string = 'col-8 shadow p-0 rounded bg-white';
@@ -39,10 +41,16 @@ export class MtsComponent implements OnInit {
   public roleUser: number;
 
   public formMts: FormGroup;
+  public observableForm: Subscription = new Subscription();
+  public showButtonsForm:boolean = false;
+  public isUpdateMts:boolean = false;
+  public textCreateUpdateModal: string = '';
+
 
   public medicalSheets: MtsDto[] = [];
   public specialists: User[] = [];
   public patients: PatientDto[] = [];
+  public treatments: TreatmentDto[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -57,23 +65,45 @@ export class MtsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
-    plugins: [ dayGridPlugin, interactionPlugin],
+    plugins: [dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     themeSystem: 'standard',
     locale: esLocale,
+    timeZone:'Europe/Madrid',
+    
+    headerToolbar: {
+      left: 'prevcustom,nextcustom today',
+      center: 'title',
+      right: 'dayGridMonth dayGridWeek dayGridDay',
+    },
+    customButtons: {
+      nextcustom: {
+        icon: 'chevron-right',
+        click: () => {
+          this.calendarComponent.getApi().next();
+        }
+      },
+      prevcustom: {
+        icon: 'chevron-left',
+        click: () => {
+          this.calendarComponent.getApi().prev();
+          
+        }
+      }
+    },
+    defaultAllDayEventDuration: 45,
+    //defaultAllDay: false,
     weekNumberCalculation: 'ISO',
     initialEvents: [],
-    events: [
-      { title: 'event 1', date: '2021-05-01' },
-      { title: 'event 2', date: '2021-05-02' }
-    ],
+    events: [],
     weekends: true,
     editable: true,
     selectable: true,
     selectMirror: true,
     dayMaxEvents: true,
     eventClick: this.handleDateClick.bind(this),
-    select: this.handleDateClick.bind(this)
+    select: this.handleEventClick.bind(this),
+    eventTimeFormat: { hour: 'numeric', minute: '2-digit',}
   };
 
   ngOnInit(): void {
@@ -85,30 +115,271 @@ export class MtsComponent implements OnInit {
 
     this.getRoleUserAndData();
 
+    this.formMts = this.fb.group({
+      id:['', Validators.required],
+      idx:['', Validators.required],
+      patientId:['', Validators.required],
+      specialistId:['', Validators.required],
+      treatmentId:['', Validators.required],
+      date:['', Validators.required], 
+      time:['', Validators.required],
+    });
+
+
+  }
+
+  public handleDateClick(arg: any) {
+    this.textCreateUpdateModal = 'Update '
+    this.observableForm.unsubscribe();
+    this.showButtonsForm = false;
+    this.isUpdateMts = true;
+
+    console.log('arg.event.extendedProps.idx '+arg.event.extendedProps.idx )
+
+/*     console.log(arg.event)
+    console.log('arg.event.id '+arg.event.id )
+    console.log('arg.event.extendedProps.date '+arg.event.extendedProps.date )
+    console.log('arg.event.extendedProps.patientId '+arg.event.extendedProps.patientId )
+    console.log('arg.event.extendedProps.patientFullName '+arg.event.extendedProps.patientFullName )
+    console.log('arg.event.extendedProps.patientAge '+arg.event.extendedProps.patientAge )
+    console.log('arg.event.extendedProps.patientPhone '+arg.event.extendedProps.patientPhone )
+    console.log('arg.event.extendedProps.patientPhoto '+arg.event.extendedProps.patientPhoto )
+    console.log('arg.event.extendedProps.specialistId '+arg.event.extendedProps.specialistId )
+    console.log('arg.event.extendedProps.specialistFullName '+arg.event.extendedProps.specialistFullName )
+    console.log('arg.event.extendedProps.specialistType '+arg.event.extendedProps.specialistType )
+    console.log('arg.event.extendedProps.treatmentId '+arg.event.extendedProps.treatmentId )
+    console.log('arg.event.extendedProps.reasonTratment '+arg.event.extendedProps.reasonTratment )
+    console.log('arg.event.extendedProps.clinicId '+arg.event.extendedProps.clinicId )
+    console.log('arg.event.extendedProps.clinicName '+arg.event.extendedProps.clinicName ) */
+
+    //set form
+    let _date = new Date(arg.event.extendedProps.date)
+    var _hour = _date.getHours().toString()
+    var _minute = _date.getMinutes().toString()
+    if (_hour.length === 1) _hour = '0'+_date.getHours().toString();
+    if (_minute.length === 1) _minute = '0'+_date.getMinutes().toString()
+
+
+
+    this.formMts.controls['id'].setValue(arg.event.id);
+    this.formMts.controls['idx'].setValue(arg.event.extendedProps.idx);
+    this.formMts.controls['date'].setValue(formatDate(_date,'yyyy-MM-dd','en'));
+    this.formMts.controls['time'].setValue(_hour +':' + _minute);
+    this.formMts.controls['patientId'].setValue(arg.event.extendedProps.patientId);
+    this.formMts.controls['specialistId'].setValue(arg.event.extendedProps.specialistId);
+    this.formMts.controls['treatmentId'].setValue(arg.event.extendedProps.treatmentId);
+
+    console.log('this.formMts.controls[id]' + this.formMts.controls['id'].value)
+    console.log('this.formMts.controls[idx]' + this.formMts.controls['idx'].value)
+
+    //detect change in mts
+    let __date = formatDate(_date,'yyyy-MM-dd','en');
+    let _time = _hour +':' + _minute;
+    let _patientId = arg.event.extendedProps.patientId;
+    let _specialistId = arg.event.extendedProps.specialistId;
+    let _treatmentId = arg.event.extendedProps.treatmentId;
+
+    this.observableForm = this.formMts.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+      (field) => {
+        if (this.formMts.controls['date'].value != formatDate(_date,'yyyy-MM-dd','en') ||
+        this.formMts.controls['time'].value != _time ||
+        this.formMts.controls['patientId'].value != _patientId ||
+        this.formMts.controls['specialistId'].value != _specialistId ||
+        this.formMts.controls['treatmentId'].value != _treatmentId ) {
+          this.showButtonsForm = true;
+        } else {
+          this.showButtonsForm = false;
+        }
+      }
+    );
+    
+
+    this.modalService.open(this.modalCreateEdit).result.then(
+
+      r => {
+        if (r === '1') {
+          //send request
+          console.log('confirma la modificacion')
+          console.log(this.formMts.value)
+          const dtoUpdate = new MtsCreateUpdateDto
+          dtoUpdate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value+ ':00'; //for backend format time
+          dtoUpdate.patientId = this.formMts.controls['patientId'].value
+          dtoUpdate.specialistId = this.formMts.controls['specialistId'].value
+          dtoUpdate.treatmentId = this.formMts.controls['treatmentId'].value
+          console.log(dtoUpdate)
+          this.mtsService.update(dtoUpdate, arg.event.id).pipe(takeUntil(this.destroy$)).subscribe(
+            (res: MtsDto) => {
+              console.log(res)
+              //TODO: updatear el calendario y el array
+              this.medicalSheets[arg.event.extendedProps.idx] = res
+              this.calendarComponent.getApi().getEventById(arg.event.id).remove();
+              this.loadEventMtsInCalendar(res);
+              this.toast.success('Updated Medical Sheet', 'Successfully');
+            }
+          );
+
+
+
+        } else {
+          console.log('cancelar la modificacion')
+          this.formMts.reset();
+        }
+
+      }, error => {
+        console.log(error); //no es un error, se ha cerrado el modal porque se ha borrado la mts!
+      }
+    );
     
   }
 
-  public handleDateClick(arg) {
-    console.log(arg)
+  public handleEventClick(arg: any) {
+    this.textCreateUpdateModal = 'Create '
+    this.showButtonsForm = true;
+    this.isUpdateMts = false;
+
+    console.log(arg.start)
+
+    let _date = new Date(arg.start)
+
+    this.formMts.controls['date'].setValue(formatDate(_date,'yyyy-MM-dd','en'));
+    this.formMts.controls['time'].setValue('17:00');
+    this.formMts.controls['specialistId'].setValue(this.userLogged.id);
+
+    if (this.roleUser === 3) {
+      this.formMts.controls['specialistId'].disabled;
+    }
+    this.formMts.controls['patientId'].setValue(this.patients[0].id);
+    
+    this.formMts.controls['treatmentId'].setValue(this.treatments[0].id);
+    
+    this.modalService.open(this.modalCreateEdit).result.then(
+
+      r => {
+        if (r === '1') {
+          console.log('confirma la creacion')
+          console.log(this.formMts.value)
+          const dtoCreate = new MtsCreateUpdateDto
+          dtoCreate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value+ ':00'; //for backend format time
+          dtoCreate.patientId = this.formMts.controls['patientId'].value
+          dtoCreate.specialistId = this.formMts.controls['specialistId'].value
+          dtoCreate.treatmentId = this.formMts.controls['treatmentId'].value
+          console.log(dtoCreate)
+          this.mtsService.create(dtoCreate).pipe(takeUntil(this.destroy$)).subscribe(
+            (res: MtsDto) => {
+              console.log(res)
+              //TODO: updatear el calendario
+              this.medicalSheets.push(res);
+              //TODO:  y el array
+              this.loadEventMtsInCalendar(res);
+              this.toast.success('Created Medical Sheet', 'Successfully');
+              
+            }
+          );
+        } else {
+          console.log('cancelar la creacion')
+          this.formMts.reset();
+          
+        }
+      }, error => {
+        console.log(error);
+      }
+    );
+    
   }
 
-  public checkShowCalendar(event:any) {
+  public checkShowCalendar(event: any) {
     console.log(event)
-    if (!event) {
-      this.classShowCalendar = "col-8 shadow p-0 rounded bg-white d-none";
-      this.classShowTable = "col-8 shadow p-0 rounded bg-white";
-    } 
+    if (event) {
+      this.loadEventsMtsInCalendar(this.medicalSheets)
+      setTimeout(()=>{                           //<<<---using ()=> syntax
+        console.log('fin contador')
+   }, 3000);
+      
+    }
     else {
-      this.classShowCalendar = "col-8 shadow p-0 rounded bg-white";
-      this.classShowTable = "col-8 shadow p-0 rounded bg-white d-none";
-    } 
-    console.log(this.classShowCalendar)
-    console.log(this.classShowTable)
+      
+    }
+
+  }
+
+  private loadEventsMtsInCalendar(medicalSheets: MtsDto[]) {
+    medicalSheets.forEach((mts, index) => {
+      this.calendarComponent.getApi().addEvent({
+        id: mts.id.toString(),
+        groupId: mts.clinicId.toString(),
+        title: `h Cita con ${mts.patientFullName}`,
+        date: mts.date.toString(),/* 
+        start: mts.date.toString(),
+        end:  mts.date.toString(), */
+        
+        eventColor: '#1E1E83',
+        eventBackgroundColor: '#26E86F',
+        backgroundColor:'#ED1317', 
+        editable: true,
+        extendedProps: {
+          date: mts.date.toString(),
+          patientId: mts.patientId,
+          patientFullName: mts.patientFullName,
+          patientAge: mts.patientAge,
+          patientPhone: mts.patientPhone,
+          patientPhoto: mts.patientPhoto,
+
+          specialistId: mts.specialistId,
+          specialistFullName: mts.specialistFullName,
+          specialistType: mts.specialistType,
+
+          treatmentId: mts.treatmentId,
+          reasonTratment: mts.reason,
+
+          clinicId: mts.clinicId,
+          clinicName: mts.clinicName,
+
+          idx: index.toString()
+        }
+
+      })
+      console.log(index)
+    });
+  }
+
+  private loadEventMtsInCalendar(mts: MtsDto) {
+    this.calendarComponent.getApi().addEvent({
+      id: mts.id.toString(),
+      groupId: mts.clinicId.toString(),
+      title: `h Cita con ${mts.patientFullName}`,
+      date: mts.date.toString(),/* 
+      start: mts.date.toString(),
+      end:  mts.date.toString(), */
+      
+      eventColor: '#1E1E83',
+      eventBackgroundColor: '#26E86F',
+      backgroundColor:'#ED1317', 
+      editable: true,
+      extendedProps: {
+        date: mts.date.toString(),
+        patientId: mts.patientId,
+        patientFullName: mts.patientFullName,
+        patientAge: mts.patientAge,
+        patientPhone: mts.patientPhone,
+        patientPhoto: mts.patientPhoto,
+
+        specialistId: mts.specialistId,
+        specialistFullName: mts.specialistFullName,
+        specialistType: mts.specialistType,
+
+        treatmentId: mts.treatmentId,
+        reasonTratment: mts.reason,
+
+        clinicId: mts.clinicId,
+        clinicName: mts.clinicName,
+
+        idx: this.medicalSheets.length-1
+      }
+
+    })
   }
 
   private getRoleUserAndData() {
-
-
     this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
       (res: number) => {
         this.roleUser = res;
@@ -118,20 +389,22 @@ export class MtsComponent implements OnInit {
           this.getAllMts();
           this.getAllPAtients();
           this.getAllSpecialists();
+          this.getAllTreatments();
 
 
-
-        } else if (res === 2 ) {
+        } else if (res === 2) {
           //admin / user
           this.getAllMtsByClinic();
           this.getAllPAtientsByClinic();
           this.getAllSpecialistsByClinic();
+          this.getTreatmentsByClinicId();
 
 
-        }else if (res === 3) {
+        } else if (res === 3) {
           //admin / user
           this.getAllMtsBySpecialist();
           this.getAllPAtientsByClinic();
+          this.getAllTreatmentsBySpecialist();
           //this.getAllSpecialistsByClinic();
 
 
@@ -143,39 +416,44 @@ export class MtsComponent implements OnInit {
 
       }, error => {
         this.toast.error(JSON.stringify(error));
-      });
+    });
   }
 
   private getAllMts() {
     this.mtsService.getAllMts().pipe(takeUntil(this.destroy$)).subscribe(
-      (res) => {
-        this.medicalSheets = res;
-        console.log('mts')
-        console.log(this.medicalSheets)
-      }
+
+        (res) => {
+          this.medicalSheets = res;
+          console.log('mts')
+          console.log(this.medicalSheets)
+          this.loadEventsMtsInCalendar(this.medicalSheets);
+        }
+
     );
   }
 
   private getAllMtsByClinic() {
     this.mtsService.getAllMtsByClinic(this.userLogged.clinicId)
-    .pipe(takeUntil(this.destroy$)).subscribe(
-      (res) => {
-        this.medicalSheets = res;
-        console.log('mts')
-        console.log(this.medicalSheets)
-      }
-    );
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res) => {
+          this.medicalSheets = res;
+          console.log('mts')
+          console.log(this.medicalSheets)
+          this.loadEventsMtsInCalendar(this.medicalSheets);
+        }
+      );
   }
 
-  private getAllMtsBySpecialist() { 
+  private getAllMtsBySpecialist() {
     this.mtsService.getAllMtsBySpecialist(this.userLogged.id)
-    .pipe(takeUntil(this.destroy$)).subscribe(
-      (res) => {
-        this.medicalSheets = res;
-        console.log('mts')
-        console.log(this.medicalSheets)
-      }
-    );
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res) => {
+          this.medicalSheets = res;
+          console.log('mts')
+          console.log(this.medicalSheets)
+          this.loadEventsMtsInCalendar(this.medicalSheets);
+        }
+      );
   }
 
   private getAllSpecialists() {
@@ -222,6 +500,62 @@ export class MtsComponent implements OnInit {
       );
   }
 
+  private getAllTreatments() {
+    this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
+      (res: TreatmentDto[]) => {
+        this.treatments = res;
+        console.log(res)
+      }
+    );
+  }
+
+  getTreatmentsByClinicId() {
+    this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+          console.log(res)
+        }
+      );
+  }
+
+  getAllTreatmentsBySpecialist() {
+    this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+          console.log(res)
+        }
+      );
+  }
+
+  public deleteMts() {
+    let id = this.formMts.controls['id'].value
+    let idx = this.formMts.controls['idx'].value
+    console.log('id ' + id)
+    console.log('idx: ' + idx)
+
+    this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
+      () => {
+        //TODO delete calendar event and delete in array mts
+        this.calendarComponent.getApi().getEventById(id.toString()).remove();
+        this.medicalSheets.splice(idx, 1);
+        this.modalService.dismissAll();
+        this.toast.success('Delete medical sheet', 'Successfully')
+
+      }
+    );
+  }
+
+  public deleteMtsTable(id:number, idx:number) {
+    this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
+      () => {
+        this.calendarComponent.getApi().getEventById(id.toString()).remove();
+        this.medicalSheets.splice(idx, 1);
+        this.toast.success('Delete medical sheet', 'Successfully')
+      }
+    );
+  }
 
 
 

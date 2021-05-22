@@ -2,9 +2,9 @@ export class MtsDto {
     id: number;
     date: Date;
 
-    patientId: string;
+    patientId: number;
     patientFullName: string;
-    patientAge: string;
+    patientAge: number;
     patientPhone: string;
     patientPhoto: string;
 
@@ -13,7 +13,7 @@ export class MtsDto {
     specialistType: string;
 
     treatmentId: number;
-    reasonTratment: string;
+    reason: string; //treatment
     
     clinicId: number;
     clinicName: string;
