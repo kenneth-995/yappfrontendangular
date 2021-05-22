@@ -70,7 +70,7 @@
                     <td>{{mts.patientPhone}}</td>
                     <td>{{mts.patientAge}}</td>
                     <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-                        (click)="deleteMtsTable(mts.id, i)">Delete</button>
+                            (click)="deleteMtsTable(mts.id, i)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -87,28 +87,34 @@
 <ng-template #modalCreateEdit let-modal>
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">{{textCreateUpdateModal}} Medicat Tecnical Sheet</h5>
+            <h5 class="modal-title">{{textCreateUpdateModal}} Medical Tecnical Sheet</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('0')">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
 
-        
-        <form [formGroup]="formMts" (ngSubmit)="submitFormCreate()">
+        <div class="modal-body text-center m-1" *ngIf="isUpdateMts">
+            <img [src]="mtsModalInfo.patientPhoto" class="imgPreview" [alt]="mtsModalInfo.patientFullName">
+        </div>
 
+        <div class="modal-body text-center m-1" *ngIf="isUpdateMts">
+            Reason Treatment: {{mtsModalInfo.reason}} 
+        </div>
+
+        <form [formGroup]="formMts" (ngSubmit)="submitFormCreate()">
 
             <div class="modal-body"
                 style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-                <label for="dateOfBirthCreate" class="col-2">Date:</label>
-                <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4" id="dateOfBirthCreate"
-                    name="dateOfBirthCreate" formControlName='date' />
+                <label for="date" class="col-2">Date:</label>
+                <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4" id="date"
+                    name="date" formControlName='date' />
             </div>
 
             <div class="modal-body"
                 style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-                <label for="date" class="col-2">Time:</label>
-                <input type="time" class="form-control rounded-sm border-0 shadow-sm px-4" id="date"
-                    name="time" formControlName='time' />
+                <label for="time" class="col-2">Time:</label>
+                <input type="time" class="form-control rounded-sm border-0 shadow-sm px-4" id="time" name="time"
+                    formControlName='time' />
             </div>
 
             <div class="modal-body"
@@ -145,7 +151,7 @@
         </form>
 
         <div class="modal-footer" *ngIf="isUpdateMts">
-            <button type="button" class="btn btn-warning"(click)="deleteMts()">Delete</button>
+            <button type="button" class="btn btn-warning" (click)="deleteMts()">Delete</button>
         </div>
 
         <div class="modal-footer" *ngIf="showButtonsForm">
@@ -155,6 +161,44 @@
         </div>
 
 
+    </div>
+
+</ng-template>
+
+
+<ng-template #modalInfo let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Detail Medical Tecnical Sheet</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('0')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-center m-1">
+
+        <img [src]="mtsModalInfo.patientPhoto" class="imgPreview">
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Date</h4>{{mtsModalInfo.date}}
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Patient</h4>{{mtsModalInfo.patientFullName}}
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Patient Age</h4>{{mtsModalInfo.patientAge}}
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Reason Tratment</h4>{{mtsModalInfo.reason}}
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Specialist</h4>{{mtsModalInfo.specialistFullName}}
+    </div>
+    <div class="modal-body text-center m-1">
+        <h4>Specialist Type</h4>{{mtsModalInfo.specialistType}}
+    </div>
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('0')">Close</button>
     </div>
 
 </ng-template>

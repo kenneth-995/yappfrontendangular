@@ -31,6 +31,8 @@ import { User } from 'src/app/models/entities/user-model';
 export class MtsComponent implements OnInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
+  @ViewChild("modalInfo", { static: false }) modalInfo: TemplateRef<any>;
+  public mtsModalInfo: MtsDto = new MtsDto;
 
   public showCalendar: boolean = true;
   public classShowCalendar: string = 'col-8 shadow p-0 rounded bg-white';
@@ -103,8 +105,62 @@ export class MtsComponent implements OnInit {
     dayMaxEvents: true,
     eventClick: this.handleDateClick.bind(this),
     select: this.handleEventClick.bind(this),
-    eventTimeFormat: { hour: 'numeric', minute: '2-digit',}
+    eventTimeFormat: { hour: 'numeric', minute: '2-digit'},
+    eventMouseEnter :this.over.bind(this),
+    eventMouseLeave:this.desover.bind(this),
+    
   };
+  over(arg: any){
+    console.log("Mouseover called eventMouseEnter");
+    //console.log(arg.event['_def'])
+    console.log(arg.event['_def'].extendedProps)
+
+    
+    this.mtsModalInfo.clinicName = arg.event['_def'].extendedProps.clinicName;
+    console.log(arg.event['_def'].extendedProps.clinicName)
+    
+    this.mtsModalInfo.date = arg.event['_def'].extendedProps.date;
+    console.log(arg.event['_def'].extendedProps.date)
+
+    
+    this.mtsModalInfo.patientAge = arg.event['_def'].extendedProps.patientAge;
+    console.log(arg.event['_def'].extendedProps.patientAge)
+    
+    this.mtsModalInfo.patientFullName = arg.event['_def'].extendedProps.patientFullName;
+    console.log(arg.event['_def'].extendedProps.patientFullName)
+
+
+    this.mtsModalInfo.patientPhoto = arg.event['_def'].extendedProps.patientPhoto;
+    console.log(arg.event['_def'].extendedProps.patientPhoto)
+
+    
+    this.mtsModalInfo.reason = arg.event['_def'].extendedProps.reasonTratment;
+    console.log(arg.event['_def'].extendedProps.reasonTratment)
+
+    
+    this.mtsModalInfo.specialistFullName = arg.event['_def'].extendedProps.specialistFullName;
+    console.log(arg.event['_def'].extendedProps.specialistFullName)
+    
+
+    
+    this.mtsModalInfo.specialistType = arg.event['_def'].extendedProps.specialistType;
+    console.log(arg.event['_def'].extendedProps.specialistType)
+
+
+
+
+    /* this.modalService.open(this.modalInfo).result.then(
+      r => { 
+
+      }
+    ); */
+  }
+
+  desover(arg: any){
+    console.log("Mouseover called eventMouseLeave");
+    console.log(arg.event['_def'])
+    //this.modalService.dismissAll();
+  }
 
   ngOnInit(): void {
     if (this.userService.userLogged != null) {
@@ -127,6 +183,7 @@ export class MtsComponent implements OnInit {
 
 
   }
+
 
   public handleDateClick(arg: any) {
     this.textCreateUpdateModal = 'Update '
@@ -477,7 +534,6 @@ export class MtsComponent implements OnInit {
       );
   }
 
-
   private getAllPAtients() {
     this.patientService.getAllPatients()
       .pipe(takeUntil(this.destroy$)).subscribe(
@@ -509,7 +565,7 @@ export class MtsComponent implements OnInit {
     );
   }
 
-  getTreatmentsByClinicId() {
+  private getTreatmentsByClinicId() {
     this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
@@ -519,7 +575,7 @@ export class MtsComponent implements OnInit {
       );
   }
 
-  getAllTreatmentsBySpecialist() {
+  private getAllTreatmentsBySpecialist() {
     this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
@@ -537,10 +593,9 @@ export class MtsComponent implements OnInit {
 
     this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
       () => {
-        //TODO delete calendar event and delete in array mts
         this.calendarComponent.getApi().getEventById(id.toString()).remove();
         this.medicalSheets.splice(idx, 1);
-        this.modalService.dismissAll();
+        this.modalService.dismissAll(); //cerramos el modal de update
         this.toast.success('Delete medical sheet', 'Successfully')
 
       }
