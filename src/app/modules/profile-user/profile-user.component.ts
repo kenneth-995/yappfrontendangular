@@ -214,7 +214,7 @@ export class ProfileUserComponent implements OnInit {
     this.profileForm.controls['collegiateNumber'].setValue(this.userLogged.collegiateNumber);
     this.profileForm.controls['isAdminRole'].setValue(this.roleUser === 1 || this.roleUser === 2);
 
-    this.profileForm.valueChanges.subscribe(
+    this.profileForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
         console.log(field)
         this.changeProfileForm = true;
@@ -233,8 +233,11 @@ export class ProfileUserComponent implements OnInit {
         console.log(res)
         console.log(this.userLogged)
         this.userLogged.photoUrl = res['url']
-        this.userService.userLogged.photoUrl = res['url']
+        console.log(this.userLogged)
+        this.userService.setUserLogged(this.userLogged)
+        //this.userService.userLogged.photoUrl = res['url']
         this.toast.success('Photo updated', 'Successfuly')
+        this.previewImageStr=''
       }
     );
 
@@ -263,6 +266,11 @@ export class ProfileUserComponent implements OnInit {
 
   matchTwoPasswords(psw1: string, psw2: string): boolean {
     return psw1 === psw2;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }
