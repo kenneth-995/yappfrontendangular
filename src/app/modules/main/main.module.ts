@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 
+import { NgSelectModule } from '@ng-select/ng-select';
+import { NgOptionHighlightModule } from '@ng-select/ng-option-highlight';
+
 import { MainRoutingModule } from './main-routing.module';
 import { HomeComponent } from './home/home.component';
 import { SharedModule } from '../shared/shared.module';
@@ -26,7 +29,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CommonModule,
     MainRoutingModule,
     SharedModule,
-    FullCalendarModule
+    FullCalendarModule,
+    NgSelectModule,
+    NgOptionHighlightModule
   ]
 })
 export class MainModule { }

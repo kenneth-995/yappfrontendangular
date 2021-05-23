@@ -31,7 +31,7 @@
         <td>{{r.specialistFullName}}</td>
         <td>{{r.specialistType}}</td>
 
-        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(r, idx)'>View</button></td>
+        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(r, idx)'>Detail</button></td>
         <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
             (click)='openModalDelete(r.id, idx)'>Delete</button></td>
       </tr>
@@ -63,8 +63,8 @@
 
 
 
-<ng-template #updateCreate let-modal>
-  <div class="modal-content">
+<ng-template #updateCreate let-modal >
+  <div class="modal-content" >
     <div class="modal-header">
       <h5 class="modal-title">{{textModal}} Report</h5>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"
@@ -78,7 +78,7 @@
       <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
     </div>
 
-    <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()">
+    <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()" style="height: 500px !important;">
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="diagnosis" class="col-2">Diagnosis </label>
@@ -86,14 +86,20 @@
           style="display:flex; flex-direction: row; justify-content: center; align-items: center" type="text"
           id="diagnosis" name="diagnosis" formControlName="diagnosis">
             </textarea>
-
       </div>
+      <div *ngIf="textErrorMaxLengthDiagnosis" style="color: red;" class="mx-5"> 
+        {{textErrorMaxLengthDiagnosis}}
+      </div> 
+
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="objectives" class="col-2">Objectives:</label>
         <textarea class="form-control rounded-sm border-0 shadow-sm px-4" id="objectives" name="objectives" type="text"
           formControlName="objectives">
             </textarea>
       </div>
+      <div *ngIf="textErrorMaxLengthObjectives" style="color: red;" class="mx-5"> 
+        {{textErrorMaxLengthObjectives}}
+      </div> 
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="startDate" class="col-2">Date:</label>
@@ -101,24 +107,48 @@
           formControlName="date" />
       </div>
 
-
-      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+      <!-- <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="treatmentId" class="col-2">Treatment:</label>
         <select class="form-control" formControlName="treatmentId">
           <option *ngFor="let t of treatments" [value]="t.id">
             {{'-patient=' + t.patientFullName + ' -specialist=' + t.specialistFullName}}
           </option>
         </select>
-      </div>
+      </div> -->
 
+      <div class="pl-5 ml-5 pr-4 mt">
 
+          Select Treatment associated with the report<br/>
+          <ng-select id="treatmentId" [items]="treatments" bindLabel="patientFullName" [loading]="tratmentsLoading"
+            [searchFn]="customSearchFn" formControlName="treatmentId" id="idNgSelect" class="shadow-sm px-4" [placeholder]="textPlaceholderNgSelect"> 
+
+            <ng-template ng-option-tmp let-item="item" id="idNgTemplateSelect" style="border: black !important;">
+               <strong>Treatment info </strong> <br />
+               <ul style="color: black;">
+                <li>Patient: <strong> {{item.patientFullName}}</strong></li>
+                <li>Start date: <strong>{{item.startDate}}</strong></li>
+                <li>Sessions finished: <strong>{{item.sessionsFinished}}</strong></li>
+                <li>Specialist: <strong>{{item.specialistFullName}}</strong></li>
+                <li>Specialist type: <strong>{{item.specialistType}}</strong></li>
+                <li>Reason: <strong>{{item.reason}}</strong></li>
+               </ul>
+              
+              <hr/>
+            </ng-template>
+          </ng-select>
+        </div>
+
+        <!-- <span *ngFor="let t of treatments">
+          <br/><br/>
+        </span> -->
 
     </form>
 
 
 
-    <div class="modal-footer" *ngIf="showButtonsForm">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="modal.close('1')">Save
+    <div class="text-right mx-5 pb-3"  *ngIf="showButtonsForm">
+      <hr/>
+      <button type="button" class="btn btn-secondary mr-1" data-dismiss="modal" (click)="modal.close('1')">Save
       </button>
       <button type="button" class="btn btn-primary" (click)="modal.close('0')">Cancel
       </button>
@@ -126,6 +156,6 @@
 
   </div>
 
-  <br>
+
 
 </ng-template>

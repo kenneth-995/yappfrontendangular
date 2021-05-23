@@ -33,6 +33,7 @@
     "@fullcalendar/daygrid": "^5.7.0",
     "@fullcalendar/interaction": "^5.7.0",
     "@ng-bootstrap/ng-bootstrap": "^8.0.4",
+    "@ng-select/ng-option-highlight": "0.0.6",
     "@ng-select/ng-select": "^6.1.0",
     "bootstrap": "^4.6.0",
     "express": "^4.17.1",

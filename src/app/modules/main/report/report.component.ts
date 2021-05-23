@@ -41,12 +41,21 @@ export class ReportComponent implements OnInit {
 
   public updateCreateForm: FormGroup;
 
+  public createUpdateTreatmentDto: TreatmentDto = new TreatmentDto;
+
   public observableupdateCreateForm: Subscription = new Subscription();
 
   public showButtonsForm: boolean = false;
 
 
   public textModal: string = '';
+
+  public textPlaceholderNgSelect: string = 'Find by patient name'; 
+  
+
+  public textErrorMaxLengthDiagnosis: string = '';
+  public textErrorMaxLengthObjectives: string = ''; 
+
 
   constructor(private formBuilder: FormBuilder,
     private router: Router,
@@ -122,7 +131,9 @@ export class ReportComponent implements OnInit {
       r => {
         if (r === '1') {
           console.log('SAVE')
-          this.createReport(this.updateCreateForm.value);
+          
+          //this.createReport(this.updateCreateForm.value); //create report without ngSelect(without treatmentObject)
+          this.createReportWithNgSelect();
         } else {
           console.log('CANCEL')
         }
@@ -137,21 +148,53 @@ export class ReportComponent implements OnInit {
     this.updateCreateForm.controls['date'].setValue('');
     this.updateCreateForm.controls['objectives'].setValue('');
     this.updateCreateForm.controls['diagnosis'].setValue('');
-    this.updateCreateForm.controls['treatmentId'].setValue(0);
+    //this.updateCreateForm.controls['treatmentId'].setValue('Select treatment');
 
     this.observableupdateCreateForm = this.updateCreateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
         console.log('inicializeNewFormReport subscriber')
-        if (this.updateCreateForm.controls['diagnosis'].value != '' &&
+
+        if (this.updateCreateForm.controls['treatmentId'].value != null) {
+          this.textPlaceholderNgSelect = '';
+        } else {
+          this.textPlaceholderNgSelect = 'Find by patient name';
+        }
+
+
+
+        let textDiagnosis = this.updateCreateForm.controls['diagnosis'].value
+        if (textDiagnosis.length >255 ) {
+          this.textErrorMaxLengthDiagnosis = 'diagnosis can be max 255 characters long.';
+        } else {
+          this.textErrorMaxLengthDiagnosis = '';
+        } 
+        
+        let textErrorMaxLengthObjectives = this.updateCreateForm.controls['objectives'].value
+        if (textErrorMaxLengthObjectives.length >255 ) {
+          this.textErrorMaxLengthObjectives = 'objectives can be max 255 characters long.';
+        } else {
+          this.textErrorMaxLengthObjectives = '';
+        } 
+
+
+        if (this.updateCreateForm.valid &&
+          this.updateCreateForm.controls['diagnosis'].value != '' &&
           this.updateCreateForm.controls['objectives'].value != '' &&
           this.updateCreateForm.controls['date'].value != '' &&
-          this.updateCreateForm.controls['treatmentId'].value != 0) {
+          this.updateCreateForm.controls['treatmentId'].value != null 
+          /* && this.updateCreateForm.controls['treatmentId'].value != 0 */) {
 
           this.showButtonsForm = true;
         }
         else {
           this.showButtonsForm = false;
         }
+        console.log('this.updateCreateForm.controls[treatmentId].value')
+        console.log(this.updateCreateForm.controls['treatmentId'].value)
+        console.log('this.updateCreateForm.value')
+        console.log(this.updateCreateForm.value)
+
+        
       }
     );
 
@@ -187,7 +230,7 @@ export class ReportComponent implements OnInit {
     this.updateCreateForm.controls['diagnosis'].setValue(r.diagnosis);
     this.updateCreateForm.controls['objectives'].setValue(r.objectives);
     this.updateCreateForm.controls['date'].setValue(r.date);
-    this.updateCreateForm.controls['treatmentId'].setValue(r.treatmentId);
+    this.updateCreateForm.controls['treatmentId'].setValue(r.specialistFullName);
 
 
     this.observableupdateCreateForm = this.updateCreateForm.valueChanges.subscribe(
@@ -269,6 +312,28 @@ export class ReportComponent implements OnInit {
     );
   }
 
+  createReportWithNgSelect() {
+    var reportSelected : TreatmentDto = this.updateCreateForm.controls['treatmentId'].value
+    
+    var formToSend : CreateReportDto = new CreateReportDto;
+    formToSend.diagnosis = this.updateCreateForm.controls['diagnosis'].value
+    formToSend.objectives = this.updateCreateForm.controls['objectives'].value
+    formToSend.date = this.updateCreateForm.controls['date'].value
+
+    formToSend.treatmentId = reportSelected.id;
+
+    console.log('formToSend')
+    console.log(formToSend)
+
+    this.reportService.create(formToSend).pipe(takeUntil(this.destroy$)).subscribe(
+      (res: ReportDto) => {
+        this.reports.push(res)
+        console.log(res)
+        this.toast.success('Create report', 'Successfully')
+      }
+    );
+  }
+
   //USER
   updateReport(updateReport: CreateReportDto, id:number, idx:number) {
     this.reportService.update(updateReport, id).pipe(takeUntil(this.destroy$)).subscribe(
@@ -322,6 +387,11 @@ export class ReportComponent implements OnInit {
           if (this.treatments.length>0) this.isTreatments = true;
         }
       );
+  }
+
+  customSearchFn(term: string, item: TreatmentDto) {
+    term = term.toLowerCase();
+    return item.patientFullName.toLowerCase().indexOf(term) > -1 || item.patientFullName.toLowerCase() === term;
   }
 
 

@@ -32,6 +32,8 @@ export class TreatmentComponent implements OnInit {
 
   public treatments: TreatmentDto[] = [];
   public treatmentsAux: TreatmentDto[] = [];
+  public tratmentsLoading = false;
+
   public isPatients: boolean = false;
 
   public patients: PatientDto[] = [];
@@ -43,6 +45,8 @@ export class TreatmentComponent implements OnInit {
   public showButtonsForm: boolean = false;
 
   public textModal: string = '';
+
+  public placeholderTreatmens: string = 'Select treatment'
 
 
   public observableCreateUpdateForm: Subscription = new Subscription();
@@ -112,11 +116,13 @@ export class TreatmentComponent implements OnInit {
 
 
   getAllTreatments() {
+    this.tratmentsLoading = true;
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
       (res: TreatmentDto[]) => {
         this.treatments = res;
         this.treatmentsAux = res;
         console.log(res)
+        this.tratmentsLoading = false;
       }
     );
   }
@@ -129,6 +135,7 @@ export class TreatmentComponent implements OnInit {
           this.treatments = res;
           this.treatmentsAux = res;
           console.log(res)
+          this.tratmentsLoading = false;
         }
       );
   }
@@ -141,6 +148,7 @@ export class TreatmentComponent implements OnInit {
           this.treatments = res;
           this.treatmentsAux = res;
           console.log(res)
+          this.tratmentsLoading = false;
         }
       );
   }

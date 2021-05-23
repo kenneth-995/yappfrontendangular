@@ -1,0 +1,34 @@
+/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+
+
+.ng-dropdown-panel.ng-dropdown-panel-items.ng-option {
+    background-color: rgba(224, 224, 235, 1) !important;}
+.ng-dropdown-panel-items {
+    background-color: rgba(38, 38, 197, 1) !important;
+}
+.ng-option{
+    background-color: rgba(224, 224, 235, 1) !important;
+}
+
+#idNgSelect {
+    border-color: red;
+    background-color: rgba(110, 110, 114, 0.111) !important;
+    height: 200%;
+    margin-left: 10px;
+    margin-right: auto;
+  }
+
+#idNgTemplateSelect{
+    border-color: red;
+    background-color: rgb(224, 224, 235) !important;
+
+  }
+
+/* menu desplegable */
+.ng-dropdown-panel-items{
+    background-color: rgb(224, 224, 235) !important;
+}
+
+.scroll-host{
+    background-color: rgb(224, 224, 235) !important;
+}

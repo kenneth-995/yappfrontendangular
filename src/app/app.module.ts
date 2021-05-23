@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { NgOptionHighlightModule } from '@ng-select/ng-option-highlight'; //npm i --save  @ng-select/ng-option-highlight
+
 import { AppComponent } from './app.component';
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
@@ -20,7 +23,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  //schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   
   declarations: [
     AppComponent,
@@ -41,7 +44,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    NgSelectModule,
+    NgOptionHighlightModule
   ],
   
   providers: [
