@@ -33,6 +33,7 @@ export class ReportComponent implements OnInit {
   public roleUser: number;
 
   public reports: ReportDto[] = [];
+  public reportsAux: ReportDto[] = [];
   public isReports: boolean = false;
   
   public treatments: TreatmentDto[] = [];
@@ -275,6 +276,7 @@ export class ReportComponent implements OnInit {
     this.reportService.getAllReports().pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto[]) => {
         this.reports = res;
+        this.reportsAux = res;
         this.isReports = this.reports.length>0;
       }
     );
@@ -285,6 +287,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
+          this.reportsAux = res;
           this.isReports = this.reports.length>0;
         }
       );
@@ -297,7 +300,8 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
-          if(this.reports.length>0) this.isTreatments = true;
+          this.reportsAux = res;
+          this.isTreatments = this.reports.length>0;
           this.isReports = this.reports.length>0;
         }
       );
@@ -397,6 +401,61 @@ export class ReportComponent implements OnInit {
   customSearchFn(term: string, item: TreatmentDto) {
     term = term.toLowerCase();
     return item.patientFullName.toLowerCase().indexOf(term) > -1 || item.patientFullName.toLowerCase() === term;
+  }
+
+  //FILTERING
+  public findByParams(name: string, nameSpecialist: string, mindate: Date, maxdate: Date) {
+    this.reports = this.reportsAux;
+    console.log(mindate)
+    console.log(maxdate)
+
+    if (name) {
+      console.log('name')
+      this.reports = this.reports.filter(report => report.patientFullName.concat(report.patientFullName).toLowerCase().includes(name.toLowerCase()));
+    }
+
+    if(nameSpecialist) {
+      this.reports = this.reports.filter(
+        treatment => treatment.specialistFullName.toLowerCase().includes(nameSpecialist.toLowerCase()));
+    }
+
+    if(mindate && mindate.toString()!= '') {
+      this.reports = this.reports.filter(
+        treatment => new Date(treatment.date) >= new Date(mindate) );
+    }
+
+    if(maxdate && maxdate.toString()!= '') {
+      this.reports = this.reports.filter(
+        treatment => new Date(treatment.date) <= new Date(maxdate) );
+    }
+
+
+
+
+
+    this.isReports = this.reports.length > 0
+  }
+
+  //ORDERING
+  public orderByPatientName(order:string) {
+    if (order === 'desc')
+    this.reports.sort((t1,t2)=> (t1.patientFullName> t2.patientFullName) ? 1: -1);
+    if (order === 'asc')
+    this.reports.sort((t1,t2)=> (t1.patientFullName> t2.patientFullName) ? -1: 1);
+  }
+
+  public orderBySpecialistName(order:string) {
+    if (order === 'desc')
+      this.reports.sort((t1,t2)=> (t1.specialistFullName> t2.specialistFullName) ? 1: -1);
+    if (order === 'asc')
+      this.reports.sort((t1,t2)=> (t1.specialistFullName> t2.specialistFullName) ? -1: 1);
+  }
+
+  public orderByDate(order:string) {
+    if (order === 'desc')
+    this.reports.sort((t1,t2)=> (new Date(t1.date)> new Date(t2.date)) ? 1: -1);
+    if (order === 'asc')
+    this.reports.sort((t1,t2)=> (new Date(t1.date)> new Date(t2.date)) ? -1: 1);
   }
 
 

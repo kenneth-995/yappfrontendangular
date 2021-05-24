@@ -83,7 +83,7 @@ export class TreatmentComponent implements OnInit {
 
   }
 
-  getData() {
+  private getData() {
     this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
       (res: number) => {
         this.roleUser = res;
@@ -115,7 +115,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  getAllTreatments() {
+  private getAllTreatments() {
     this.tratmentsLoading = true;
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
       (res: TreatmentDto[]) => {
@@ -128,7 +128,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  getTreatmentsByClinicId() {
+  private getTreatmentsByClinicId() {
     this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
@@ -141,7 +141,7 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-  getAllTreatmentsBySpecialist() {
+  private getAllTreatmentsBySpecialist() {
     this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto[]) => {
@@ -154,7 +154,7 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-  getAllUsers() {
+  private getAllUsers() {
     this.userService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe(
       (res: User[]) => {
         this.specialists = res;
@@ -163,7 +163,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  getUsersByClinicId() {
+  private getUsersByClinicId() {
     this.userService.getAllUsersByClinicId(this.userLogged.clinicId)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: User[]) => {
@@ -173,7 +173,7 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-  getAllPatients() {
+  private getAllPatients() {
     this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
       (patientsRes: PatientDto[]) => {
         console.log(patientsRes)
@@ -184,7 +184,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  getAllPatientsByClinicId() {
+  private getAllPatientsByClinicId() {
     this.patientService.getPatientsByClinic(this.userLogged.clinicId)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (patientsRes: PatientDto[]) => {
@@ -268,7 +268,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  inicializeNewFormTreatment() {
+  private inicializeNewFormTreatment() {
     this.observableCreateUpdateForm.unsubscribe();
     this.createUpdateForm.reset();
 
@@ -306,7 +306,7 @@ export class TreatmentComponent implements OnInit {
 
   }
 
-  inicializeFormWithTreatment(treatment: TreatmentDto) {
+  private inicializeFormWithTreatment(treatment: TreatmentDto) {
     this.observableCreateUpdateForm.unsubscribe();
     //TODO: not work hide buttons 'edit' 'cancel'
     this.showButtonsForm = false;
@@ -360,7 +360,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-  createTreatment(form: CreateUpdateTreatmentDto) {
+  private createTreatment(form: CreateUpdateTreatmentDto) {
     //pipe() es para encadenar operadores observables 
     //subscribe() para activar los observables y escuchar los valores emitidos.
     this.treatmentService.insertTreatment(form)
@@ -374,7 +374,7 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-  updateTreatment(form: CreateUpdateTreatmentDto, id: number, idx: number) {
+  private updateTreatment(form: CreateUpdateTreatmentDto, id: number, idx: number) {
     this.treatmentService.updateTreatment(form, id)
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: TreatmentDto) => {
@@ -408,6 +408,7 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
+  //FILTERING
   public findByParams(name: string, min: number, max: number, nameSpecialist: string, mindate:Date, maxdate:Date) {
     this.treatments = this.treatmentsAux;
     console.log(mindate)
@@ -476,6 +477,7 @@ export class TreatmentComponent implements OnInit {
     this.isTreatments = this.treatments.length >0
   }
 
+  //ORDERING
   public orderByPatientName(order:string) {
     if (order === 'desc')
     this.treatments.sort((t1,t2)=> (t1.patientFullName> t2.patientFullName) ? 1: -1);
@@ -495,10 +497,6 @@ export class TreatmentComponent implements OnInit {
     this.treatments.sort((t1,t2)=> (new Date(t1.startDate)> new Date(t2.startDate)) ? 1: -1);
     if (order === 'asc')
     this.treatments.sort((t1,t2)=> (new Date(t1.startDate)> new Date(t2.startDate)) ? -1: 1);
-  }
-
-  public resetOrdering() {
-    this.treatments = this.treatmentsAux
   }
 
   ngOnDestroy(): void {
