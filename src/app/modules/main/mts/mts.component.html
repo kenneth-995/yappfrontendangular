@@ -147,7 +147,7 @@
                 <label for="clinicIdCreate" class="col-2">Treatment: </label>
                 <select class="form-control" formControlName='treatmentId'>
                     <option *ngFor="let t of treatments" [value]="t.id">
-                        {{(t.id) + t.patientFullName}}
+                        Date: {{t.startDate}} Patient: {{t.patientFullName}} Specialist: {{t.specialistFullName}}
                     </option>
                 </select>
             </div>

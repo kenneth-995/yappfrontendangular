@@ -9,11 +9,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { PatientService } from '../../../services/patient.service';
 import { ClinicService } from '../../../services/clinic.service';
+import { TreatmentService } from '../../../services/treatment.service';
 import { UploadFileService } from '../../../services/upload-file.service';
+
 import { PatientDto } from '../../../models/dto/patient/PatientDto';
 import { CreatePatientDto } from '../../../models/dto/patient/CreatePatientDto';
 import { ClinicDto } from '../../../models/dto/clinic/ClinicDto'
 import { User } from 'src/app/models/entities/user-model';
+import { TreatmentDto } from 'src/app/models/dto/treatment/TreatmentDto';
 
 
 @Component({
@@ -34,6 +37,11 @@ export class PatientsComponent implements OnInit {
   public isPatients: boolean = false;
 
   public clinics: ClinicDto[] = [];
+  public clinicIdParamSearch: number = 0; //[(ngModel)]
+  public specialistIdParamSearch: number = 0; //[(ngModel)]
+  public treatments: TreatmentDto[] = [];
+
+  public specialists: User[] = [];
 
   public patientToUpdate: PatientDto = new PatientDto();
   public patientToCreate: CreatePatientDto = new CreatePatientDto();
@@ -63,6 +71,7 @@ export class PatientsComponent implements OnInit {
     private userService: UserService,
     private patientService: PatientService,
     private clinicService: ClinicService,
+    private treatmentService: TreatmentService,
     private uploadFileService: UploadFileService) {
 
   }
@@ -88,7 +97,7 @@ export class PatientsComponent implements OnInit {
       name: ['', Validators.required],
       surname: ['', Validators.required],
       phoneNumber: ['', Validators.required],
-      reason: ['',Validators.required],
+      reason: ['', Validators.required],
       email: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       urlPhoto: [''],
@@ -100,8 +109,6 @@ export class PatientsComponent implements OnInit {
     });
 
   }
-
-
 
   private inicializeFormCreate() {
     this.textCreateUpdateModal = 'Create ';
@@ -125,25 +132,24 @@ export class PatientsComponent implements OnInit {
     } else {
       this.createPatientForm.controls['clinicId'].setValue(this.clinics[0].id);
     }
-    
 
     this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
         console.log('createPatientForm subscriber')
         if (
-            this.createPatientForm.valid &&
-            this.createPatientForm.controls['name'].value != '' && this.createPatientForm.controls['name'].value != null &&
-            this.createPatientForm.controls['surname'].value != '' && this.createPatientForm.controls['surname'].value != null &&
-            this.createPatientForm.controls['phoneNumber'].value != '' && this.createPatientForm.controls['phoneNumber'].value != null &&
-            this.createPatientForm.controls['reason'].value != '' && this.createPatientForm.controls['reason'].value != null &&
-            this.createPatientForm.controls['email'].value != '' && this.createPatientForm.controls['email'].value != null && 
-            this.createPatientForm.controls['dateOfBirth'].value != '' && this.createPatientForm.controls['dateOfBirth'].value != null &&
-            this.createPatientForm.controls['homeAddress'].value != '' && this.createPatientForm.controls['homeAddress'].value != null &&
-            this.createPatientForm.controls['schoolName'].value != '' && this.createPatientForm.controls['schoolName'].value != null &&
-            this.createPatientForm.controls['course'].value != '' && this.createPatientForm.controls['course'].value != null &&
-            this.createPatientForm.controls['paymentType'].value != '' && this.createPatientForm.controls['paymentType'].value != null  &&
-            this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != null
-          ) {
+          this.createPatientForm.valid &&
+          this.createPatientForm.controls['name'].value != '' && this.createPatientForm.controls['name'].value != null &&
+          this.createPatientForm.controls['surname'].value != '' && this.createPatientForm.controls['surname'].value != null &&
+          this.createPatientForm.controls['phoneNumber'].value != '' && this.createPatientForm.controls['phoneNumber'].value != null &&
+          this.createPatientForm.controls['reason'].value != '' && this.createPatientForm.controls['reason'].value != null &&
+          this.createPatientForm.controls['email'].value != '' && this.createPatientForm.controls['email'].value != null &&
+          this.createPatientForm.controls['dateOfBirth'].value != '' && this.createPatientForm.controls['dateOfBirth'].value != null &&
+          this.createPatientForm.controls['homeAddress'].value != '' && this.createPatientForm.controls['homeAddress'].value != null &&
+          this.createPatientForm.controls['schoolName'].value != '' && this.createPatientForm.controls['schoolName'].value != null &&
+          this.createPatientForm.controls['course'].value != '' && this.createPatientForm.controls['course'].value != null &&
+          this.createPatientForm.controls['paymentType'].value != '' && this.createPatientForm.controls['paymentType'].value != null &&
+          this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != null
+        ) {
 
           this.showButtonsForm = true;
         }
@@ -155,81 +161,79 @@ export class PatientsComponent implements OnInit {
 
   }
 
+  private inicializeFormEdit(patient: PatientDto, index: number) {
+    this.observableupdateCreateForm.unsubscribe();
+    this.observableuploadPhotoForm.unsubscribe();
+    this.isCreated = false;
+    this.showButtonsForm = false;
+    this.createPatientForm.reset();
+    this.textCreateUpdateModal = 'Update ';
+    this.imageSrc = patient.urlPhoto;
+    //set form
+    this.createPatientForm.controls['name'].setValue(patient.name);
+    this.createPatientForm.controls['surname'].setValue(patient.surname);
+    this.createPatientForm.controls['phoneNumber'].setValue(patient.phoneNumber);
+    this.createPatientForm.controls['reason'].setValue(patient.reason);
+    this.createPatientForm.controls['email'].setValue(patient.email);
+    this.createPatientForm.controls['dateOfBirth'].setValue(patient.dateOfBirth);
+    this.createPatientForm.controls['homeAddress'].setValue(patient.homeAddress);
+    this.createPatientForm.controls['schoolName'].setValue(patient.schoolName);
+    this.createPatientForm.controls['course'].setValue(patient.course);
+    this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
+    this.createPatientForm.controls['clinicId'].setValue(patient.clinicId);
+    this.createPatientForm.controls['urlPhoto'].setValue(patient.urlPhoto);
 
-  private inicializeFormEdit(patient: PatientDto, index: number){
-      this.observableupdateCreateForm.unsubscribe();
-      this.observableuploadPhotoForm.unsubscribe();
-      this.isCreated = false;
-      this.showButtonsForm = false;
-      this.createPatientForm.reset();
-      this.textCreateUpdateModal = 'Update ';
-      this.imageSrc = patient.urlPhoto;
-      //set form
-      this.createPatientForm.controls['name'].setValue(patient.name);
-      this.createPatientForm.controls['surname'].setValue(patient.surname);
-      this.createPatientForm.controls['phoneNumber'].setValue(patient.phoneNumber);
-      this.createPatientForm.controls['reason'].setValue(patient.reason);
-      this.createPatientForm.controls['email'].setValue(patient.email);
-      this.createPatientForm.controls['dateOfBirth'].setValue(patient.dateOfBirth);
-      this.createPatientForm.controls['homeAddress'].setValue(patient.homeAddress);
-      this.createPatientForm.controls['schoolName'].setValue(patient.schoolName);
-      this.createPatientForm.controls['course'].setValue(patient.course);
-      this.createPatientForm.controls['paymentType'].setValue(patient.paymentType);
-      this.createPatientForm.controls['clinicId'].setValue(patient.clinicId);
-      this.createPatientForm.controls['urlPhoto'].setValue(patient.urlPhoto);
+    //detect change in patient
+    let _name = patient.name;
+    let _surname = patient.surname;
+    let _phoneNumber = patient.phoneNumber;
+    let _reason = patient.reason;
+    let _email = patient.email;
+    let _dateOfBirth = patient.dateOfBirth;
+    let _homeAddress = patient.homeAddress;
+    let _schoolName = patient.schoolName;
+    let _course = patient.course;
+    let _paymentType = patient.paymentType;
+    let _clinicId = patient.clinicId;
 
-      //detect change in patient
-      let _name= patient.name;
-      let _surname= patient.surname;
-      let _phoneNumber= patient.phoneNumber;
-      let _reason= patient.reason;
-      let _email= patient.email;
-      let _dateOfBirth= patient.dateOfBirth;
-      let _homeAddress= patient.homeAddress;
-      let _schoolName= patient.schoolName;
-      let _course= patient.course;
-      let _paymentType= patient.paymentType;
-      let _clinicId = patient.clinicId;
-
-      this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
-        (field) => {
-          console.log('createPatientForm subscriber')
-          if (
-              this.createPatientForm.valid && (
-              this.createPatientForm.controls['name'].value != _name || 
-              this.createPatientForm.controls['surname'].value != _surname || 
-              this.createPatientForm.controls['phoneNumber'].value != _phoneNumber ||
-              this.createPatientForm.controls['reason'].value != _reason ||
-              this.createPatientForm.controls['email'].value != _email ||
-              this.createPatientForm.controls['dateOfBirth'].value != _dateOfBirth ||
-              this.createPatientForm.controls['homeAddress'].value != _homeAddress || 
-              this.createPatientForm.controls['schoolName'].value != _schoolName ||
-              this.createPatientForm.controls['course'].value != _course ||
-              this.createPatientForm.controls['paymentType'].value != _paymentType ||
-              (this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != _clinicId) )
-            ) {
-              console.log( this.uploadPhotoForm.get('file').value)
-              console.log('form valid')
-              console.log(this.createPatientForm.value)
-            this.showButtonsForm = true;
-          }
-          else {
-            console.log('form novalid')
-              console.log(this.createPatientForm.value)
-            this.showButtonsForm = false;
-          }
+    this.observableupdateCreateForm = this.createPatientForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+      (field) => {
+        console.log('createPatientForm subscriber')
+        if (
+          this.createPatientForm.valid && (
+            this.createPatientForm.controls['name'].value != _name ||
+            this.createPatientForm.controls['surname'].value != _surname ||
+            this.createPatientForm.controls['phoneNumber'].value != _phoneNumber ||
+            this.createPatientForm.controls['reason'].value != _reason ||
+            this.createPatientForm.controls['email'].value != _email ||
+            this.createPatientForm.controls['dateOfBirth'].value != _dateOfBirth ||
+            this.createPatientForm.controls['homeAddress'].value != _homeAddress ||
+            this.createPatientForm.controls['schoolName'].value != _schoolName ||
+            this.createPatientForm.controls['course'].value != _course ||
+            this.createPatientForm.controls['paymentType'].value != _paymentType ||
+            (this.createPatientForm.controls['clinicId'].value != 0 && this.createPatientForm.controls['clinicId'].value != _clinicId))
+        ) {
+          console.log(this.uploadPhotoForm.get('file').value)
+          console.log('form valid')
+          console.log(this.createPatientForm.value)
+          this.showButtonsForm = true;
         }
-      );
-
-      this.observableuploadPhotoForm = this.uploadPhotoForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
-        (field) => {
-          if (this.uploadPhotoForm.get('file').value != null) this.showButtonsForm = true;
-          else this.showButtonsForm = false;
-          
+        else {
+          console.log('form novalid')
+          console.log(this.createPatientForm.value)
+          this.showButtonsForm = false;
         }
-      );
+      }
+    );
+
+    this.observableuploadPhotoForm = this.uploadPhotoForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
+      (field) => {
+        if (this.uploadPhotoForm.get('file').value != null) this.showButtonsForm = true;
+        else this.showButtonsForm = false;
+
+      }
+    );
   }
-
 
   public openModalCreatePatientNew() {
     console.log('OPEN MODAL CREATE')
@@ -256,7 +260,6 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-
   public openModalEditPatient(patient: PatientDto, index: number) {
     console.log('OPEN MODAL EDITED')
     this.inicializeFormEdit(patient, index);
@@ -270,7 +273,7 @@ export class PatientsComponent implements OnInit {
           console.log('this.createPatientForm.value')
           console.log(this.createPatientForm.value)
           //this.editPatient(this.createPatientForm.value, index);
-          
+
           this.patientService.updatePatient(this.createPatientForm.value, patient.id).pipe(takeUntil(this.destroy$)).subscribe(
             (res: PatientDto) => {
               console.log('res update patient')
@@ -324,7 +327,6 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-
   private getRoleUserAndPatientsAndClinics() {
 
 
@@ -334,45 +336,31 @@ export class PatientsComponent implements OnInit {
 
         if (res === 1) {
           //superadmin
-          this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
-            (patientsRes: PatientDto[]) => {
-              this.patients = patientsRes;
-              this.patientsAux = patientsRes;
-              if (this.patients.length>0) this.isPatients = true;
-            }
-          );
+          this.getAllPatients();
 
-          this.clinicService.getAllClinics().pipe(takeUntil(this.destroy$)).subscribe(
-            (clinics: ClinicDto[]) => {
-              this.clinics = clinics ;
-            }
-          );
+          this.getAllClinics();
 
+          this.getAllTreatments();
+          this.getAllSpecialists();
 
         } else if (res === 2 || res === 3) {
           //admin / user
-          this.patientService.getPatientsByClinic(this.userLogged.clinicId)
-            .pipe(takeUntil(this.destroy$)).subscribe(
-              (patientsRes: PatientDto[]) => {
-                this.patients = patientsRes;
-                this.patientsAux = patientsRes;
-                if (this.patients.length>0) this.isPatients = true;
-                
-              }
-            );
+          this.getAllPatientsByClinic();
+          this.getTreatmentsByClinicId();
+          this.getAllSpecialistsByClinic();
+
         } else {
           this.router.navigateByUrl('/home');
-          console.log('[errorPatientComponent] get role user !=1 !=2 =!3');
+          console.log('[errorPatientComponent] get role user !=1 !=2 =!3 not posible');
         }
 
 
-      }, error => {
+      }, (error) => { //error request
         this.toast.error(JSON.stringify(error));
-    });
+      });
   }
 
-
-  public deletePatient(id: number, idx:number) {
+  public deletePatient(id: number, idx: number) {
     this.modalService.open(this.modalDelete).result.then(
       r => {
         if (r === 'Si') {
@@ -383,12 +371,12 @@ export class PatientsComponent implements OnInit {
                   if (item.id === id) {
                     console.log('patients')
                     console.log(item) */
-                    this.patients.splice(idx, 1);
-                    this.toast.success('The patient could not be deleted', 'Try again');
-                    this.isPatients = this.patients.length>0;
-                  /* }  
-                }
-              ); */
+              this.patients.splice(idx, 1);
+              this.toast.success('The patient could not be deleted', 'Try again');
+              this.isPatients = this.patients.length > 0;
+              /* }  
+            }
+          ); */
             },
             (error) => {
               this.toast.warning(error.error['message'], 'Info');
@@ -405,7 +393,6 @@ export class PatientsComponent implements OnInit {
 
   }
 
-
   public createNewPatient(newPatient) {
     this.patientService.createPatient(newPatient).pipe(takeUntil(this.destroy$)).subscribe(
       resPatient => {
@@ -414,44 +401,134 @@ export class PatientsComponent implements OnInit {
         this.toast.success('Create patient', 'Successfully');
         this.patientToCreate = new CreatePatientDto
         this.createPatientForm.reset();
-        this.isPatients = resPatient!= null;
+        this.isPatients = resPatient != null;
       }
     );
   }
 
+  public findByParams(name: string, min: number, max: number) {
+    this.patients = this.patientsAux;
 
-  public findByName(param: string) {
-
-    if (param.length === 0) {
-      if (this.roleUser != 1) {
-        this.patientService.getPatientsByClinic(this.userLogged.clinicId).pipe(takeUntil(this.destroy$)).subscribe(
-          (res: PatientDto[]) => {
-            this.patients = res
-          }
-        );
-      } else {
-        this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).pipe(takeUntil(this.destroy$)).subscribe(
-          (res: PatientDto[]) => {
-            this.patients = res
-          }
-        );
-      }
-
-    } else {
-
-      this.patients.forEach(
-        (p, index) => {
-          if (!p.name.concat(' ').concat(p.surname).toUpperCase().includes(param.toUpperCase())) {
-            this.patients.splice(index, 1);
-          }
-        })
+    if (name) {
+      console.log('name')
+      this.patients = this.patients.filter(patient => patient.name.concat(patient.surname).toLowerCase().includes(name.toLowerCase()));
+      this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
     }
 
+    if (min && min >= 0 && min <= 100) {
+      console.log('min')
+      this.patients = this.patients.filter(patient => patient.age >= min);
+      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if (max && max >= 0 && max <= 100) {
+      console.log('max')
+      this.patients = this.patients.filter(patient => patient.age <= max);
+      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if (this.clinicIdParamSearch != 0) {
+      console.log(this.patients)
+      this.patients = this.patients.filter(patient => patient.clinicId == this.clinicIdParamSearch);
+      console.log(this.patients)
+      //this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
+      console.log(this.clinicIdParamSearch)
+    }
+
+    if (this.specialistIdParamSearch != 0) {
+
+      //FILTER TREATMENTS BY SPECIALIST
+      const treatmentsBySpecialist = this.treatments.filter(t => t.specialistId == this.specialistIdParamSearch)
+
+      const patientsFiltered : PatientDto[] = [];
+
+      //FILTER PATIENTS BY TREATMENTS
+      this.patients.forEach(p => {
+        treatmentsBySpecialist.forEach(t => {
+          if (t.patientId == p.id) patientsFiltered.push(p)
+        });
+      });
+      //SET PATIENTS 
+      this.patients = patientsFiltered;
+    }
   }
 
+  private getAllSpecialists() {
+    this.userService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe(
+      (res: User[]) => {
+        this.specialists = res;
+      }
+    );
+  }
+
+  private getAllSpecialistsByClinic() {
+    this.userService.getAllUsersByClinicId(this.userLogged.clinicId)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: User[]) => {
+          this.specialists = res;
+          console.log('specialists')
+          console.log(res)
+        }
+      );
+  }
+
+  private getAllPatients() {
+    this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
+      (patientsRes: PatientDto[]) => {
+        this.patients = patientsRes;
+        this.patientsAux = patientsRes;
+        if (this.patients.length > 0) this.isPatients = true;
+      }
+    );
+  }
+
+  private getAllPatientsByClinic() {
+    this.patientService.getPatientsByClinic(this.userLogged.clinicId)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (patientsRes: PatientDto[]) => {
+          this.patients = patientsRes;
+          this.patientsAux = patientsRes;
+          if (this.patients.length > 0) this.isPatients = true;
+        }
+      );
+  }
+
+  private getAllClinics() {
+    this.clinicService.getAllClinics().pipe(takeUntil(this.destroy$)).subscribe(
+      (clinics: ClinicDto[]) => {
+        this.clinics = clinics;
+      }
+    );
+  }
+
+  private getAllTreatments() {
+    this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
+      (res: TreatmentDto[]) => {
+        this.treatments = res;
+      }
+    );
+  }
+
+  private getTreatmentsByClinicId() {
+    this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+        }
+      );
+  }
+
+  private getAllTreatmentsBySpecialist() {
+    this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        (res: TreatmentDto[]) => {
+          this.treatments = res;
+        }
+      );
+  }
 
   // Submit Form File
-  uploadPhoto() {
+  public uploadPhoto() {
     var formData: any = new FormData();
     formData.append("file", this.uploadPhotoForm.get('file').value);
     this.uploadFileService.uploadFilePatient(formData, this.patientToUpdate.id).subscribe(
@@ -466,9 +543,8 @@ export class PatientsComponent implements OnInit {
 
   }
 
-
   //set form photo
-  onFileChange(event) {
+  public onFileChange(event) {
     const reader = new FileReader();
 
     if (event.target.files && event.target.files.length) {
@@ -489,6 +565,5 @@ export class PatientsComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 
 }

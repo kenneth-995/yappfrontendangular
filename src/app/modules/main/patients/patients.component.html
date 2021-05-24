@@ -1,15 +1,46 @@
 <div class="container">
 
-  <div class="row text-center">
-    <h4>Patients</h4>
+
+  <h4 class="text-center">Patients</h4>
+
+  <div class="row my-5">
+    <button type="button" class="btn btn-primary" (click)='openModalCreatePatientNew()'> Add Patient &#43;</button>
   </div>
-  <div class="row">
-    <div class="custom-control">
-      <input class="form-control" type="text" placeholder="find by name" #param (keyup)="findByName(param.value)">
-      <!--  -->
-      <button type="button" class="btn btn-primary" (click)='openModalCreatePatientNew()'> Add Patient &#43;</button>
-      <!-- <button type="button" class="btn btn-primary" (click)='openModalCreatePatient()'> Add Patient &#43;</button> -->
+
+  <div class="row my-5">
+
+    <div class="col-2 text-center">
+      Full name <input class="form-control" type="text" placeholder="find by name" #name
+        (keyup)="findByParams(name.value, minage.value, maxage.value)">
     </div>
+
+    <div class="col-2 text-center">
+      Min age <input class="form-control" type="number" placeholder="find min age" #minage
+        (change)="findByParams(name.value, minage.value, maxage.value)">
+    </div>
+
+    <div class="col-2 text-center">
+      Max age <input class="form-control" type="number" placeholder="find max age" #maxage
+        (change)="findByParams(name.value, minage.value, maxage.value)">
+    </div>
+
+    <div class="col-2 text-center" *ngIf="roleUser === 1">
+      Patients treated for
+      <select class="form-control" [(ngModel)]= "specialistIdParamSearch" (change)="findByParams(name.value, minage.value, maxage.value)">
+        <option value="0" >All specialists</option>
+        <option *ngFor="let s of specialists" [value]="s.id" >{{s.name + ' ' + s.surnames}}</option>
+      </select>
+    </div>
+
+
+    <div class="col-2 text-center" *ngIf="roleUser === 1">
+      Clinic
+      <select class="form-control" [(ngModel)]= "clinicIdParamSearch" (change)="findByParams(name.value, minage.value, maxage.value)">
+        <option value="0" >All clinics</option>
+        <option *ngFor="let c of clinics" [value]="c.id" >{{c.name}}</option>
+      </select>
+    </div>
+
   </div>
 
 
@@ -169,7 +200,7 @@
         </select>
       </div>
 
-      
+
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="reasonCreate" class="col-2">Reason:</label>
         <textarea class="form-control rounded-sm border-1 shadow-sm px-4" id="reasonCreate" name="reasonCreate"

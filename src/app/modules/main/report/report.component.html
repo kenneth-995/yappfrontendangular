@@ -85,12 +85,12 @@
       <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
     </div>
 
-    <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()" style="height: 500px !important;">
+    <form [formGroup]="updateCreateForm" (ngSubmit)="createUpdateTreatment()" style="height: 650px !important;">
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="diagnosis" class="col-2">Diagnosis </label>
         <textarea class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
-          id="diagnosis" name="diagnosis" formControlName="diagnosis">
+          id="diagnosis" name="diagnosis" formControlName="diagnosis" rows="6">
             </textarea>
       </div>
       <div *ngIf="textErrorMaxLengthDiagnosis" style="color: red;" class="mx-5"> 
@@ -100,7 +100,7 @@
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="objectives" class="col-2">Objectives:</label>
         <textarea class="form-control rounded-sm border-0 shadow-sm px-4" id="objectives" name="objectives" type="text"
-          formControlName="objectives">
+          formControlName="objectives" rows="6">
             </textarea>
       </div>
       <div *ngIf="textErrorMaxLengthObjectives" style="color: red;" class="mx-5"> 
@@ -126,11 +126,12 @@
 
           Select Treatment associated with the report<br/>
           <ng-select id="treatmentId" [items]="treatments" bindLabel="patientFullName" [loading]="tratmentsLoading"
-            [searchFn]="customSearchFn" formControlName="treatmentId" id="idNgSelect" class="shadow-sm px-4" [placeholder]="textPlaceholderNgSelect"> 
+            [searchFn]="customSearchFn" formControlName="treatmentId" id="idNgSelect" class="shadow-sm px-4" [placeholder]="textPlaceholderNgSelect"
+            style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);"> 
 
             <ng-template ng-option-tmp let-item="item" id="idNgTemplateSelect" style="border: black !important;">
                <strong>Treatment info </strong> <br />
-               <ul style="color: black;">
+               <ul style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
                 <li>Patient: <strong> {{item.patientFullName}}</strong></li>
                 <li>Start date: <strong>{{item.startDate}}</strong></li>
                 <li>Sessions finished: <strong>{{item.sessionsFinished}}</strong></li>
