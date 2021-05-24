@@ -14,9 +14,7 @@ import { TreatmentService } from '../../../services/treatment.service';
 import { TreatmentDto } from '../../../models/dto/treatment/TreatmentDto';
 
 import { ReportDto } from '../../../models/dto/report/ReportDto';
-import { CreateReportDto } from '../../../models/dto/report/CreateReportDto';
-import { UpdateReportDto } from '../../../models/dto/report/UpdateReportDto';
-import { textChangeRangeIsUnchanged } from 'typescript';
+import { CreateUpdateReportDto } from '../../../models/dto/report/CreateUpdateReportDto';
 
 
 @Component({
@@ -35,6 +33,7 @@ export class ReportComponent implements OnInit {
   public roleUser: number;
 
   public reports: ReportDto[] = [];
+  public isReports: boolean = false;
   
   public treatments: TreatmentDto[] = [];
   public isTreatments: boolean = false;
@@ -120,7 +119,8 @@ export class ReportComponent implements OnInit {
 
 
   openModalCreate() {
-    this.textModal = 'Create ';
+    if (this.treatments.length>0) {
+      this.textModal = 'Create ';
     console.log('open modal Create')
 
     //set values form
@@ -129,16 +129,18 @@ export class ReportComponent implements OnInit {
     this.modalService.open(this.updateCreate).result.then(
 
       r => {
-        if (r === '1') {
-          console.log('SAVE')
-          
+        if (r === '1') { //confirm create    
           //this.createReport(this.updateCreateForm.value); //create report without ngSelect(without treatmentObject)
           this.createReportWithNgSelect();
         } else {
-          console.log('CANCEL')
+          //dimiss create
         }
       }
     );
+    } else {
+      this.toast.info('To add a report, you need to have a registered treatment', 'Info')
+    }
+    
   }
 
   inicializeNewFormReport() {
@@ -193,8 +195,6 @@ export class ReportComponent implements OnInit {
         console.log(this.updateCreateForm.controls['treatmentId'].value)
         console.log('this.updateCreateForm.value')
         console.log(this.updateCreateForm.value)
-
-        
       }
     );
 
@@ -275,6 +275,7 @@ export class ReportComponent implements OnInit {
     this.reportService.getAllReports().pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto[]) => {
         this.reports = res;
+        this.isReports = this.reports.length>0;
       }
     );
   }
@@ -284,6 +285,7 @@ export class ReportComponent implements OnInit {
       .pipe(takeUntil(this.destroy$)).subscribe(
         (res: ReportDto[]) => {
           this.reports = res;
+          this.isReports = this.reports.length>0;
         }
       );
 
@@ -296,26 +298,27 @@ export class ReportComponent implements OnInit {
         (res: ReportDto[]) => {
           this.reports = res;
           if(this.reports.length>0) this.isTreatments = true;
+          this.isReports = this.reports.length>0;
         }
       );
   }
 
   //USER
-  createReport(createReport: CreateReportDto) {
+  createReport(createReport: CreateUpdateReportDto) {
     this.reportService.create(createReport).pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto) => {
         this.reports.push(res)
-        console.log(res)
-        this.toast.success('Create report', 'Successfully')
-        //this.updateCreateForm.reset(); // no hace falta, se resetea cada vez que se abre el modal
+        this.isReports = res != null;
+        this.toast.success('Create report', 'Successfully');
       }
     );
   }
 
+  //USER
   createReportWithNgSelect() {
     var reportSelected : TreatmentDto = this.updateCreateForm.controls['treatmentId'].value
     
-    var formToSend : CreateReportDto = new CreateReportDto;
+    var formToSend : CreateUpdateReportDto = new CreateUpdateReportDto;
     formToSend.diagnosis = this.updateCreateForm.controls['diagnosis'].value
     formToSend.objectives = this.updateCreateForm.controls['objectives'].value
     formToSend.date = this.updateCreateForm.controls['date'].value
@@ -329,13 +332,14 @@ export class ReportComponent implements OnInit {
       (res: ReportDto) => {
         this.reports.push(res)
         console.log(res)
+        this.isReports =res != null;
         this.toast.success('Create report', 'Successfully')
       }
     );
   }
 
   //USER
-  updateReport(updateReport: CreateReportDto, id:number, idx:number) {
+  updateReport(updateReport: CreateUpdateReportDto, id:number, idx:number) {
     this.reportService.update(updateReport, id).pipe(takeUntil(this.destroy$)).subscribe(
       (res: ReportDto) => {
         //this.reports.push(res)
@@ -352,6 +356,7 @@ export class ReportComponent implements OnInit {
     this.reportService.delete(id).pipe(takeUntil(this.destroy$)).subscribe(
       (res) => {
         this.reports.splice(idx, 1);
+        this.isReports = this.reports.length>0;
         this.toast.success('Report deleted', 'Successfully');
       }
     );

@@ -1,13 +1,18 @@
 <div class="container">
+
+  <div class="row text-center">
+    <h4>Patients</h4>
+  </div>
   <div class="row">
-    <div class="custom-control p-2">
-      <input class="form-control" type="text" placeholder="find by name"
-      #param (keyup) = "findByName(param.value)"><!--  -->
+    <div class="custom-control">
+      <input class="form-control" type="text" placeholder="find by name" #param (keyup)="findByName(param.value)">
+      <!--  -->
       <button type="button" class="btn btn-primary" (click)='openModalCreatePatientNew()'> Add Patient &#43;</button>
       <!-- <button type="button" class="btn btn-primary" (click)='openModalCreatePatient()'> Add Patient &#43;</button> -->
     </div>
-
   </div>
+
+
 
   <table class="table table-striped">
     <thead>
@@ -34,7 +39,7 @@
         <!-- <td><button class="btn btn-primary mb-2" (click)='editPatient(p, i)'>Edit</button></td> -->
         <td><button class="btn btn-primary mb-2" (click)='openModalEditPatient(p, i)'>Edit</button></td>
         <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-            (click)='deletePatient(p.id)'>Delete</button></td>
+            (click)='deletePatient(p.id, i)'>Delete</button></td>
       </tr>
     </tbody>
     <div class="text-center" *ngIf="!isPatients">
@@ -71,8 +76,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title">{{textCreateUpdateModal}} Patient</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-        (click)="modal.close('0')">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('0')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -80,123 +84,99 @@
     <div *ngIf="!isCreated">
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <!-- Image Preview -->
-          <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
+        <img [src]="imageSrc" *ngIf="imageSrc" class="imgPreview">
       </div>
 
-      <form [formGroup]="uploadPhotoForm" (ngSubmit)="uploadPhoto()"
-        class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-          <label for="uploadPhoto" class="col-2">Photo:</label>
-          <input class="form-control rounded-sm border-0 shadow-sm px-4"
-                type="file" 
-                id="uploadPhoto" 
-                name="uploadPhoto"
-                (change)="onFileChange($event)">
+      <form [formGroup]="uploadPhotoForm" (ngSubmit)="uploadPhoto()" class="modal-body"
+        style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="uploadPhoto" class="col-2">Photo:</label>
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" type="file" id="uploadPhoto" name="uploadPhoto"
+          (change)="onFileChange($event)">
       </form>
     </div>
     <form [formGroup]="createPatientForm" (ngSubmit)="submitFormCreate()">
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="nameCreate" class="col-2">Name:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="nameCreate" 
-              name="name"
-              type="text"
-              formControlName='name' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="nameCreate" name="name" type="text"
+          formControlName='name' />
       </div>
-      
+
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="surnameCreate" class="col-2">Surname:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="surnameCreate" 
-              name="surnameCreate"
-              type="text"
-              formControlName='surname' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="surnameCreate" name="surnameCreate"
+          type="text" formControlName='surname' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="phoneCreate" class="col-2">Phone Number:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="phoneCreate" 
-              name="phoneCreate"
-              type="text"
-              formControlName='phoneNumber' />
-      </div>
-
-      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-        <label for="reasonCreate" class="col-2">Reason:</label>
-        <textarea class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="reasonCreate" 
-              name="reasonCreate"
-              type="text"
-              formControlName='reason'>
-          </textarea>
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="phoneCreate" name="phoneCreate" type="text"
+          formControlName='phoneNumber' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="emailCreate" class="col-2">Email:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="emailCreate" 
-              name="emailCreate"
-              type="email"
-              placeholder="example: oneemail@gmail.com"
-              formControlName='email' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="emailCreate" name="emailCreate" type="email"
+          placeholder="example: oneemail@gmail.com" formControlName='email' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="dateOfBirthCreate" class="col-2">Date of Birth:</label>
-        <input type="date" class="form-control rounded-sm border-0 shadow-sm px-4"
-              id="dateOfBirthCreate" 
-              name="dateOfBirthCreate"
-              formControlName='dateOfBirth'/>
+        <input type="date" class="form-control rounded-sm border-1 shadow-sm px-4" id="dateOfBirthCreate"
+          name="dateOfBirthCreate" formControlName='dateOfBirth' />
 
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="addressCreate" class="col-2">Home Address:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="addressCreate" 
-              name="addressCreate"
-              type="text"
-              formControlName='homeAddress' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="addressCreate" name="addressCreate"
+          type="text" formControlName='homeAddress' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="schoolCreate" class="col-2">School Name:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4"
-              id="schoolCreate" 
-              name="schoolCreate"
-              type="text"
-              formControlName='schoolName' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="schoolCreate" name="schoolCreate" type="text"
+          formControlName='schoolName' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="nameCourse" class="col-2">Course:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4"
-              id="nameCourse" 
-              name="nameCourse"
-              type="text"
-              formControlName='course' />
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="nameCourse" name="nameCourse" type="text"
+          formControlName='course' />
       </div>
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="paymentTypeCreate" class="col-2">Payment Type:</label>
-        <input class="form-control rounded-sm border-0 shadow-sm px-4" 
-              id="paymentTypeCreate" 
-              name="paymentTypeCreate"
-              type="text"
-              formControlName='paymentType' />
+        <select class="form-control" formControlName='paymentType'>
+          <option value="" selected disabled hidden>Choose here</option>
+          <option value="Scholarship">Scholarship</option>
+          <option value="Private medical mutual">Private medical mutual</option>
+          <option value="Direct payment">Direct payment</option>
+        </select>
+        <!-- <label for="paymentTypeCreate" class="col-2">Payment Type:</label>
+        <input class="form-control rounded-sm border-1 shadow-sm px-4" id="paymentTypeCreate" name="paymentTypeCreate"
+          type="text" formControlName='paymentType' /> -->
       </div>
 
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
-          *ngIf="roleUser === 1">
+        *ngIf="roleUser === 1">
         <label for="clinicIdCreate" class="col-2">Clinic: </label>
         <select class="form-control" formControlName='clinicId'>
           <option *ngFor="let clinic of clinics" [value]="clinic.id">
-              {{clinic.name}}
+            {{clinic.name}}
           </option>
         </select>
       </div>
+
+      
+      <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <label for="reasonCreate" class="col-2">Reason:</label>
+        <textarea class="form-control rounded-sm border-1 shadow-sm px-4" id="reasonCreate" name="reasonCreate"
+          type="text" formControlName='reason' rows="6">
+          </textarea>
+      </div>
+
 
     </form>
 
@@ -210,5 +190,3 @@
 
   </div>
 </ng-template>
-
-

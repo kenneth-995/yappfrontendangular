@@ -1,16 +1,20 @@
 <div class="container">
   <div class="row my-5">
-    <div class="custom-control p-2"  *ngIf="isPatients; else msgAddPatient">
+    <div class="custom-control p-2"  ><!-- *ngIf="isPatients; else msgAddPatient" -->
       <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Treatment &#43;</button>
     </div>
-    <ng-template #msgAddPatient class="custom-control p-6">
+
+    <!-- <ng-template #msgAddPatient class="custom-control p-6">
       To add a treatment, you need to have a registered patient &nbsp;
       <button class="btn-primary" [routerLink]="[ '../patients']" routerLinkActive="active">
          Register Patient &#43;
-    </button>
+    </button> 
       
-    </ng-template>
+    </ng-template>-->
 
+  </div>
+  <div class="row my-5">
+    <h4>Treatments</h4>
   </div>
 
   <table class="table table-striped">
@@ -42,9 +46,9 @@
             (click)='openModalDelete(t, idx)'>Delete</button></td>
       </tr>
     </tbody>
-    <!-- <div class="text-center">
-      <p *ngIf="treatments" style="color: blue;">There aren't registered treatments</p>
-    </div> -->
+    <div class="text-center">
+      <p *ngIf="!isTreatments" style="color: blue;">There aren't registered treatments</p>
+    </div>
   </table>
 
 </div>
@@ -80,18 +84,10 @@
     </div>
 
       <form [formGroup]="createUpdateForm" (ngSubmit)="createUpdateTreatment()">
-        <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-          <label for="reasonTreatment" class="col-2">Reason Treatment:</label>
-          <textarea  class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center"
-                    type="text" 
-                    id="reasonTreatment" 
-                    name="reasonTreatment"
-                    formControlName="reason">
-          </textarea>
-        </div>
+        
           <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
             <label for="sessionsFinished" class="col-2">Sessions Finished:</label>
-            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+            <input class="form-control rounded-sm border-1 shadow-sm px-4" 
                    id="sessionsFinished" 
                    name="sessionsFinished"
                    type="number"
@@ -100,7 +96,7 @@
 
           <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
             <label for="startDate" class="col-2">Start Date:</label>
-            <input class="form-control rounded-sm border-0 shadow-sm px-4" 
+            <input class="form-control rounded-sm border-1 shadow-sm px-4" 
                    id="startDate" 
                    name="startDate"
                    type="date"
@@ -124,6 +120,16 @@
                   {{s.name + ' ' + s.surnames}}
               </option>
             </select>
+          </div>
+
+          <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label for="reasonTreatment" class="col-2">Reason Treatment:</label>
+            <textarea class="form-control rounded-sm border-1 shadow-sm px-4" rows="6"
+                      type="text" 
+                      id="reasonTreatment" 
+                      name="reasonTreatment"
+                      formControlName="reason">
+            </textarea>
           </div>
 
 

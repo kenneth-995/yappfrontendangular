@@ -37,7 +37,7 @@ export class AuthService implements HttpInterceptor {
       console.log(error);
       console.log(error.status);
       console.log(error.message);
-      console.log('[AuthService token = ]'+token)
+      console.log('[AuthService token]'+token)
       console.log()
       console.log(request)
       console.log('end [AuthService.ts]');
@@ -51,12 +51,10 @@ export class AuthService implements HttpInterceptor {
       };
 
 
-      if (error.status == 500) { //TODO: refresh token, add endpoint refresh  backend
-        console.log('STATUS 500')
-        //TODO: MANAGE REFRESH TOKEN IN BACKEND
+      if (error.status == 500) { //TODO: posibility refresh token, add endpoint refresh  backend
         this.route.navigateByUrl('/login')
         console.log('PLEASE, RENEW TOKEN , DEVES VOLVERTE A LOGUEAR')
-        this.toast.info('You need to log in', 'INFO')
+        this.toast.info('You need login', 'INFO')
         //this.ngxLoader.stop();
         /*localStorage.removeItem('accessToken');
         localStorage.removeItem('username');
@@ -64,14 +62,8 @@ export class AuthService implements HttpInterceptor {
 
       };
 
-      if (error.status == 404) { //TODO: refresh token, add endpoint refresh  backend
-        console.log('STATUS 404')
-        this.toast.warning(error.error['message'], 'Info');
-        //this.ngxLoader.stop();
-        /*localStorage.removeItem('accessToken');
-        localStorage.removeItem('username');
-         */
-
+      if (error.status == 404) {
+        console.log('STATUS 404, RESOURCE NOT FOUND')
       };
       
       return next.handle(request)

@@ -1,14 +1,18 @@
 <div class="container">
   <div class="row my-5">
-    <div class="custom-control p-2" *ngIf="isTreatments; else msgAddReport">
+    <div class="custom-control p-2" ><!-- *ngIf="isTreatments; else msgAddReport" -->
       <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Report &#43;</button>
     </div>
-    <ng-template #msgAddReport class="custom-control p-6">
+    <!-- <ng-template #msgAddReport class="custom-control p-6">
       To add a report, you need to have a registered treatment &nbsp;
       <button class="btn-primary" [routerLink]="[ '../treatments']">
         Register Treatment &#43;
       </button>
-    </ng-template>
+    </ng-template> -->
+  </div>
+
+  <div class="row my-5">
+    <h4>Reports</h4>
   </div>
 
   <table class="table table-striped">
@@ -36,6 +40,9 @@
             (click)='openModalDelete(r.id, idx)'>Delete</button></td>
       </tr>
     </tbody>
+    <div class="text-center">
+      <p *ngIf="!isReports" style="color: blue;">There aren't registered reports</p>
+    </div>
   </table>
 
 </div>
@@ -82,8 +89,7 @@
 
       <div class="modal-body" style="display:flex; flex-direction: row; justify-content: center; align-items: center">
         <label for="diagnosis" class="col-2">Diagnosis </label>
-        <textarea class="modal-body"
-          style="display:flex; flex-direction: row; justify-content: center; align-items: center" type="text"
+        <textarea class="form-control rounded-sm border-0 shadow-sm px-4" type="text"
           id="diagnosis" name="diagnosis" formControlName="diagnosis">
             </textarea>
       </div>

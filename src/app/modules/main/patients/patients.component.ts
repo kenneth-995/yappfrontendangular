@@ -372,22 +372,23 @@ export class PatientsComponent implements OnInit {
   }
 
 
-  public deletePatient(id: number) {
+  public deletePatient(id: number, idx:number) {
     this.modalService.open(this.modalDelete).result.then(
       r => {
         if (r === 'Si') {
           this.patientService.deletePatient(id).pipe(takeUntil(this.destroy$)).subscribe(
             (res: any) => {
-              this.patients.forEach(
+              /* this.patients.forEach(
                 (item, index) => {
                   if (item.id === id) {
                     console.log('patients')
-                    console.log(item)
-                    this.patients.splice(index, 1);
+                    console.log(item) */
+                    this.patients.splice(idx, 1);
                     this.toast.success('The patient could not be deleted', 'Try again');
-                  }  
+                    this.isPatients = this.patients.length>0;
+                  /* }  
                 }
-              );
+              ); */
             },
             (error) => {
               this.toast.warning(error.error['message'], 'Info');
@@ -413,6 +414,7 @@ export class PatientsComponent implements OnInit {
         this.toast.success('Create patient', 'Successfully');
         this.patientToCreate = new CreatePatientDto
         this.createPatientForm.reset();
+        this.isPatients = resPatient!= null;
       }
     );
   }

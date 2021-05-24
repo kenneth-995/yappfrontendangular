@@ -44,8 +44,8 @@ export class MtsComponent implements OnInit {
 
   public formMts: FormGroup;
   public observableForm: Subscription = new Subscription();
-  public showButtonsForm:boolean = false;
-  public isUpdateMts:boolean = false;
+  public showButtonsForm: boolean = false;
+  public isUpdateMts: boolean = false;
   public textCreateUpdateModal: string = '';
 
 
@@ -71,8 +71,8 @@ export class MtsComponent implements OnInit {
     initialView: 'dayGridMonth',
     themeSystem: 'standard',
     locale: esLocale,
-    timeZone:'Europe/Madrid',
-    
+    timeZone: 'Europe/Madrid',
+
     headerToolbar: {
       left: 'prevcustom,nextcustom today',
       center: 'title',
@@ -89,7 +89,7 @@ export class MtsComponent implements OnInit {
         icon: 'chevron-left',
         click: () => {
           this.calendarComponent.getApi().prev();
-          
+
         }
       }
     },
@@ -105,27 +105,27 @@ export class MtsComponent implements OnInit {
     dayMaxEvents: true,
     eventClick: this.handleDateClick.bind(this),
     select: this.handleEventClick.bind(this),
-    eventTimeFormat: { hour: 'numeric', minute: '2-digit'},
-    eventMouseEnter :this.over.bind(this),
-    eventMouseLeave:this.desover.bind(this),
-    
+    eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
+    eventMouseEnter: this.over.bind(this),
+    eventMouseLeave: this.desover.bind(this),
+
   };
-  over(arg: any){
+  over(arg: any) {
     console.log("Mouseover called eventMouseEnter");
     //console.log(arg.event['_def'])
     console.log(arg.event['_def'].extendedProps)
 
-    
+
     this.mtsModalInfo.clinicName = arg.event['_def'].extendedProps.clinicName;
     console.log(arg.event['_def'].extendedProps.clinicName)
-    
+
     this.mtsModalInfo.date = arg.event['_def'].extendedProps.date;
     console.log(arg.event['_def'].extendedProps.date)
 
-    
+
     this.mtsModalInfo.patientAge = arg.event['_def'].extendedProps.patientAge;
     console.log(arg.event['_def'].extendedProps.patientAge)
-    
+
     this.mtsModalInfo.patientFullName = arg.event['_def'].extendedProps.patientFullName;
     console.log(arg.event['_def'].extendedProps.patientFullName)
 
@@ -133,16 +133,16 @@ export class MtsComponent implements OnInit {
     this.mtsModalInfo.patientPhoto = arg.event['_def'].extendedProps.patientPhoto;
     console.log(arg.event['_def'].extendedProps.patientPhoto)
 
-    
+
     this.mtsModalInfo.reason = arg.event['_def'].extendedProps.reasonTratment;
     console.log(arg.event['_def'].extendedProps.reasonTratment)
 
-    
+
     this.mtsModalInfo.specialistFullName = arg.event['_def'].extendedProps.specialistFullName;
     console.log(arg.event['_def'].extendedProps.specialistFullName)
-    
 
-    
+
+
     this.mtsModalInfo.specialistType = arg.event['_def'].extendedProps.specialistType;
     console.log(arg.event['_def'].extendedProps.specialistType)
 
@@ -156,7 +156,7 @@ export class MtsComponent implements OnInit {
     ); */
   }
 
-  desover(arg: any){
+  desover(arg: any) {
     console.log("Mouseover called eventMouseLeave");
     console.log(arg.event['_def'])
     //this.modalService.dismissAll();
@@ -172,13 +172,13 @@ export class MtsComponent implements OnInit {
     this.getRoleUserAndData();
 
     this.formMts = this.fb.group({
-      id:['', Validators.required],
-      idx:['', Validators.required],
-      patientId:['', Validators.required],
-      specialistId:['', Validators.required],
-      treatmentId:['', Validators.required],
-      date:['', Validators.required], 
-      time:['', Validators.required],
+      id: ['', Validators.required],
+      idx: ['', Validators.required],
+      patientId: ['', Validators.required],
+      specialistId: ['', Validators.required],
+      treatmentId: ['', Validators.required],
+      date: ['', Validators.required],
+      time: ['', Validators.required],
     });
 
 
@@ -191,37 +191,22 @@ export class MtsComponent implements OnInit {
     this.showButtonsForm = false;
     this.isUpdateMts = true;
 
-    console.log('arg.event.extendedProps.idx '+arg.event.extendedProps.idx )
+    console.log('arg.event.extendedProps.idx ' + arg.event.extendedProps.idx)
 
-/*     console.log(arg.event)
-    console.log('arg.event.id '+arg.event.id )
-    console.log('arg.event.extendedProps.date '+arg.event.extendedProps.date )
-    console.log('arg.event.extendedProps.patientId '+arg.event.extendedProps.patientId )
-    console.log('arg.event.extendedProps.patientFullName '+arg.event.extendedProps.patientFullName )
-    console.log('arg.event.extendedProps.patientAge '+arg.event.extendedProps.patientAge )
-    console.log('arg.event.extendedProps.patientPhone '+arg.event.extendedProps.patientPhone )
-    console.log('arg.event.extendedProps.patientPhoto '+arg.event.extendedProps.patientPhoto )
-    console.log('arg.event.extendedProps.specialistId '+arg.event.extendedProps.specialistId )
-    console.log('arg.event.extendedProps.specialistFullName '+arg.event.extendedProps.specialistFullName )
-    console.log('arg.event.extendedProps.specialistType '+arg.event.extendedProps.specialistType )
-    console.log('arg.event.extendedProps.treatmentId '+arg.event.extendedProps.treatmentId )
-    console.log('arg.event.extendedProps.reasonTratment '+arg.event.extendedProps.reasonTratment )
-    console.log('arg.event.extendedProps.clinicId '+arg.event.extendedProps.clinicId )
-    console.log('arg.event.extendedProps.clinicName '+arg.event.extendedProps.clinicName ) */
 
     //set form
     let _date = new Date(arg.event.extendedProps.date)
     var _hour = _date.getHours().toString()
     var _minute = _date.getMinutes().toString()
-    if (_hour.length === 1) _hour = '0'+_date.getHours().toString();
-    if (_minute.length === 1) _minute = '0'+_date.getMinutes().toString()
+    if (_hour.length === 1) _hour = '0' + _date.getHours().toString();
+    if (_minute.length === 1) _minute = '0' + _date.getMinutes().toString()
 
 
 
     this.formMts.controls['id'].setValue(arg.event.id);
     this.formMts.controls['idx'].setValue(arg.event.extendedProps.idx);
-    this.formMts.controls['date'].setValue(formatDate(_date,'yyyy-MM-dd','en'));
-    this.formMts.controls['time'].setValue(_hour +':' + _minute);
+    this.formMts.controls['date'].setValue(formatDate(_date, 'yyyy-MM-dd', 'en'));
+    this.formMts.controls['time'].setValue(_hour + ':' + _minute);
     this.formMts.controls['patientId'].setValue(arg.event.extendedProps.patientId);
     this.formMts.controls['specialistId'].setValue(arg.event.extendedProps.specialistId);
     this.formMts.controls['treatmentId'].setValue(arg.event.extendedProps.treatmentId);
@@ -230,26 +215,26 @@ export class MtsComponent implements OnInit {
     console.log('this.formMts.controls[idx]' + this.formMts.controls['idx'].value)
 
     //detect change in mts
-    let __date = formatDate(_date,'yyyy-MM-dd','en');
-    let _time = _hour +':' + _minute;
+    let __date = formatDate(_date, 'yyyy-MM-dd', 'en');
+    let _time = _hour + ':' + _minute;
     let _patientId = arg.event.extendedProps.patientId;
     let _specialistId = arg.event.extendedProps.specialistId;
     let _treatmentId = arg.event.extendedProps.treatmentId;
 
     this.observableForm = this.formMts.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
-        if (this.formMts.controls['date'].value != formatDate(_date,'yyyy-MM-dd','en') ||
-        this.formMts.controls['time'].value != _time ||
-        this.formMts.controls['patientId'].value != _patientId ||
-        this.formMts.controls['specialistId'].value != _specialistId ||
-        this.formMts.controls['treatmentId'].value != _treatmentId ) {
+        if (this.formMts.controls['date'].value != formatDate(_date, 'yyyy-MM-dd', 'en') ||
+          this.formMts.controls['time'].value != _time ||
+          this.formMts.controls['patientId'].value != _patientId ||
+          this.formMts.controls['specialistId'].value != _specialistId ||
+          this.formMts.controls['treatmentId'].value != _treatmentId) {
           this.showButtonsForm = true;
         } else {
           this.showButtonsForm = false;
         }
       }
     );
-    
+
 
     this.modalService.open(this.modalCreateEdit).result.then(
 
@@ -259,7 +244,7 @@ export class MtsComponent implements OnInit {
           console.log('confirma la modificacion')
           console.log(this.formMts.value)
           const dtoUpdate = new MtsCreateUpdateDto
-          dtoUpdate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value+ ':00'; //for backend format time
+          dtoUpdate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value + ':00'; //for backend format time
           dtoUpdate.patientId = this.formMts.controls['patientId'].value
           dtoUpdate.specialistId = this.formMts.controls['specialistId'].value
           dtoUpdate.treatmentId = this.formMts.controls['treatmentId'].value
@@ -286,75 +271,82 @@ export class MtsComponent implements OnInit {
         console.log(error); //no es un error, se ha cerrado el modal porque se ha borrado la mts!
       }
     );
-    
+
   }
 
   public handleEventClick(arg: any) {
-    this.textCreateUpdateModal = 'Create '
-    this.showButtonsForm = true;
-    this.isUpdateMts = false;
 
-    console.log(arg.start)
-
-    let _date = new Date(arg.start)
-
-    this.formMts.controls['date'].setValue(formatDate(_date,'yyyy-MM-dd','en'));
-    this.formMts.controls['time'].setValue('17:00');
-    this.formMts.controls['specialistId'].setValue(this.userLogged.id);
-
-    if (this.roleUser === 3) {
-      this.formMts.controls['specialistId'].disabled;
-    }
-    this.formMts.controls['patientId'].setValue(this.patients[0].id);
-    
-    this.formMts.controls['treatmentId'].setValue(this.treatments[0].id);
-    
-    this.modalService.open(this.modalCreateEdit).result.then(
-
-      r => {
-        if (r === '1') {
-          console.log('confirma la creacion')
-          console.log(this.formMts.value)
-          const dtoCreate = new MtsCreateUpdateDto
-          dtoCreate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value+ ':00'; //for backend format time
-          dtoCreate.patientId = this.formMts.controls['patientId'].value
-          dtoCreate.specialistId = this.formMts.controls['specialistId'].value
-          dtoCreate.treatmentId = this.formMts.controls['treatmentId'].value
-          console.log(dtoCreate)
-          this.mtsService.create(dtoCreate).pipe(takeUntil(this.destroy$)).subscribe(
-            (res: MtsDto) => {
-              console.log(res)
-              //TODO: updatear el calendario
-              this.medicalSheets.push(res);
-              //TODO:  y el array
-              this.loadEventMtsInCalendar(res);
-              this.toast.success('Created Medical Sheet', 'Successfully');
-              
-            }
-          );
-        } else {
-          console.log('cancelar la creacion')
-          this.formMts.reset();
-          
-        }
-      }, error => {
-        console.log(error);
+    if (this.treatments.length>0) {
+      this.textCreateUpdateModal = 'Create '
+      this.showButtonsForm = true;
+      this.isUpdateMts = false;
+  
+      console.log(arg.start)
+  
+      let _date = new Date(arg.start)
+  
+      this.formMts.controls['date'].setValue(formatDate(_date, 'yyyy-MM-dd', 'en'));
+      this.formMts.controls['time'].setValue('17:00');
+      this.formMts.controls['specialistId'].setValue(this.userLogged.id);
+  
+      if (this.roleUser === 3) {
+        this.formMts.controls['specialistId'].disabled;
       }
-    );
-    
+      this.formMts.controls['patientId'].setValue(this.patients[0].id);
+  
+      this.formMts.controls['treatmentId'].setValue(this.treatments[0].id);
+  
+      this.modalService.open(this.modalCreateEdit).result.then(
+  
+        r => {
+          if (r === '1') {
+            console.log('confirma la creacion')
+            console.log(this.formMts.value)
+            const dtoCreate = new MtsCreateUpdateDto
+            dtoCreate.date = this.formMts.controls['date'].value + 'T' + this.formMts.controls['time'].value + ':00'; //for backend format time
+            dtoCreate.patientId = this.formMts.controls['patientId'].value
+            dtoCreate.specialistId = this.formMts.controls['specialistId'].value
+            dtoCreate.treatmentId = this.formMts.controls['treatmentId'].value
+            console.log(dtoCreate)
+            this.mtsService.create(dtoCreate).pipe(takeUntil(this.destroy$)).subscribe(
+              (res: MtsDto) => {
+                console.log(res)
+                //TODO: updatear el calendario
+                this.medicalSheets.push(res);
+                //TODO:  y el array
+                this.loadEventMtsInCalendar(res);
+                this.toast.success('Created Medical Sheet', 'Successfully');
+  
+              }
+            );
+          } else {
+            console.log('cancelar la creacion')
+            this.formMts.reset();
+  
+          }
+        }, error => {
+          console.log(error);
+        }
+      );
+    } else {
+      this.toast.info('You need to insert treatments to be able to insert a medical technical sheet')
+    }
+
+
+
   }
 
   public checkShowCalendar(event: any) {
     console.log(event)
     if (event) {
       this.loadEventsMtsInCalendar(this.medicalSheets)
-      setTimeout(()=>{                           //<<<---using ()=> syntax
+      setTimeout(() => {
         console.log('fin contador')
-   }, 3000);
-      
+      }, 3000);
+
     }
     else {
-      
+
     }
 
   }
@@ -368,10 +360,10 @@ export class MtsComponent implements OnInit {
         date: mts.date.toString(),/* 
         start: mts.date.toString(),
         end:  mts.date.toString(), */
-        
+
         eventColor: '#1E1E83',
         eventBackgroundColor: '#26E86F',
-        backgroundColor:'#ED1317', 
+        backgroundColor: '#ED1317',
         editable: true,
         extendedProps: {
           date: mts.date.toString(),
@@ -407,10 +399,10 @@ export class MtsComponent implements OnInit {
       date: mts.date.toString(),/* 
       start: mts.date.toString(),
       end:  mts.date.toString(), */
-      
+
       eventColor: '#1E1E83',
       eventBackgroundColor: '#26E86F',
-      backgroundColor:'#ED1317', 
+      backgroundColor: '#ED1317',
       editable: true,
       extendedProps: {
         date: mts.date.toString(),
@@ -430,7 +422,7 @@ export class MtsComponent implements OnInit {
         clinicId: mts.clinicId,
         clinicName: mts.clinicName,
 
-        idx: this.medicalSheets.length-1
+        idx: this.medicalSheets.length - 1
       }
 
     })
@@ -473,18 +465,18 @@ export class MtsComponent implements OnInit {
 
       }, error => {
         this.toast.error(JSON.stringify(error));
-    });
+      });
   }
 
   private getAllMts() {
     this.mtsService.getAllMts().pipe(takeUntil(this.destroy$)).subscribe(
 
-        (res) => {
-          this.medicalSheets = res;
-          console.log('mts')
-          console.log(this.medicalSheets)
-          this.loadEventsMtsInCalendar(this.medicalSheets);
-        }
+      (res) => {
+        this.medicalSheets = res;
+        console.log('mts')
+        console.log(this.medicalSheets)
+        this.loadEventsMtsInCalendar(this.medicalSheets);
+      }
 
     );
   }
@@ -602,7 +594,7 @@ export class MtsComponent implements OnInit {
     );
   }
 
-  public deleteMtsTable(id:number, idx:number) {
+  public deleteMtsTable(id: number, idx: number) {
     this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
       () => {
         this.calendarComponent.getApi().getEventById(id.toString()).remove();

@@ -34,9 +34,10 @@ export class TreatmentComponent implements OnInit {
   public treatmentsAux: TreatmentDto[] = [];
   public tratmentsLoading = false;
 
-  public isPatients: boolean = false;
+  public isTreatments: boolean = false;
 
   public patients: PatientDto[] = [];
+  public isPatients: boolean =false;
 
   public specialists: User[] = [];
 
@@ -123,6 +124,7 @@ export class TreatmentComponent implements OnInit {
         this.treatmentsAux = res;
         console.log(res)
         this.tratmentsLoading = false;
+        if (this.treatments.length > 0) this.isTreatments = true;
       }
     );
   }
@@ -136,6 +138,7 @@ export class TreatmentComponent implements OnInit {
           this.treatmentsAux = res;
           console.log(res)
           this.tratmentsLoading = false;
+          if (this.treatments.length > 0) this.isTreatments = true;
         }
       );
   }
@@ -149,6 +152,7 @@ export class TreatmentComponent implements OnInit {
           this.treatmentsAux = res;
           console.log(res)
           this.tratmentsLoading = false;
+          if (this.treatments.length > 0) this.isTreatments = true;
         }
       );
   }
@@ -180,7 +184,7 @@ export class TreatmentComponent implements OnInit {
       (patientsRes: PatientDto[]) => {
         console.log(patientsRes)
         this.patients = patientsRes;
-        if (this.patients.length>0) this.isPatients=true;
+        this.isPatients=this.patients.length>0;
         console.log(this.patients)
       }
     );
@@ -193,27 +197,24 @@ export class TreatmentComponent implements OnInit {
         (patientsRes: PatientDto[]) => {
           console.log(patientsRes)
           this.patients = patientsRes;
-          if (this.patients.length>0) this.isPatients=true;
-          console.log(this.patients)
+          this.isPatients=this.patients.length>0;
         }
       );
   }
 
   public openModalCreate() {
-    this.textModal = 'Create'
+
+    if (this.patients.length>0) {
+      this.textModal = 'Create'
 
     console.log('openModalCreate()')
     //SET ALL FIELDS FORM TREATMENT
     this.inicializeNewFormTreatment();
-
-
     
     //VALIDATE FORM
     this.modalService.open(this.updateCreate).result.then(
       r => {
-        if (r === '1') {
-          // CONFIRM CREATE
-
+        if (r === '1') {// CONFIRM CREATE
 
           if (this.createUpdateForm.valid) {
             this.createTreatment(this.createUpdateForm.value)
@@ -230,6 +231,11 @@ export class TreatmentComponent implements OnInit {
       }
 
     );
+    } else {
+      this.toast.info('To add a treatment, you need to have a registered patient ', 'Info');
+    }
+
+    
   }
 
   public openModalEdit(t: TreatmentDto, idx: number) {
@@ -371,6 +377,7 @@ export class TreatmentComponent implements OnInit {
           console.log(res)
           this.treatments.push(res);
           this.toast.success('Create Treatment ', 'Successfuly')
+          this.isTreatments = res != null;
         }
       );
   }
@@ -402,7 +409,7 @@ export class TreatmentComponent implements OnInit {
               console.log('treatmentsAux')
               console.log(this.treatmentsAux)
               this.toast.success('Treatment deleted', 'Successfully');
-              //this.treatmentsAux.splice(idx, 1)
+              this.isTreatments = this.treatments.length >0
 
 
             }

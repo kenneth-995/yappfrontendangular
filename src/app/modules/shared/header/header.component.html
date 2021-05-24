@@ -22,7 +22,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/mts' ]" routerLinkActive="active">
-                  Mts *
+                Medical Sheets 
               </a>
             </li>
             <li class="nav-item">
@@ -95,7 +95,7 @@
 
 <div class="text-center" *ngIf="roleUser ===2 || roleUser ===3">
 
-  <h2 >{{clinic.name}}</h2>
+  <h2>Clinic: {{clinic.name}}</h2>
   <!-- <img [src]="clinic.photo" class="imgHeader"> -->
 
 </div>

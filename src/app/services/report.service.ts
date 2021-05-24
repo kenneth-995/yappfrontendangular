@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { CreateReportDto } from '../models/dto/report/CreateReportDto';
-import { UpdateReportDto } from '../models/dto/report/UpdateReportDto';
+import { CreateUpdateReportDto } from '../models/dto/report/CreateUpdateReportDto';
+
 
 
 @Injectable({
@@ -31,11 +30,11 @@ export class ReportService {
     return this.htttClient.delete(this.base_url + '/report/deactivate/'+ id);
   }
 
-  create(report: CreateReportDto) {
+  create(report: CreateUpdateReportDto) {
     return this.htttClient.post(this.base_url + '/report/', report);
   }
 
-  update(report: CreateReportDto, id:number) {
+  update(report: CreateUpdateReportDto, id:number) {
     return this.htttClient.put(this.base_url + '/report/'+ id, report);
   }
 }

@@ -3,13 +3,13 @@
         <div class="col-sm-10">
             <span>Welcome to your profile <strong>{{userLogged.username}}</strong> !</span>
         </div>
-        <div class="col-sm-2">
+        <!-- <div class="col-sm-2">
             <a href="/users" class="pull-right"><img title="profile image" class="img-circle img-responsive"
                     src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100">
             </a>
-        </div>
+        </div> -->
     </div>
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-sm-3">
             <img [src]="userLogged.photoUrl" *ngIf="!previewImageStr" class="avatar img-circle img-thumbnail"
                 alt="avatar">
@@ -19,13 +19,13 @@
 
 
             <div class="text-center">
-                <form [formGroup]="fileForm" class="modal-body">
-                    <label for="uploadPhoto" class="col-2"></label>
+                <form [formGroup]="fileForm">
+                    <label for="uploadPhoto" class="btn btn-primary btn-block mt-3" style="font-size : 20px;">Change Image</label>
                     <input class="form-control rounded-sm border-0 shadow-sm px-4" type="file" id="uploadPhoto"
-                        name="uploadPhoto" (change)="onFileChange($event)"><br>
-                    <button class="btn btn-primary mr-3" (click)="uploadPhoto()" *ngIf="previewImageStr">Save
+                        name="uploadPhoto" (change)="onFileChange($event)" style="visibility:hidden;" accept="image/png, image/gif, image/jpeg"><br>
+                    <button class="btn btn-primary btn-block" (click)="uploadPhoto()" *ngIf="previewImageStr">Save
                         Image</button>
-                    <button class="btn btn-warning" (click)="cancelUploadPhoto()" *ngIf="previewImageStr">Cancel
+                    <button class="btn btn-warning btn-block" (click)="cancelUploadPhoto()" *ngIf="previewImageStr">Cancel
                         Image</button>
                 </form>
             </div>
