@@ -115,7 +115,6 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-
   getAllTreatments() {
     this.tratmentsLoading = true;
     this.treatmentService.getAllTreatments().pipe(takeUntil(this.destroy$)).subscribe(
@@ -128,7 +127,6 @@ export class TreatmentComponent implements OnInit {
       }
     );
   }
-
 
   getTreatmentsByClinicId() {
     this.treatmentService.getAllTreatmentsByClinicId(this.userLogged.clinicId)
@@ -143,7 +141,6 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-
   getAllTreatmentsBySpecialist() {
     this.treatmentService.getAllTreatmentsBySpecialistId(this.userLogged.id)
       .pipe(takeUntil(this.destroy$)).subscribe(
@@ -157,7 +154,6 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-
   getAllUsers() {
     this.userService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe(
       (res: User[]) => {
@@ -166,7 +162,6 @@ export class TreatmentComponent implements OnInit {
       }
     );
   }
-
 
   getUsersByClinicId() {
     this.userService.getAllUsersByClinicId(this.userLogged.clinicId)
@@ -178,7 +173,6 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-
   getAllPatients() {
     this.patientService.getAllPatients().pipe(takeUntil(this.destroy$)).subscribe(
       (patientsRes: PatientDto[]) => {
@@ -189,7 +183,6 @@ export class TreatmentComponent implements OnInit {
       }
     );
   }
-
 
   getAllPatientsByClinicId() {
     this.patientService.getPatientsByClinic(this.userLogged.clinicId)
@@ -367,7 +360,6 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
-
   createTreatment(form: CreateUpdateTreatmentDto) {
     //pipe() es para encadenar operadores observables 
     //subscribe() para activar los observables y escuchar los valores emitidos.
@@ -392,7 +384,6 @@ export class TreatmentComponent implements OnInit {
       );
   }
 
-
   public openModalDelete(treatment: TreatmentDto, idx: number) {
 
     this.modalService.open(this.modalDelete).result.then(
@@ -404,14 +395,8 @@ export class TreatmentComponent implements OnInit {
               //delete in array frontend
               //console.log(res)
               this.treatments.splice(idx, 1);
-              console.log('this.treatments')
-              console.log(this.treatments)
-              console.log('treatmentsAux')
-              console.log(this.treatmentsAux)
               this.toast.success('Treatment deleted', 'Successfully');
               this.isTreatments = this.treatments.length >0
-
-
             }
           );
 
@@ -423,8 +408,98 @@ export class TreatmentComponent implements OnInit {
     );
   }
 
+  public findByParams(name: string, min: number, max: number, nameSpecialist: string, mindate:Date, maxdate:Date) {
+    this.treatments = this.treatmentsAux;
+    console.log(mindate)
+    console.log(maxdate)
 
+    if (name) {
+      console.log('name')
+      this.treatments = this.treatments.filter(
+        treatment => treatment.patientFullName.toLowerCase().includes(name.toLowerCase()));
 
+      //this.treatments.sort((a, b) => (a.name > b.name ? -1 : 1));
+    }
+
+    if (min && min >= 0 && min <= 100) {
+      console.log('min')
+      this.treatments = this.treatments.filter(treatment => treatment.patientAge >= min);
+      //this.treatments.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if (max && max >= 0 && max <= 100) {
+      console.log('max')
+      this.treatments = this.treatments.filter(treatment => treatment.patientAge <= max);
+      //this.treatments.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if(nameSpecialist) {
+      this.treatments = this.treatments.filter(
+        treatment => treatment.specialistFullName.toLowerCase().includes(nameSpecialist.toLowerCase()));
+    }
+
+    if(mindate) {
+      this.treatments = this.treatments.filter(
+        treatment => new Date(treatment.startDate) >= new Date(mindate) );
+    }
+
+    if(maxdate) {
+      this.treatments = this.treatments.filter(
+        treatment => new Date(treatment.startDate) <= new Date(maxdate) );
+    }
+
+    /* if (this.clinicIdParamSearch != 0) {
+      console.log(this.patients)
+      this.patients = this.patients.filter(patient => patient.clinicId == this.clinicIdParamSearch);
+      console.log(this.patients)
+      //this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
+      console.log(this.clinicIdParamSearch)
+    }
+
+    if (this.specialistIdParamSearch != 0) {
+
+      //FILTER TREATMENTS BY SPECIALIST
+      const treatmentsBySpecialist = this.treatments.filter(t => t.specialistId == this.specialistIdParamSearch)
+
+      const patientsFiltered : PatientDto[] = [];
+
+      //FILTER PATIENTS BY TREATMENTS
+      this.patients.forEach(p => {
+        treatmentsBySpecialist.forEach(t => {
+          if (t.patientId == p.id) patientsFiltered.push(p)
+        });
+      });
+      //SET PATIENTS 
+      this.patients = patientsFiltered;
+    } */
+
+    this.isTreatments = this.treatments.length >0
+  }
+
+  public orderByPatientName(order:string) {
+    if (order === 'desc')
+    this.treatments.sort((t1,t2)=> (t1.patientFullName> t2.patientFullName) ? 1: -1);
+    if (order === 'asc')
+    this.treatments.sort((t1,t2)=> (t1.patientFullName> t2.patientFullName) ? -1: 1);
+  }
+
+  public orderByPatientAge(order:string) {
+    if (order === 'desc')
+    this.treatments.sort((t1,t2)=> (t1.patientAge> t2.patientAge) ? 1: -1);
+    if (order === 'asc')
+    this.treatments.sort((t1,t2)=> (t1.patientAge> t2.patientAge) ? -1: 1);
+  }
+
+  public orderByDate(order:string) {
+    if (order === 'desc')
+    this.treatments.sort((t1,t2)=> (new Date(t1.startDate)> new Date(t2.startDate)) ? 1: -1);
+    if (order === 'asc')
+    this.treatments.sort((t1,t2)=> (new Date(t1.startDate)> new Date(t2.startDate)) ? -1: 1);
+  }
+
+  public resetOrdering() {
+    this.treatments = this.treatmentsAux
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

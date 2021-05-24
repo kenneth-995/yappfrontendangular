@@ -1,21 +1,67 @@
 <div class="container">
+  <h4 class="text-center">Treatments</h4>
+
+
   <div class="row my-5">
-    <div class="custom-control p-2"  ><!-- *ngIf="isPatients; else msgAddPatient" -->
-      <button type="button" class="btn btn-primary" (click)='openModalCreate()'> Add Treatment &#43;</button>
+      <button type="button" class="btn btn-primary" (click)='openModalCreate()'>Add Treatment &#43;</button>
+  </div>
+  <h4>Filters</h4>
+  <div class="row my-2 ">
+    
+    <div class="col-2 text-center">
+      Name Patient <input class="form-control" type="text" placeholder="find by name" #name
+        (keyup)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
     </div>
 
-    <!-- <ng-template #msgAddPatient class="custom-control p-6">
-      To add a treatment, you need to have a registered patient &nbsp;
-      <button class="btn-primary" [routerLink]="[ '../patients']" routerLinkActive="active">
-         Register Patient &#43;
-    </button> 
-      
-    </ng-template>-->
+    <div class="col-2 text-center">
+      Min age <input class="form-control" type="number" placeholder="find min age" #minage
+        (change)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
+    </div>
 
+    <div class="col-2 text-center">
+      Max age <input class="form-control" type="number" placeholder="find max age" #maxage
+        (change)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
+    </div>
+
+    <div class="col-2 text-center">
+      Name Specialist <input class="form-control" type="text" placeholder="find by name" #nameSpecialist
+        (keyup)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
+    </div>
+
+    <div class="col-2 text-center">
+      Min date <input class="form-control" type="date" placeholder="find by name" #mindate
+        (change)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
+    </div>
+    <div class="col-2 text-center">
+      Max date <input class="form-control" type="date" placeholder="find by name" #maxdate
+        (change)="findByParams(name.value, minage.value, maxage.value, nameSpecialist.value, mindate.value, maxdate.value)">
+    </div>
   </div>
-  <div class="row my-5">
-    <h4>Treatments</h4>
+
+  <h4>Ordering</h4>
+  <div class="row my-2">
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("desc")'>Order by Patient name desc</button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("asc")'>Order by Patient name asc</button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("desc")'>Order by Patient age desc</button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("asc")'>Order by Patient age asc</button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByDate("desc")'>Order by Date desc</button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByDate("asc")'>Order by Date asc</button>
+    </div>
+    
   </div>
+
+  
 
   <table class="table table-striped">
     <thead>
@@ -47,7 +93,7 @@
       </tr>
     </tbody>
     <div class="text-center">
-      <p *ngIf="!isTreatments" style="color: blue;">There aren't registered treatments</p>
+      <p *ngIf="!isTreatments" style="color: blue;">Treatments not found</p>
     </div>
   </table>
 

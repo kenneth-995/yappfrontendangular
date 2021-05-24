@@ -1,6 +1,5 @@
 <div class="container">
 
-
   <h4 class="text-center">Patients</h4>
 
   <div class="row my-5">
@@ -26,18 +25,20 @@
 
     <div class="col-2 text-center" *ngIf="roleUser === 1">
       Patients treated for
-      <select class="form-control" [(ngModel)]= "specialistIdParamSearch" (change)="findByParams(name.value, minage.value, maxage.value)">
-        <option value="0" >All specialists</option>
-        <option *ngFor="let s of specialists" [value]="s.id" >{{s.name + ' ' + s.surnames}}</option>
+      <select class="form-control" [(ngModel)]="specialistIdParamSearch"
+        (change)="findByParams(name.value, minage.value, maxage.value)">
+        <option value="0">All specialists</option>
+        <option *ngFor="let s of specialists" [value]="s.id">{{s.name + ' ' + s.surnames}}</option>
       </select>
     </div>
 
 
     <div class="col-2 text-center" *ngIf="roleUser === 1">
       Clinic
-      <select class="form-control" [(ngModel)]= "clinicIdParamSearch" (change)="findByParams(name.value, minage.value, maxage.value)">
-        <option value="0" >All clinics</option>
-        <option *ngFor="let c of clinics" [value]="c.id" >{{c.name}}</option>
+      <select class="form-control" [(ngModel)]="clinicIdParamSearch"
+        (change)="findByParams(name.value, minage.value, maxage.value)">
+        <option value="0">All clinics</option>
+        <option *ngFor="let c of clinics" [value]="c.id">{{c.name}}</option>
       </select>
     </div>
 
