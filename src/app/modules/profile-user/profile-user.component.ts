@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Subject , Subscription } from 'rxjs';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -21,6 +21,7 @@ export class ProfileUserComponent implements OnInit {
   @ViewChild("updatePassword", { static: false }) updatePassword: TemplateRef<any>;
 
   public fileForm: FormGroup;
+  public observableForm: Subscription = new Subscription();
 
   private destroy$ = new Subject();
   public userLogged: User;
@@ -206,6 +207,9 @@ export class ProfileUserComponent implements OnInit {
   }
 
   public setFormProfileValues() {
+    
+    this.observableForm.unsubscribe();
+    this.changeProfileForm = false;
 
     this.profileForm.controls['name'].setValue(this.userLogged.name);
     this.profileForm.controls['surnames'].setValue(this.userLogged.surnames);
@@ -214,14 +218,35 @@ export class ProfileUserComponent implements OnInit {
     this.profileForm.controls['collegiateNumber'].setValue(this.userLogged.collegiateNumber);
     this.profileForm.controls['isAdminRole'].setValue(this.roleUser === 1 || this.roleUser === 2);
 
+    let _name = this.profileForm.controls['name'].value;
+    let _surnames = this.profileForm.controls['surnames'].value;
+    let _phone = this.profileForm.controls['phone'].value;
+    let _specialistType = this.profileForm.controls['specialistType'].value;
+    let _collegiateNumber = this.profileForm.controls['collegiateNumber'].value;
+    let _isAdminRole = this.profileForm.controls['isAdminRole'].value;
+
+    console.log(this.profileForm)
+
     this.profileForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
-        console.log(field)
-        this.changeProfileForm = true;
+        if (this.profileForm.valid && 
+            (_name != this.profileForm.controls['name'].value &&this.profileForm.controls['name'].value.length>0) ||
+            (_surnames != this.profileForm.controls['surnames'].value &&this.profileForm.controls['surnames'].value.length>0) ||
+            (_phone != this.profileForm.controls['phone'].value  && this.profileForm.controls['phone'].value.length >0) ||
+            _specialistType != this.profileForm.controls['specialistType'].value ||
+            _collegiateNumber != this.profileForm.controls['collegiateNumber'].value ||
+            _isAdminRole != this.profileForm.controls['isAdminRole'].value ) {
+              this.changeProfileForm = true;
+          } else {
+            this.changeProfileForm = false;
+          }
+
+          console.log(this.profileForm)
+        
       }
     );
 
-    this.changeProfileForm = false;
+    
   }
 
   public uploadPhoto() {
