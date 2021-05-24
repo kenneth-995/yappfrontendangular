@@ -451,6 +451,8 @@ export class PatientsComponent implements OnInit {
       //SET PATIENTS 
       this.patients = patientsFiltered;
     }
+
+    this.isPatients = this.patients.length > 0
   }
 
   private getAllSpecialists() {
