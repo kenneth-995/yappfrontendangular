@@ -38,7 +38,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
 
     this.registerForm = this.fb.group({
-      /* username: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', Validators.required],
       password: ['', Validators.required],
       password2: ['', Validators.required],
@@ -50,8 +50,8 @@ export class RegisterComponent implements OnInit {
       nameClinic: ['', Validators.required],
       addressClinic: ['', Validators.required],
       phoneNumberClinic: ['', Validators.required],
-      emailClinic: ['', Validators.required] */
-      username: ['kenneth', Validators.required],
+      emailClinic: ['', Validators.required] 
+      /* username: ['kenneth', Validators.required],
       email: ['kenneth.ferre@gmail.com', Validators.required],
       password: ['password', Validators.required],
       password2: ['passwordd', Validators.required],
@@ -63,7 +63,7 @@ export class RegisterComponent implements OnInit {
       nameClinic: ['Super Clinic', Validators.required],
       addressClinic: ['C/Moli de la torre', Validators.required],
       phoneNumberClinic: ['650190006', Validators.required],
-      emailClinic: ['kenneth.ferre@gmail.com', Validators.required]
+      emailClinic: ['kenneth.ferre@gmail.com', Validators.required]*/
     });
 
     this.inicializeForm();
