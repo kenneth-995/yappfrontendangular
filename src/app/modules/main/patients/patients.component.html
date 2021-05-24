@@ -6,10 +6,11 @@
     <button type="button" class="btn btn-primary" (click)='openModalCreatePatientNew()'> Add Patient &#43;</button>
   </div>
 
-  <div class="row my-5">
+  <h4>Filters</h4>
+  <div class="row my-2 ">
 
     <div class="col-2 text-center">
-      Full name <input class="form-control" type="text" placeholder="find by name" #name
+      Name <input class="form-control" type="text" placeholder="find by name" #name
         (keyup)="findByParams(name.value, minage.value, maxage.value)">
     </div>
 
@@ -42,6 +43,24 @@
       </select>
     </div>
 
+  </div>
+
+  <h4>Ordering</h4>
+  <div class="row my-2">
+    <div class="col-2 ">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("desc")'>Order name desc</button>
+    </div>
+    <div class="col-2 ">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("asc")'>Order by name asc</button>
+    </div>
+    <div class="col-2 ">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("desc")'>Order by age desc</button>
+    </div>
+    <div class="col-2 ">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("asc")'>Order by age asc</button>
+    </div>
+     
+    
   </div>
 
 

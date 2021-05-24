@@ -406,55 +406,6 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-  public findByParams(name: string, min: number, max: number) {
-    this.patients = this.patientsAux;
-
-    if (name) {
-      console.log('name')
-      this.patients = this.patients.filter(patient => patient.name.concat(patient.surname).toLowerCase().includes(name.toLowerCase()));
-      this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
-    }
-
-    if (min && min >= 0 && min <= 100) {
-      console.log('min')
-      this.patients = this.patients.filter(patient => patient.age >= min);
-      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
-    }
-
-    if (max && max >= 0 && max <= 100) {
-      console.log('max')
-      this.patients = this.patients.filter(patient => patient.age <= max);
-      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
-    }
-
-    if (this.clinicIdParamSearch != 0) {
-      console.log(this.patients)
-      this.patients = this.patients.filter(patient => patient.clinicId == this.clinicIdParamSearch);
-      console.log(this.patients)
-      //this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
-      console.log(this.clinicIdParamSearch)
-    }
-
-    if (this.specialistIdParamSearch != 0) {
-
-      //FILTER TREATMENTS BY SPECIALIST
-      const treatmentsBySpecialist = this.treatments.filter(t => t.specialistId == this.specialistIdParamSearch)
-
-      const patientsFiltered : PatientDto[] = [];
-
-      //FILTER PATIENTS BY TREATMENTS
-      this.patients.forEach(p => {
-        treatmentsBySpecialist.forEach(t => {
-          if (t.patientId == p.id) patientsFiltered.push(p)
-        });
-      });
-      //SET PATIENTS 
-      this.patients = patientsFiltered;
-    }
-
-    this.isPatients = this.patients.length > 0
-  }
-
   private getAllSpecialists() {
     this.userService.getAllUsers().pipe(takeUntil(this.destroy$)).subscribe(
       (res: User[]) => {
@@ -545,7 +496,7 @@ export class PatientsComponent implements OnInit {
 
   }
 
-  //set form photo
+  // Set Form File
   public onFileChange(event) {
     const reader = new FileReader();
 
@@ -561,6 +512,71 @@ export class PatientsComponent implements OnInit {
 
 
     }
+  }
+
+  //FILTERING
+  public findByParams(name: string, min: number, max: number) {
+    this.patients = this.patientsAux;
+
+    if (name) {
+      console.log('name')
+      this.patients = this.patients.filter(patient => patient.name.concat(patient.surname).toLowerCase().includes(name.toLowerCase()));
+      this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
+    }
+
+    if (min && min >= 0 && min <= 100) {
+      console.log('min')
+      this.patients = this.patients.filter(patient => patient.age >= min);
+      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if (max && max >= 0 && max <= 100) {
+      console.log('max')
+      this.patients = this.patients.filter(patient => patient.age <= max);
+      this.patients.sort((a, b) => (a.age > b.age ? -1 : 1));
+    }
+
+    if (this.clinicIdParamSearch != 0) {
+      console.log(this.patients)
+      this.patients = this.patients.filter(patient => patient.clinicId == this.clinicIdParamSearch);
+      console.log(this.patients)
+      //this.patients.sort((a, b) => (a.name > b.name ? -1 : 1));
+      console.log(this.clinicIdParamSearch)
+    }
+
+    if (this.specialistIdParamSearch != 0) {
+
+      //FILTER TREATMENTS BY SPECIALIST
+      const treatmentsBySpecialist = this.treatments.filter(t => t.specialistId == this.specialistIdParamSearch)
+
+      const patientsFiltered : PatientDto[] = [];
+
+      //FILTER PATIENTS BY TREATMENTS
+      this.patients.forEach(p => {
+        treatmentsBySpecialist.forEach(t => {
+          if (t.patientId == p.id) patientsFiltered.push(p)
+        });
+      });
+      //SET PATIENTS 
+      this.patients = patientsFiltered;
+    }
+
+    this.isPatients = this.patients.length > 0
+  }
+
+  //ORDERING
+  public orderByPatientName(order:string) {
+    if (order === 'desc')
+    this.patients.sort((t1,t2)=> (t1.name> t2.name) ? -1: 1);
+    if (order === 'asc')
+    this.patients.sort((t1,t2)=> (t1.name> t2.name) ? 1: -1);
+  }
+
+  public orderByPatientAge(order:string) {
+    if (order === 'desc')
+    this.patients.sort((t1,t2)=> (t1.age> t2.age) ? -1: 1);
+    if (order === 'asc')
+    this.patients.sort((t1,t2)=> (t1.age> t2.age) ? 1: -1);
   }
 
   ngOnDestroy(): void {
