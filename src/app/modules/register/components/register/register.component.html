@@ -116,9 +116,7 @@
                         formControlName='emailClinic' />
                 </div>
             </div>
-            <!-- <div *ngIf="msgEmail" class="text-center" style="color: red;">
-                <span>{{msgEmail}}</span>
-            </div> -->
+
             <div class="modal-footer" *ngIf="showButtonsForm">
                 <button type="submit" class="btn btn-primary">Register</button>
                 <button type="button" class="btn btn-secondary">Cancel</button>
@@ -129,7 +127,12 @@
 
         </form>
 
-
-
     </div>
+
+    <div class="float-right">
+        <a href="/login" class="btn btn-primary">
+            Cancel
+        </a>
+    </div>
+
 </div>
