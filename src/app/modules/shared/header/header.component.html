@@ -1,16 +1,8 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-1">
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto components">
-          <!-- <li class="nav-item" *ngIf="roleUser ===1; else other_content"> -->
             <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/>
-            <!-- <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/> -->
-          <!-- </li> -->
-          <!-- <ng-template #other_content>
-            <li class="nav-item">
-              <img [src]="clinic.photo" class="imgHeader">
-            </li>
-            
-          </ng-template> -->
+
           <li class="nav-item ml-5">
             <a class="nav-link orange" [routerLink]="[ 'home' ]" >
               <i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Home
@@ -36,19 +28,6 @@
                 <i class="fas fa-book-open"></i>&nbsp; Reports
               </a>
             </li>
-
-
-            <!-- <li class="nav-item dropdown" *ngIf="roleUser===1">
-              <a class="nav-link orange"  [routerLink]="[ 'home/clinics' ]" routerLinkActive="active">
-                Management Clinics
-              </a>
-            </li>
-
-            <li class="nav-item dropdown" *ngIf="roleUser===1">
-              <a class="nav-link orange"  [routerLink]="[ 'home/users' ]" routerLinkActive="active">
-                Management Users
-              </a>
-            </li> -->
 
             <li class="nav-item dropdown" *ngIf="roleUser===1">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
