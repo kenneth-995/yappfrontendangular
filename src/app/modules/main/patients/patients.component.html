@@ -48,16 +48,25 @@
   <h4>Ordering</h4>
   <div class="row my-2">
     <div class="col-2 ">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("desc")'>Order name desc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("desc")'>
+        Name <i class="fas fa-sort-amount-up"></i>
+      </button>
     </div>
     <div class="col-2 ">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("asc")'>Order by name asc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientName("asc")'>
+        Name <i class="fas fa-sort-amount-down-alt"></i>
+      
+      </button>
     </div>
     <div class="col-2 ">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("desc")'>Order by age desc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("desc")'>
+        Age <i class="fas fa-sort-amount-up"></i>
+      </button>
     </div>
     <div class="col-2 ">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("asc")'>Order by age asc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 11px;" (click)='orderByPatientAge("asc")'>
+        Age <i class="fas fa-sort-amount-down-alt"></i>
+      </button>
     </div>
      
     
@@ -88,9 +97,9 @@
         <td>{{p.email}}</td>
         <td>{{p.age}}</td>
         <!-- <td><button class="btn btn-primary mb-2" (click)='editPatient(p, i)'>Edit</button></td> -->
-        <td><button class="btn btn-primary mb-2" (click)='openModalEditPatient(p, i)'>Edit</button></td>
+        <td><button class="btn btn-primary mb-2" (click)='openModalEditPatient(p, i)'><i class="fas fa-pencil-alt"></i></button></td>
         <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-            (click)='deletePatient(p.id, i)'>Delete</button></td>
+            (click)='deletePatient(p.id, i)'><i class="far fa-trash-alt"></i></button></td>
       </tr>
     </tbody>
     <div class="text-center" *ngIf="!isPatients">

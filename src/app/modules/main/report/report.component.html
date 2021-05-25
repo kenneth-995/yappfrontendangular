@@ -32,24 +32,36 @@
   <h4>Ordering</h4>
   <div class="row my-2">
     <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByPatientName("desc")'>Order by Patient name desc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByPatientName("desc")'>
+        Patient Name <i class="fas fa-sort-amount-up"></i>
+      </button>
     </div>
     <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByPatientName("asc")'>Order by Patient name asc</button>
-    </div>
-
-    <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderBySpecialistName("desc")'>Order by Specialist name desc</button>
-    </div>
-    <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderBySpecialistName("asc")'>Order by Specialist name asc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByPatientName("asc")'>
+        Patient Name <i class="fas fa-sort-amount-down-alt"></i>
+      </button>
     </div>
 
     <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByDate("desc")'>Order by Date desc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderBySpecialistName("desc")'>
+        Specialist Name <i class="fas fa-sort-amount-up"></i>
+      </button>
     </div>
     <div class="col-2 text-center">
-      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByDate("asc")'>Order by Date asc</button>
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderBySpecialistName("asc")'>
+        Specialist Name <i class="fas fa-sort-amount-down-alt"></i>
+      </button>
+    </div>
+
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByDate("desc")'>
+        Date <i class="fas fa-sort-amount-up"></i>
+      </button>
+    </div>
+    <div class="col-2 text-center">
+      <button type="button" class="btn btn-primary my-3" style="font-size: 10px;" (click)='orderByDate("asc")'>
+        Date <i class="fas fa-sort-amount-down-alt"></i>
+      </button>
     </div>
 
 
@@ -77,9 +89,9 @@
         <td>{{r.specialistFullName}}</td>
         <td>{{r.specialistType}}</td>
 
-        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(r, idx)'>Detail</button></td>
+        <td><button class="btn btn-primary mb-2" (click)='openModalEdit(r, idx)'><i class="fas fa-pencil-alt"></i>&nbsp;<i class="far fa-eye"></i></button></td>
         <td *ngIf='roleUser ===1 || roleUser===2'><button class="btn btn-danger"
-            (click)='openModalDelete(r.id, idx)'>Delete</button></td>
+            (click)='openModalDelete(r.id, idx)'><i class="far fa-trash-alt"></i></button></td>
       </tr>
     </tbody>
     <div class="text-center">

@@ -1,38 +1,39 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-1">
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto components">
-          <li class="nav-item" *ngIf="roleUser ===1; else other_content">
+          <!-- <li class="nav-item" *ngIf="roleUser ===1; else other_content"> -->
             <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/>
-          </li>
-          <ng-template #other_content>
+            <!-- <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/> -->
+          <!-- </li> -->
+          <!-- <ng-template #other_content>
             <li class="nav-item">
               <img [src]="clinic.photo" class="imgHeader">
             </li>
             
-          </ng-template>
+          </ng-template> -->
           <li class="nav-item ml-5">
             <a class="nav-link orange" [routerLink]="[ 'home' ]" >
-                Inicio
+              <i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Home
             </a>
           </li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="[ 'home/patients' ]" routerLinkActive="active">
-                  Patients 
+                <i class="fas fa-user-injured"></i>&nbsp; Patients 
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/mts' ]" routerLinkActive="active">
-                Medical Sheets 
+                <i class="far fa-calendar-check"></i>&nbsp; Medical Sheets 
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange" [routerLink]="[ 'home/treatments' ]" routerLinkActive="active">
-                  Treatments
+                <i class="fas fa-flask"></i>&nbsp; Treatments
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link orange"  [routerLink]="[ 'home/reports' ]" routerLinkActive="active">
-                Reports
+                <i class="fas fa-book-open"></i>&nbsp; Reports
               </a>
             </li>
 
@@ -51,12 +52,16 @@
 
             <li class="nav-item dropdown" *ngIf="roleUser===1">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Management
+                <i class="fas fa-sitemap"></i>&nbsp; Management
               </a>
 
               <div class="dropdown-menu" >
-                <a class="dropdown-item" [routerLink]="['home', 'clinics']">Clinics</a>
-                <a class="dropdown-item" [routerLink]="['home', 'specialists']">Users</a>
+                <a class="dropdown-item" [routerLink]="['home', 'clinics']">
+                  <i class="fas fa-hospital"></i>&nbsp; Clinics
+                </a>
+                <a class="dropdown-item" [routerLink]="['home', 'specialists']">
+                  <i class="fas fa-user-md"></i>&nbsp; Users
+                </a>
                  
               </div>
             </li>
@@ -64,27 +69,30 @@
 
             <li class="nav-item dropdown" *ngIf="roleUser===2 || roleUser===3">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                My Clinic
+                <i class="fas fa-clinic-medical"></i>&nbsp; My Clinic
               </a>
 
               <div class="dropdown-menu" >
-                <a class="dropdown-item" [routerLink]="['home', 'clinic']">Clinic</a>
-                <a class="dropdown-item" [routerLink]="['home', 'specialists']" *ngIf="roleUser===2">Specialists</a>
+                <a class="dropdown-item" [routerLink]="['home', 'clinic']"><i class="fas fa-clinic-medical"></i>&nbsp; Clinic</a>
+                <a class="dropdown-item" [routerLink]="['home', 'specialists']" *ngIf="roleUser===2">
+                  <i class="fas fa-user-md"></i>&nbsp;  Specialists
+                </a>
                  
               </div>
             </li>
 
         </ul>
-
+        
 
         <div class="collapse navbar-collapse w-20 order-2 dual-collapse2" id="navbarNav">
+
             <ul class="navbar-nav ml-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle orange" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-user mr-1"></i>{{userLogged.username}}
                 </a>
                 <div class="dropdown-menu ">
-                  <a class="dropdown-item" routerLink="home/profile"><i class="fas fa-sign-out-alt mr-1"></i>Profile</a>
+                  <a class="dropdown-item" routerLink="home/profile"><i class="fas fa-id-card"></i>Profile</a>
                   <a class="dropdown-item" routerLink="/login" (click)='logout()'><i class="fas fa-sign-out-alt mr-1"></i>Logout</a>
                 </div>
               </li>
@@ -96,14 +104,13 @@
 <div class="text-center" *ngIf="roleUser ===2 || roleUser ===3">
 
   <h2>Clinic: {{clinic.name}}</h2>
-  <!-- <img [src]="clinic.photo" class="imgHeader"> -->
 
 </div>
 
 <div class="text-center" *ngIf="roleUser ===1">
 
   <h2>Back Office YAPP</h2>
-  <!-- <img class="imgHeader" src="./../../../../assets//images//yappimg.png"/> -->
+
 </div>
 
 
