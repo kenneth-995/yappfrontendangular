@@ -133,6 +133,8 @@ export class ProfileUserComponent implements OnInit {
               this.setFormProfileValues();
               this.toast.success('Profile updated', 'Successfuly')
 
+              this.changeProfileForm = false; /////////////////////////////////////////////////////
+
 
               this.userService.getUserRole().pipe(takeUntil(this.destroy$)).subscribe(
                 (res: number) => {
