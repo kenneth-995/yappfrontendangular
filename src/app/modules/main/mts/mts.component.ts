@@ -32,6 +32,7 @@ export class MtsComponent implements OnInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   @ViewChild("modalCreateEdit", { static: false }) modalCreateEdit: TemplateRef<any>;
   @ViewChild("modalInfo", { static: false }) modalInfo: TemplateRef<any>;
+  @ViewChild("modalDelete", { static: false }) modalDelete: TemplateRef<any>;
   public mtsModalInfo: MtsDto = new MtsDto;
 
   public showCalendar: boolean = true;
@@ -276,28 +277,28 @@ export class MtsComponent implements OnInit {
 
   public handleEventClick(arg: any) {
 
-    if (this.treatments.length>0) {
+    if (this.treatments.length > 0) {
       this.textCreateUpdateModal = 'Create '
       this.showButtonsForm = true;
       this.isUpdateMts = false;
-  
+
       console.log(arg.start)
-  
+
       let _date = new Date(arg.start)
-  
+
       this.formMts.controls['date'].setValue(formatDate(_date, 'yyyy-MM-dd', 'en'));
       this.formMts.controls['time'].setValue('17:00');
       this.formMts.controls['specialistId'].setValue(this.userLogged.id);
-  
+
       if (this.roleUser === 3) {
         this.formMts.controls['specialistId'].disabled;
       }
       this.formMts.controls['patientId'].setValue(this.patients[0].id);
-  
+
       this.formMts.controls['treatmentId'].setValue(this.treatments[0].id);
-  
+
       this.modalService.open(this.modalCreateEdit).result.then(
-  
+
         r => {
           if (r === '1') {
             console.log('confirma la creacion')
@@ -316,13 +317,13 @@ export class MtsComponent implements OnInit {
                 //TODO:  y el array
                 this.loadEventMtsInCalendar(res);
                 this.toast.success('Created Medical Sheet', 'Successfully');
-  
+
               }
             );
           } else {
             console.log('cancelar la creacion')
             this.formMts.reset();
-  
+
           }
         }, error => {
           console.log(error);
@@ -578,20 +579,31 @@ export class MtsComponent implements OnInit {
   }
 
   public deleteMts() {
-    let id = this.formMts.controls['id'].value
-    let idx = this.formMts.controls['idx'].value
-    console.log('id ' + id)
-    console.log('idx: ' + idx)
 
-    this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
-      () => {
-        this.calendarComponent.getApi().getEventById(id.toString()).remove();
-        this.medicalSheets.splice(idx, 1);
-        this.modalService.dismissAll(); //cerramos el modal de update
-        this.toast.success('Delete medical sheet', 'Successfully')
+    this.modalService.open(this.modalDelete).result.then(
+      (r) => {
+        if (r === '1') {
+          let id = this.formMts.controls['id'].value
+          let idx = this.formMts.controls['idx'].value
+          console.log('id ' + id)
+          console.log('idx: ' + idx)
 
+          this.mtsService.detele(id).pipe(takeUntil(this.destroy$)).subscribe(
+            () => {
+              this.calendarComponent.getApi().getEventById(id.toString()).remove();
+              this.medicalSheets.splice(idx, 1);
+              this.modalService.dismissAll(); //cerramos el modal de update
+              this.toast.success('Delete medical sheet', 'Successfully')
+
+            }
+          );
+        } else {
+          //dimiss delete
+          this.modalService.dismissAll();
+        }
       }
     );
+    /* */
   }
 
   public deleteMtsTable(id: number, idx: number) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { Subject , Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +10,10 @@ import { User } from 'src/app/models/entities/user-model';
 import { UserService } from '../../services/user.service';
 
 import { UploadFileService } from '../../services/upload-file.service';
+
+const MAX_FILE_SIZE: number = 3430858425;//13723433701(max size backend)/4
+
+const FILE_EXTENSIONS: string[] = ['jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG',]
 
 @Component({
   selector: 'app-profile-user',
@@ -207,7 +211,7 @@ export class ProfileUserComponent implements OnInit {
   }
 
   public setFormProfileValues() {
-    
+
     this.observableForm.unsubscribe();
     this.changeProfileForm = false;
 
@@ -229,24 +233,24 @@ export class ProfileUserComponent implements OnInit {
 
     this.profileForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
       (field) => {
-        if (this.profileForm.valid && 
-            (_name != this.profileForm.controls['name'].value &&this.profileForm.controls['name'].value.length>0) ||
-            (_surnames != this.profileForm.controls['surnames'].value &&this.profileForm.controls['surnames'].value.length>0) ||
-            (_phone != this.profileForm.controls['phone'].value  && this.profileForm.controls['phone'].value.length >0) ||
-            _specialistType != this.profileForm.controls['specialistType'].value ||
-            _collegiateNumber != this.profileForm.controls['collegiateNumber'].value ||
-            _isAdminRole != this.profileForm.controls['isAdminRole'].value ) {
-              this.changeProfileForm = true;
-          } else {
-            this.changeProfileForm = false;
-          }
+        if (this.profileForm.valid &&
+          (_name != this.profileForm.controls['name'].value && this.profileForm.controls['name'].value.length > 0) ||
+          (_surnames != this.profileForm.controls['surnames'].value && this.profileForm.controls['surnames'].value.length > 0) ||
+          (_phone != this.profileForm.controls['phone'].value && this.profileForm.controls['phone'].value.length > 0) ||
+          _specialistType != this.profileForm.controls['specialistType'].value ||
+          _collegiateNumber != this.profileForm.controls['collegiateNumber'].value ||
+          _isAdminRole != this.profileForm.controls['isAdminRole'].value) {
+          this.changeProfileForm = true;
+        } else {
+          this.changeProfileForm = false;
+        }
 
-          console.log(this.profileForm)
-        
+        console.log(this.profileForm)
+
       }
     );
 
-    
+
   }
 
   public uploadPhoto() {
@@ -262,7 +266,7 @@ export class ProfileUserComponent implements OnInit {
         this.userService.setUserLogged(this.userLogged)
         //this.userService.userLogged.photoUrl = res['url']
         this.toast.success('Photo updated', 'Successfuly')
-        this.previewImageStr=''
+        this.previewImageStr = ''
       }
     );
 
@@ -271,15 +275,37 @@ export class ProfileUserComponent implements OnInit {
   onFileChange(event) {
     const reader = new FileReader();
 
-    if (event.target.files && event.target.files.length) {
+    if (event.target.files && event.target.files.length === 1) {
+      let fileName = event.target.files[0].name
+      let fileExtension = fileName.split(".", 2);
+      if (FILE_EXTENSIONS.includes(fileExtension[1])) {
+        console.log('format correct')
+      } else {
+        console.log('format INcorrect')
+      }
+
+
       const [file] = event.target.files;
       this.fileForm.get('file').setValue(file)
+      var formData: any = new FormData();
+      formData.append("file", this.fileForm.get('file').value);
+
+      this.uploadFileService.uploadFileUser(formData, this.userLogged.id).pipe(takeUntil(this.destroy$)).subscribe(
+        res => {
+          this.userLogged.photoUrl = res['url']
+          this.userService.setUserLogged(this.userLogged)
+          this.toast.success('Photo updated', 'Successfuly')
+          this.previewImageStr = ''
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            this.previewImageStr = reader.result as string;
+          };
+        }
+      );
 
 
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.previewImageStr = reader.result as string;
-      };
+
+
 
 
     }

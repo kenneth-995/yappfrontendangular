@@ -23,10 +23,10 @@
                     <label for="uploadPhoto" class="btn btn-primary btn-block mt-3" style="font-size : 20px;">Change Image</label>
                     <input class="form-control rounded-sm border-0 shadow-sm px-4" type="file" id="uploadPhoto"
                         name="uploadPhoto" (change)="onFileChange($event)" style="visibility:hidden;" accept="image/png, image/gif, image/jpeg"><br>
-                    <button class="btn btn-primary btn-block" (click)="uploadPhoto()" *ngIf="previewImageStr">Save
+                    <!-- <button class="btn btn-primary btn-block" (click)="uploadPhoto()" *ngIf="previewImageStr">Save
                         Image</button>
                     <button class="btn btn-warning btn-block" (click)="cancelUploadPhoto()" *ngIf="previewImageStr">Cancel
-                        Image</button>
+                        Image</button> -->
                 </form>
             </div>
             <div class="text-center">
