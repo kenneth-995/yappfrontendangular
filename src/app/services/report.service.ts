@@ -27,7 +27,7 @@ export class ReportService {
   }
 
   delete(id:number) {
-    return this.htttClient.delete(this.base_url + '/report/deactivate/'+ id);
+    return this.htttClient.delete(this.base_url + '/report/'+ id);
   }
 
   create(report: CreateUpdateReportDto) {

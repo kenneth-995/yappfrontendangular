@@ -52,14 +52,9 @@ export class AuthService implements HttpInterceptor {
 
 
       if (error.status == 500) { //TODO: posibility refresh token, add endpoint refresh  backend
-        this.route.navigateByUrl('/login')
+        //this.route.navigateByUrl('/login')
         console.log('PLEASE, RENEW TOKEN , DEVES VOLVERTE A LOGUEAR')
-        this.toast.info('You need login', 'INFO')
-        //this.ngxLoader.stop();
-        /*localStorage.removeItem('accessToken');
-        localStorage.removeItem('username');
-         */
-
+        //this.toast.info('You need login', 'INFO')
       };
 
       if (error.status == 404) {

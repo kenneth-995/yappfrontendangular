@@ -44,7 +44,7 @@ export class TreatmentService {
   }
 
   deleteTreatment(treatmentId:number) {
-    return this.htttClient.delete(this.base_url + '/treatment/deactivate/' + treatmentId);
+    return this.htttClient.delete(this.base_url + '/treatment/' + treatmentId);
   }
 
 }

@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   public userId:number;
 
   public loginForm = this.formBuilder.group({
-    username: ['usernone', Validators.required],
+    username: ['superadmin', Validators.required],
     password: ['password', Validators.required]
   })
 

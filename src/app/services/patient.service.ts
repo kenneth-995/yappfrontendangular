@@ -38,7 +38,7 @@ export class PatientService {
 
   //USER
   deletePatient(id: number) {
-    return this.htttClient.delete(this.base_url+'/patient/deactivate/'+id);
+    return this.htttClient.delete(this.base_url+'/patient/'+id);
   }
 
   //USER
