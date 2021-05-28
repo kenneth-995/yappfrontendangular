@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { pipe, Subject, Subscription } from 'rxjs';
 import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';

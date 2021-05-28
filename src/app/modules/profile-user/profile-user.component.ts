@@ -280,7 +280,7 @@ export class ProfileUserComponent implements OnInit {
     if (event.target.files && event.target.files.length === 1) {
       let fileName = event.target.files[0].name
       let fileExtension = fileName.split(".", 2);
-      if (FILE_EXTENSIONS.includes(fileExtension[1])) {
+      if (FILE_EXTENSIONS.includes(fileExtension[1])) { //TODO check file size MAX_FILE_SIZE
         console.log('format correct')
       } else {
         console.log('format INcorrect')
